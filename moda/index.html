@@ -157,6 +157,16 @@ h3:not(:first-child){margin-top:22px}
 .result .row .big{margin-top:10px;padding:12px;font-size:18px}
 .tips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0}.tips span{background:var(--soft);border-radius:999px;padding:5px 11px;font-size:14px;font-weight:800}
 .tips span.ok{background:#e6ffef;box-shadow:0 0 0 2px #9be3b6 inset}
+.judge em{display:block;font-style:normal;font-size:12px;font-weight:700;max-width:130px;margin-top:2px}.judge em.fav{color:#e8406a;font-weight:900}
+.poser{transform-origin:0 0}.poser.pose{animation:pose 1s ease}
+@keyframes pose{0%{transform:scale(1)}25%{transform:scale(-1,1)}50%{transform:scale(1,1)}70%{transform:scale(1.08,.94)}85%{transform:scale(.97,1.04)}100%{transform:scale(1)}}
+@keyframes rise{0%{transform:translateY(0) scale(.6);opacity:1}100%{transform:translateY(-75vh) scale(1.2);opacity:0}}
+.resWrap{position:absolute;inset:0;display:grid;place-items:center;background:rgba(30,10,50,.45);padding:12px;overflow:auto}
+.resWrap .result{position:static;transform:none;width:min(100%,560px)}
+.podium{display:flex;justify-content:center;align-items:flex-end;gap:10px;margin:10px 0 4px}
+.pod{display:flex;flex-direction:column;align-items:center;width:96px}.pod i{font-style:normal;font-size:32px}.pod small{font-weight:900;font-size:14px;margin-bottom:3px}
+.pod .bar{width:100%;border-radius:14px 14px 4px 4px;background:#ffd6ea;font-weight:900;font-size:15px;display:flex;flex-direction:column;justify-content:center;line-height:1.15}
+.pod.me .bar{background:linear-gradient(#ffe066,#ffb02e);box-shadow:0 0 0 3px #fff,0 0 0 6px #ffb02e}.pod.me small{color:#e8406a}
 .themebig{font-size:84px;line-height:1;margin:6px 0}
 #flash{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:60}
 #flash.go{animation:flash .5s ease}
@@ -388,6 +398,7 @@ const ACC={
   +`<path d="M114 64 L112 48 L126 58 Z" fill="#fff" opacity=".8"/><path d="M186 64 L188 48 L174 58 Z" fill="#fff" opacity=".8"/>`},
  kulaklik:{n:'Kulaklık',f:()=>L("M102 112 Q100 40 150 40 Q200 40 198 112",OL,10)+L("M102 112 Q100 40 150 40 Q200 40 198 112",'#c78bff',6)
   +`<rect x="92" y="98" width="20" height="32" rx="9" fill="#ff5fa2" stroke="${OL}" stroke-width="3"/><rect x="188" y="98" width="20" height="32" rx="9" fill="#ff5fa2" stroke="${OL}" stroke-width="3"/>`+heart(102,114,4,'#fff')+heart(198,114,4,'#fff')},
+ elmastac:{n:'Elmas Taç',lock:16,f:()=>P("M118 72 L122 36 L136 56 L150 26 L164 56 L178 36 L182 72 Q150 64 118 72 Z",'#bfe9ff')+star(150,30,7,'#fff')+star(122,40,5,'#fff')+star(178,40,5,'#fff')+`<path d="M138 62 L150 50 L162 62 L150 70 Z" fill="#7ec8ff" stroke="${OL}" stroke-width="2"/>`+star(108,46,3,'#fff',false)+star(194,46,3,'#fff',false)},
  asa:{n:'Sihirli Asa',lock:8,f:()=>L("M104 328 L76 268",OL,9)+L("M104 328 L76 268",'#c78bff',5)+star(74,262,16,'#ffe066')+star(52,244,5,'#fff')+star(96,240,4,'#fff')+star(60,286,4,'#fff')}
 };
 
@@ -493,16 +504,18 @@ const TASKS=[
  {id:'desen',i:'🌸',t:'Desenli bir kıyafet giydir',ok:s=>s.dress!=='yok'?s.pat.dress!=='duz':(s.pat.top!=='duz'||s.pat.bottom!=='duz')},
  {id:'defile',i:'🏆',t:'Defilede 24+ puan al',ok:(s,e)=>e==='defile24'},
  {id:'tirnak',i:'💅',t:'5 tırnağı da boya',ok:(s,e)=>e==='tirnak'},
- {id:'pasta',i:'🎂',t:'Pasta süsle, mumları üfle',ok:(s,e)=>e==='pasta'}
+ {id:'pasta',i:'🎂',t:'Pasta süsle, mumları üfle',ok:(s,e)=>e==='pasta'},
+ {id:'birinci',i:'🥇',t:'Defilede 1. ol',ok:(s,e)=>e==='first'},
+ {id:'kupa5',i:'🏆',t:'5 farklı temada 24+ puan al',ok:s=>Object.values(s.trophies||{}).filter(v=>v>=24).length>=5}
 ];
-const UNLOCKS=[[2,'🌈 Gökkuşağı Elbise'],[4,'🦄 Unicorn Dost'],[6,'🪐 Uzay'],[8,'🪄 Sihirli Asa'],[10,'🏰 Şato'],[12,'🛼 Paten'],[14,'🌈 Gökkuşağı Saç']];
+const UNLOCKS=[[2,'🌈 Gökkuşağı Elbise'],[4,'🦄 Unicorn Dost'],[6,'🪐 Uzay'],[8,'🪄 Sihirli Asa'],[10,'🏰 Şato'],[12,'🛼 Paten'],[14,'🌈 Gökkuşağı Saç'],[16,'💎 Elmas Taç']];
 
 /* =====================  durum  ===================== */
 const KEY='moda-dunyasi-v1';
 const DEF={name:'',skin:'#f6c9a8',hair:{k:'uzun',c:'#e8c26a'},dress:'prenses',top:'tisort',bottom:'etek',shoes:'babet',
  col:{dress:'#c78bff',top:'#7ec8ff',bottom:'#ff9ccf',shoes:'#ff5fa2'},acc:['fiyonk'],mk:{lip:'yok',shadow:'yok',eye:'#5b3a29',blush:false,sim:false},
  pet:'yok',bg:'oda',stickers:[],done:[],gal:[],pat:{dress:'duz',top:'duz',bottom:'duz'},
- nails:[null,null,null,null,null],cake:{base:'#ffd6a5',cream:'#ff9ccf',tops:[],lit:true}};
+ trophies:{},quick:false,nails:[null,null,null,null,null],cake:{base:'#ffd6a5',cream:'#ff9ccf',tops:[],lit:true}};
 let S;
 try{S=Object.assign(structuredClone(DEF),JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){S=structuredClone(DEF)}
 if(!Array.isArray(S.gal))S.gal=[];
@@ -585,8 +598,8 @@ function renderPanel(){
 function toast(t,ms=2200){const e=$('#toast');e.textContent=t;e.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('show'),ms)}
 function confetti(n=34){for(let i=0;i<n;i++){const s=document.createElement('div');s.className='conf';s.textContent=rnd(['⭐','💖','✨','🌸','🎀','💎']);
  s.style.left=Math.random()*100+'vw';s.style.animationDuration=(1.8+Math.random()*1.6)+'s';s.style.animationDelay=Math.random()*.5+'s';document.body.appendChild(s);setTimeout(()=>s.remove(),4200)}}
-function checkTasks(ev){const before=stars();let got=[];
- for(const t of TASKS)if(!S.done.includes(t.id)&&t.ok(S,ev)){S.done.push(t.id);got.push(t)}
+function checkTasks(ev){const before=stars();let got=[];const evs=[].concat(ev===undefined?[undefined]:ev);
+ for(const t of TASKS)if(!S.done.includes(t.id)&&evs.some(e=>t.ok(S,e))){S.done.push(t.id);got.push(t)}
  if(!got.length)return;save();
  setTimeout(()=>{SND.star();confetti();toast(`Görev tamam: ${got[0].t}! ⭐`,2600);
   const u=UNLOCKS.find(u=>before<u[0]&&stars()>=u[0]);if(u)setTimeout(()=>{toast(`🎁 Yeni sürpriz açıldı: ${u[1]}!`,3200);confetti(50)},2700);
@@ -686,47 +699,120 @@ const isPink=c=>['#ff5fa2','#ff9ccf','#e8406a'].includes(c);
 const mainCol=s=>s.dress!=='yok'?s.col.dress:s.col.top;
 
 /* --- defile --- */
+const anyPat=(s,k)=>s.dress!=='yok'?s.pat.dress===k:(s.pat.top===k||s.pat.bottom===k);
+const nod=s=>s.dress==='yok';
+const toplu=s=>['atkuyrugu','topuz','ikitopuz','orgu','yanorgu'].includes(s.hair.k);
 const THEMES=[
- {id:'plaj',n:'Plaj Günü',e:'🏖️',ip:'Yazlık kıyafet, sandalet, şapka ya da gözlük!',tips:['🏖️ Plaj arka planı','👙 Yazlık kıyafet','🩴 Sandalet/babet','👒 Şapka ya da gözlük'],
-  chk:s=>[s.bg==='plaj',s.dress==='yazlik'||(s.dress==='yok'&&['sort','etek','tutu'].includes(s.bottom)),['sandalet','babet'].includes(s.shoes),s.acc.includes('sapka')||s.acc.includes('gozluk')]},
- {id:'balo',n:'Prenses Balosu',e:'👑',ip:'Uzun kabarık elbise, taç, topuklu ayakkabı!',tips:['👗 Balo elbisesi','👑 Taç','👠 Topuklu','💄 Ruj ya da kolye'],
-  chk:s=>[['prenses','gece','gokkusagi'].includes(s.dress),s.acc.includes('tac')||s.acc.includes('cicektaci'),s.shoes==='topuklu',s.mk.lip!=='yok'||s.acc.includes('kolye')]},
- {id:'spor',n:'Spor Günü',e:'⚽',ip:'Şort ya da pantolon, spor ayakkabı, toplu saç, park!',tips:['🩳 Şort/pantolon','👟 Spor ayakkabı ya da paten','💇‍♀️ Toplu saç','🌳 Park'],
-  chk:s=>[s.dress==='tulum'||(s.dress==='yok'&&['sort','pantolon','kot'].includes(s.bottom)),['spor','paten'].includes(s.shoes),['atkuyrugu','topuz','ikitopuz','orgu','yanorgu'].includes(s.hair.k),s.bg==='park']},
- {id:'kis',n:'Kış Masalı',e:'❄️',ip:'Mont ya da kazak, bot, kulaklık ya da şapka!',tips:['🧥 Mont/kazak/ceket','👢 Bot','👖 Uzun alt','🎧 Kulaklık, şapka ya da kulak'],
-  chk:s=>[s.dress==='kaban'||(s.dress==='yok'&&['kazak','ceket'].includes(s.top)),s.shoes==='bot',s.dress==='kaban'||s.dress==='tulum'||(s.dress==='yok'&&['pantolon','kot','maxi'].includes(s.bottom)),s.acc.some(a=>['kulaklik','sapka','kedikulak'].includes(a))]},
- {id:'pembe',n:'Pembiş Parti',e:'💖',ip:'Her şey pembe olsun! Pembe kıyafet, pembe saç...',tips:['💗 Pembe kıyafet','👠 Pembe ayakkabı','💇‍♀️ Pembe saç','💄 Ruj ve allık'],
+ {id:'plaj',n:'Plaj Günü',e:'🏖️',pal:['#1b5e8c','#ffe2a8'],m:'happy',ip:'Yazlık kıyafet, sandalet, şapka ya da gözlük!',tips:['🏖️ Plaj arka planı','👙 Yazlık kıyafet','🩴 Sandalet/babet','👒 Şapka ya da gözlük'],
+  chk:s=>[s.bg==='plaj',s.dress==='yazlik'||(nod(s)&&['sort','etek','tutu'].includes(s.bottom)),['sandalet','babet'].includes(s.shoes),s.acc.includes('sapka')||s.acc.includes('gozluk')]},
+ {id:'balo',n:'Prenses Balosu',e:'👑',pal:['#3a1f5c','#ffd6ea'],m:'elegant',ip:'Uzun kabarık elbise, taç, topuklu ayakkabı!',tips:['👗 Balo elbisesi','👑 Taç','👠 Topuklu','💄 Ruj ya da kolye'],
+  chk:s=>[['prenses','gece','gokkusagi'].includes(s.dress),s.acc.includes('tac')||s.acc.includes('cicektaci')||s.acc.includes('elmastac'),s.shoes==='topuklu',s.mk.lip!=='yok'||s.acc.includes('kolye')]},
+ {id:'spor',n:'Spor Günü',e:'⚽',pal:['#1f6b3a','#ffb3d1'],m:'rock',ip:'Şort ya da pantolon, spor ayakkabı, toplu saç, park!',tips:['🩳 Şort/pantolon/tulum','👟 Spor ayakkabı ya da paten','💇‍♀️ Toplu saç','🌳 Park'],
+  chk:s=>[s.dress==='tulum'||(nod(s)&&['sort','pantolon','kot'].includes(s.bottom)),['spor','paten'].includes(s.shoes),toplu(s),s.bg==='park']},
+ {id:'kis',n:'Kış Masalı',e:'⛄',pal:['#25407a','#e6f4ff'],m:'dreamy',ip:'Mont ya da kazak, bot, kulaklık ya da şapka!',tips:['🧥 Mont/kazak/ceket','👢 Bot','👖 Uzun alt','🎧 Kulaklık, şapka ya da kulak'],
+  chk:s=>[s.dress==='kaban'||(nod(s)&&['kazak','ceket'].includes(s.top)),s.shoes==='bot',s.dress==='kaban'||s.dress==='tulum'||(nod(s)&&['pantolon','kot','maxi'].includes(s.bottom)),s.acc.some(a=>['kulaklik','sapka','kedikulak'].includes(a))]},
+ {id:'pembe',n:'Pembiş Parti',e:'💖',pal:['#7a1f55','#ffc0de'],m:'happy',ip:'Her şey pembe olsun! Pembe kıyafet, pembe saç...',tips:['💗 Pembe kıyafet','👠 Pembe ayakkabı','💇‍♀️ Pembe saç','💄 Ruj ve allık'],
   chk:s=>[isPink(mainCol(s)),isPink(s.col.shoes)&&s.shoes!=='yok',s.hair.c==='#ff8fc8'||s.hair.c==='g:pembe',s.mk.lip!=='yok'&&s.mk.blush]},
- {id:'yildiz',n:'Yıldız Gecesi',e:'🌟',ip:'Yıldızlı elbise ya da yıldız desen, simli yanak, sahne!',tips:['⭐ Yıldızlı kıyafet','✨ Simli yanak','🎤 Sahne ya da uzay','💎 Küpe ya da kolye'],
-  chk:s=>[s.dress==='gece'||(s.dress!=='yok'?s.pat.dress==='yildiz':(s.pat.top==='yildiz'||s.pat.bottom==='yildiz')),s.mk.sim,s.bg==='sahne'||s.bg==='uzay',s.acc.includes('kupe')||s.acc.includes('kolye')]}
+ {id:'yildiz',n:'Yıldız Gecesi',e:'🌟',pal:['#1a1240','#c9b8ff'],m:'elegant',ip:'Yıldızlı elbise ya da yıldız desen, simli yanak, sahne!',tips:['⭐ Yıldızlı kıyafet','✨ Simli yanak','🎤 Sahne ya da uzay','💎 Küpe ya da kolye'],
+  chk:s=>[s.dress==='gece'||anyPat(s,'yildiz'),s.mk.sim,s.bg==='sahne'||s.bg==='uzay',s.acc.includes('kupe')||s.acc.includes('kolye')]},
+ {id:'okul',n:'Okul Günü',e:'🎒',pal:['#2d4a8a','#ffe9a8'],m:'happy',ip:'Rahat ve şık! Tişört ya da gömlek, pantolon ya da etek, çanta!',tips:['👕 Tişört/gömlek/kazak','👖 Pantolon, kot ya da etek','👟 Spor ya da babet','🎒 Çanta ya da toplu saç'],
+  chk:s=>[nod(s)&&['tisort','gomlek','kazak'].includes(s.top),nod(s)&&['pantolon','kot','etek','maxi'].includes(s.bottom),['spor','babet'].includes(s.shoes),s.acc.includes('canta')||toplu(s)]},
+ {id:'dogum',n:'Doğum Günü',e:'🎂',pal:['#5c1f7a','#fff0a8'],m:'happy',ip:'Parti elbisesi, fiyonk, simli yanak ve dostunla gel!',tips:['🎉 Parti elbisesi ya da tütü','🎀 Fiyonk ya da taç','✨ Simli yanak','🐾 Bir dost'],
+  chk:s=>[['parti','gokkusagi'].includes(s.dress)||(nod(s)&&s.bottom==='tutu'),s.acc.some(a=>['fiyonk','tac','cicektaci','elmastac'].includes(a)),s.mk.sim,s.pet!=='yok']},
+ {id:'uzay',n:'Uzay Macerası',e:'🚀',pal:['#0d0828','#9a90c4'],m:'dreamy',ip:'Uzay arka planı, yıldızlı kıyafet, bot ve kulaklık!',tips:['🪐 Uzay arka planı','⭐ Yıldızlı kıyafet','👢 Bot ya da spor','🎧 Kulaklık'],
+  chk:s=>[s.bg==='uzay',s.dress==='gece'||anyPat(s,'yildiz'),['bot','spor'].includes(s.shoes),s.acc.includes('kulaklik')]},
+ {id:'denizkizi',n:'Deniz Kızı Partisi',e:'🧜‍♀️',pal:['#0b4a6e','#7be0d0'],m:'dreamy',ip:'Deniz kızı elbisesi, mavi-yeşil renkler, inci kolye!',tips:['🧜‍♀️ Deniz kızı elbisesi','💙 Mavi/yeşil renk ya da saç','🌊 Plaj','💎 İnci kolye'],
+  chk:s=>[s.dress==='denizkizi',['#7ec8ff','#7be0b4'].includes(mainCol(s))||s.hair.c==='g:okyanus'||s.hair.c==='#4fc3f7',s.bg==='plaj',s.acc.includes('kolye')]},
+ {id:'bahar',n:'Bahar Bahçesi',e:'🌷',pal:['#2f6b2a','#ffd6ea'],m:'happy',ip:'Çiçekli desen, çiçek tacı, park ve sandalet!',tips:['🌸 Çiçekli desen','💐 Çiçek tacı','🌳 Park','👡 Sandalet ya da babet'],
+  chk:s=>[anyPat(s,'cicek'),s.acc.includes('cicektaci'),s.bg==='park',['sandalet','babet'].includes(s.shoes)]},
+ {id:'rock',n:'Rock Yıldızı',e:'🎸',pal:['#1a1a1a','#ff5fa2'],m:'rock',ip:'Ceket, koyu renkler, bot ve gözlük!',tips:['🧥 Ceket','🖤 Koyu renk','👢 Bot','😎 Gözlük ya da kulaklık'],
+  chk:s=>[nod(s)&&s.top==='ceket',mainCol(s)==='#3b3b58'||(nod(s)&&s.col.bottom==='#3b3b58'),s.shoes==='bot',s.acc.includes('gozluk')||s.acc.includes('kulaklik')]},
+ {id:'pijama',n:'Pijama Partisi',e:'🌙',pal:['#24205a','#c9b8ff'],m:'dreamy',ip:'Tişört ya da kazak, pantolon, yalın ayak, kedi kulağı!',tips:['👚 Tişört ya da kazak','👖 Pantolon','🦶 Yalın ayak','🐱 Kedi kulağı ya da kedi'],
+  chk:s=>[nod(s)&&['tisort','kazak'].includes(s.top),nod(s)&&s.bottom==='pantolon',s.shoes==='yok',s.acc.includes('kedikulak')||s.pet==='kedi']},
+ {id:'gokkusagi',n:'Gökkuşağı Şenliği',e:'🌈',pal:['#3a2a6a','#fff'],m:'happy',ip:'Gökkuşağı elbise ya da saç, renkli ayakkabı, 🌈 sticker!',tips:['🌈 Gökkuşağı elbise ya da saç','👟 Renkli ayakkabı','🌈 Gökkuşağı sticker','💄 Ruj'],
+  chk:s=>[s.dress==='gokkusagi'||s.hair.c==='g:gokkusagi',s.shoes!=='yok'&&!['#ffffff','#3b3b58'].includes(s.col.shoes),s.stickers.some(x=>x.e==='🌈'),s.mk.lip!=='yok']},
+ {id:'orman',n:'Sihirli Orman',e:'🧚',pal:['#173d2a','#b8f0c8'],m:'dreamy',ip:'Sihirli asa, çiçek tacı, park ve unicorn ya da tavşan!',tips:['🪄 Sihirli asa','🌸 Çiçek tacı ya da taç','🌳 Park','🦄 Unicorn ya da tavşan'],
+  chk:s=>[s.acc.includes('asa'),s.acc.some(a=>['cicektaci','tac','elmastac'].includes(a)),s.bg==='park',['midilli','tavsan'].includes(s.pet)]},
+ {id:'kar',n:'Kar Prensesi',e:'❄️',pal:['#1d3a6e','#dff3ff'],m:'elegant',ip:'Mavi ya da beyaz elbise, taç, simli yanak, topuklu!',tips:['💙 Mavi ya da beyaz elbise','👑 Taç','✨ Simli yanak','👠 Topuklu'],
+  chk:s=>[s.dress!=='yok'&&['#7ec8ff','#ffffff'].includes(s.col.dress),s.acc.includes('tac')||s.acc.includes('elmastac'),s.mk.sim,s.shoes==='topuklu']},
+ {id:'piknik',n:'Piknik Günü',e:'🧺',pal:['#3d6b1f','#ffe2a0'],m:'happy',ip:'Park, hasır şapka, köpek ve yazlık kıyafet!',tips:['🌳 Park','👒 Hasır şapka','🐶 Köpek','👗 Yazlık elbise ya da şort'],
+  chk:s=>[s.bg==='park',s.acc.includes('sapka'),s.pet==='kopek',s.dress==='yazlik'||(nod(s)&&s.bottom==='sort')]},
+ {id:'sato',n:'Şato Balosu',e:'🏰',pal:['#4a1f5c','#ffe0f0'],m:'elegant',ip:'Şato, uzun elbise, küpe ve kolye, taç!',tips:['🏰 Şato','👗 Uzun elbise','💎 Küpe ve kolye','👑 Taç'],
+  chk:s=>[s.bg==='kale',['prenses','gece','denizkizi'].includes(s.dress),s.acc.includes('kupe')&&s.acc.includes('kolye'),s.acc.includes('tac')||s.acc.includes('elmastac')]}
 ];
-let theme=null,lastTheme=null;
-function themeCard(){let t;do{t=rnd(THEMES)}while(THEMES.length>1&&t===lastTheme);lastTheme=t;$('#gTitle').textContent='🎤 Defile Yarışması';
- gBody.innerHTML=`<div class="box" style="margin:auto"><p>Bugünün teması:</p><div class="themebig">${t.e}</div><h2>${t.n}</h2><p>💡 ${t.ip}</p>
-  <div class="tips">${t.tips.map(x=>`<span>${x}</span>`).join('')}</div>
-  <div class="row"><button class="big alt" data-act="dnew">🔄 Başka Tema</button><button class="big" data-act="dstart">👗 Hazırlan!</button></div></div>`}
-function showBar(){$('#showBar').innerHTML=theme?`<div class="showbar">${theme.e} ${theme.n}<button data-act="podyum">Podyuma Çık! ✨</button><button class="x" data-act="dcancel">✕</button></div>`:''}
-function runwayBg(){let o=`<rect x="-400" width="1200" height="640" fill="#2b1650"/>`+seeded(30,r=>star((r()*400).toFixed(0),(r()*260).toFixed(0),(2+r()*4).toFixed(1),'#ffe066',false))
+const JUDGES=[
+ {e:'🐱',n:'Pamuk',fav:'pembe sever',f:s=>isPink(mainCol(s)),say:['Miyav! Bayıldım!','Patilerimi çırpıyorum!','Tam bir yıldız!']},
+ {e:'🐰',n:'Zıpzıp',fav:'takı sever',f:s=>s.acc.length>=2,say:['Zıp zıp! Harika!','Havuç kadar tatlı!','Çok şık olmuş!']},
+ {e:'🐶',n:'Karabaş',fav:'dost sever',f:s=>s.pet!=='yok',say:['Hav hav! Süper!','Kuyruğumu sallıyorum!','Çok havalı!']},
+ {e:'🦄',n:'Işıltı',fav:'parıltı sever',f:s=>s.mk.sim||s.hair.c.startsWith('g:'),say:['Pırıl pırıl!','Sihirli bir görünüm!','Göz kamaştırıcı!']},
+ {e:'🐼',n:'Bambu',fav:'desen sever',f:s=>Object.values(s.pat).some(p=>p!=='duz'),say:['Çok yaratıcı!','Harika bir kombin!','Bambu kadar güzel!']},
+ {e:'🦉',n:'Baykuş',fav:'makyaj sever',f:s=>s.mk.lip!=='yok'||s.mk.shadow!=='yok',say:['Huu! Çok zarif!','Kusursuz!','Gerçek bir model!']},
+ {e:'🐸',n:'Kurbi',fav:'yeşil sever',f:s=>mainCol(s)==='#7be0b4'||s.col.shoes==='#7be0b4'||s.bg==='park',say:['Vrak vrak! Muhteşem!','Zıplayasım geldi!','Bayıldımmm!']},
+ {e:'🐻',n:'Ponçik',fav:'sıcak tutan sever',f:s=>['kaban','tulum'].includes(s.dress)||(nod(s)&&['kazak','ceket'].includes(s.top)),say:['Kocaman bir sarılma!','Ayı gibi alkışlıyorum!','Çok tatlı!']}
+];
+const RIVALS=['Lale','Mina','Ece','Defne','Nil','Su','Ada','Elif','Ela','Zeynep','Duru','Masal'];
+const RIVAL_E=['💃','👸','🧚','🧜‍♀️','👩‍🎤','🦸‍♀️'];
+let theme=null,lastTheme=null,qTimer=null,qLeft=0;
+const medal=v=>v>=27?'🥇':v>=24?'🥈':v>0?'🥉':'';
+function themePicker(){$('#gTitle').textContent='🎤 Defile Yarışması';const tr=S.trophies||{},won=Object.values(tr).filter(v=>v>=24).length;
+ gBody.innerHTML=`<div class="content" style="flex:1">
+  <div class="row" style="gap:14px"><button class="big" data-act="dnew" style="margin-top:0">🎲 Rastgele Tema</button><button class="big alt" data-act="dquick" style="margin-top:0">⏱️ Hızlı Mod: ${S.quick?'AÇIK':'KAPALI'}</button></div>
+  <div class="hint" style="margin-top:16px">${S.quick?'⚡ Hızlı modda giyinmek için sadece <b>60 saniyen</b> var!':'Bir tema seç, temaya göre giyin, podyumda yürü! 🏆 Kupa dolabın: <b>'+won+' / '+THEMES.length+'</b>'}</div>
+  <div class="grid">${THEMES.map((t,i)=>`<button class="card" style="${rot(i)}" data-act="dpick" data-v="${t.id}"><div class="none" style="opacity:1;font-size:50px;height:70px">${t.e}</div><span>${t.n}</span>${tr[t.id]?`<b class="lk" style="inset:4px 4px auto auto;margin:0">${medal(tr[t.id])} ${tr[t.id]}</b>`:''}</button>`).join('')}</div></div>`}
+function themeCard(t){if(!t){do{t=rnd(THEMES)}while(t===lastTheme)}lastTheme=t;const b=(S.trophies||{})[t.id];
+ gBody.innerHTML=`<div class="box" style="margin:auto"><p>Tema:</p><div class="themebig">${t.e}</div><h2>${t.n}</h2><p>💡 ${t.ip}</p>
+  <div class="tips">${t.tips.map(x=>`<span>${x}</span>`).join('')}</div>${b?`<p>En iyi puanın: ${medal(b)} ${b}</p>`:''}${S.quick?'<p>⏱️ 60 saniyen var!</p>':''}
+  <div class="row"><button class="big alt" data-act="dlist">⬅️ Temalar</button><button class="big" data-act="dstart">👗 Hazırlan!</button></div></div>`}
+function showBar(){$('#showBar').innerHTML=theme?`<div class="showbar">${theme.e} ${theme.n}${qTimer?` <span id="qt" style="color:${qLeft<=10?'#e8406a':'inherit'}">⏱️ ${qLeft}</span>`:''}<button data-act="podyum">Podyuma Çık! ✨</button><button class="x" data-act="dcancel">✕</button></div>`:''}
+function stopQ(){clearInterval(qTimer);qTimer=null}
+function startQ(){stopQ();qLeft=60;qTimer=setInterval(()=>{qLeft--;const q=$('#qt');if(q){q.textContent='⏱️ '+qLeft;q.style.color=qLeft<=10?'#e8406a':''}
+ if(qLeft<=5&&qLeft>0)tone(880,.08,'square',.06);if(qLeft<=0){stopQ();tone(1200,.3,'triangle',.12);podyum()}},1000)}
+function runwayBg(t){const [bg,rw]=t.pal;let o=`<rect x="-400" width="1200" height="640" fill="${bg}"/>`+seeded(30,r=>star((r()*400).toFixed(0),(r()*260).toFixed(0),(2+r()*4).toFixed(1),'#ffe066',false))
+ +seeded(10,r=>`<text x="${(r()*400).toFixed(0)}" y="${(40+r()*200).toFixed(0)}" font-size="${(20+r()*14).toFixed(0)}" opacity=".55" text-anchor="middle">${t.e}</text>`)
  +`<polygon points="40,0 110,0 230,640 -60,640" fill="#fff" opacity=".08"/><polygon points="290,0 360,0 460,640 170,640" fill="#ffd6ea" opacity=".08"/>`
- +`<polygon points="160,230 240,230 360,640 40,640" fill="#ff9ccf" stroke="#fff" stroke-width="5"/><polygon points="190,230 210,230 230,640 170,640" fill="#ffc0de"/>`;
- for(let i=0;i<9;i++){const t=i/8,y=230+t*410;o+=`<circle cx="${(160-120*t).toFixed(0)}" cy="${y.toFixed(0)}" r="${3+t*4}" fill="#ffe066"/><circle cx="${(240+120*t).toFixed(0)}" cy="${y.toFixed(0)}" r="${3+t*4}" fill="#ffe066"/>`}
- o+=`<rect x="110" y="40" width="180" height="56" rx="16" fill="#ff5fa2" stroke="#fff" stroke-width="5"/><text x="200" y="78" text-anchor="middle" font-family="ui-rounded,Arial Rounded MT Bold,Arial" font-weight="900" font-size="26" fill="#fff">MODA ✨ DEFİLE</text>`;
- for(let i=0;i<12;i++){const x=i<6?-80+i*30:330+(i-6)*30,y=560+(i%3)*24;o+=`<circle cx="${x}" cy="${y}" r="20" fill="#4a2c6a"/><rect x="${x-24}" y="${y+14}" width="48" height="60" rx="20" fill="#4a2c6a"/>`}
+ +`<polygon points="160,230 240,230 360,640 40,640" fill="${rw}" stroke="#fff" stroke-width="5"/><polygon points="190,230 210,230 230,640 170,640" fill="#fff" opacity=".35"/>`;
+ for(let i=0;i<9;i++){const k=i/8,y=230+k*410;o+=`<circle cx="${(160-120*k).toFixed(0)}" cy="${y.toFixed(0)}" r="${3+k*4}" fill="#ffe066"/><circle cx="${(240+120*k).toFixed(0)}" cy="${y.toFixed(0)}" r="${3+k*4}" fill="#ffe066"/>`}
+ o+=`<rect x="96" y="40" width="208" height="56" rx="16" fill="#ff5fa2" stroke="#fff" stroke-width="5"/><text x="200" y="77" text-anchor="middle" font-family="ui-rounded,Arial Rounded MT Bold,Arial" font-weight="900" font-size="24" fill="#fff">${esc(t.n.toLocaleUpperCase('tr'))}</text>`;
+ for(let i=0;i<12;i++){const x=i<6?-80+i*30:330+(i-6)*30,y=560+(i%3)*24;o+=`<circle cx="${x}" cy="${y}" r="20" fill="#000" opacity=".35"/><rect x="${x-24}" y="${y+14}" width="48" height="60" rx="20" fill="#000" opacity=".35"/>`}
  for(let i=0;i<8;i++){const x=i<4?-60+i*40:300+(i-4)*40;o+=`<g class="fl" style="animation-delay:${(i*.37)%1.3}s">${star(x,500+(i%2)*40,16,'#fff',false)}</g>`}
  return o}
-function podyum(){if(!theme)return;const t=theme,m=t.chk(S),n=m.filter(Boolean).length;
- const sc=[0,1,2].map(()=>Math.min(10,5+n+(Math.random()<.6?1:0))),tot=sc[0]+sc[1]+sc[2];
+const MEL={happy:[523,659,784,659,587,698,880,784],elegant:[392,494,587,784,740,587,494,659],rock:[330,330,392,330,440,392,330,294],dreamy:[659,784,988,880,784,659,587,659]};
+function hearts(n){const r=$('.runway');if(!r)return;for(let i=0;i<n;i++){const h=document.createElement('div');h.className='conf';h.textContent=rnd(['💖','👏','💕','⭐','😍']);
+ h.style.cssText=`position:absolute;top:auto;bottom:-40px;left:${Math.random()*100}%;font-size:30px;animation:rise ${1.6+Math.random()*1.4}s ease-out ${Math.random()*.8}s forwards`;r.appendChild(h);setTimeout(()=>h.remove(),4000)}}
+function podyum(){if(!theme)return;stopQ();const t=theme,m=t.chk(S),n=m.filter(Boolean).length;
+ const js=[...JUDGES].sort(()=>Math.random()-.5).slice(0,3);
+ const jr=js.map(j=>{const fv=j.f(S);return {j,fv,sc:Math.min(10,5+n+(fv?1:0)+(Math.random()<.4?1:0)),say:rnd(j.say)}});
+ const tot=jr.reduce((a,b)=>a+b.sc,0);
+ const bon=[];if(S.pet!=='yok')bon.push('🐾 Dostuyla yürüdü');if(Object.values(S.pat).some(p=>p!=='duz'))bon.push('🌸 Desenli');if(S.acc.length>=3)bon.push('💎 Takı ustası');
+ if(S.mk.lip!=='yok'&&S.mk.shadow!=='yok')bon.push('💄 Tam makyaj');if(S.quick)bon.push('⚡ Hızlı mod');
+ const pool=RIVALS.filter(x=>x!==S.name).sort(()=>Math.random()-.5);
+ const riv=[0,1].map(i=>({name:pool[i],e:RIVAL_E[(Math.random()*RIVAL_E.length)|0],tot:17+((Math.random()*9)|0)}));
+ const all=[{name:S.name||'İnci',e:'✨',tot,me:true},...riv].sort((a,b)=>b.tot-a.tot||(b.me?1:0)-(a.me?1:0));const place=all.findIndex(x=>x.me)+1;
+ S.trophies=S.trophies||{};const best=S.trophies[t.id]||0;if(tot>best)S.trophies[t.id]=tot;save();
  gEl.classList.add('show');$('#gTitle').textContent=`${t.e} ${t.n}`;
- gBody.innerHTML=`<div class="runway"><svg viewBox="0 0 400 640" preserveAspectRatio="xMidYMid meet">${runwayBg()}
-  <g transform="translate(200 612)"><g class="walker"><g transform="translate(-150 -560)" filter="url(#stk)">${doll(S)}</g></g></g></svg><div class="judges" id="judges"></div></div>`;
- [523,659,784,659,523,659,784,1046].forEach((f,i)=>tone(f,.16,'triangle',.08,i*.38));
- const J=[['🐱','Pamuk'],['🐰','Zıpzıp'],['🐶','Karabaş']];
- J.forEach((j,i)=>setTimeout(()=>{$('#judges').insertAdjacentHTML('beforeend',`<div class="judge"><i>${j[0]}</i><b>${sc[i]}</b><small>${j[1]} Hakem</small></div>`);tone(400+sc[i]*60,.2,'square',.07)},3400+i*700));
- setTimeout(()=>{const cm=n>=4?'Muhteşem! Tam temaya uygun! 🤩':n===3?'Çok şık! Jüri bayıldı! 😍':n===2?'Çok tatlı olmuş! 💕':'Rengârenk ve neşeli! İpuçlarına bakarsan puanın uçar 😉';
-  $('.runway').insertAdjacentHTML('beforeend',`<div class="result"><h2>${tot>=27?'🏆':tot>=24?'🥇':'🎀'} ${tot} / 30 puan</h2><p>${cm}</p>
+ const petG=S.pet!=='yok'?`<g transform="translate(95 0)"><g class="walker" style="animation-delay:.25s"><g transform="scale(1.1)" filter="url(#stk)">${PETS[S.pet].f()}</g></g></g>`:'';
+ gBody.innerHTML=`<div class="runway"><svg viewBox="0 0 400 640" preserveAspectRatio="xMidYMid meet">${runwayBg(t)}
+  <g transform="translate(${S.pet!=='yok'?180:200} 612)">${petG}<g class="walker"><g class="poser"><g transform="translate(-150 -560)" filter="url(#stk)">${doll(S)}</g></g></g></g></svg><div class="judges" id="judges"></div></div>`;
+ MEL[t.m].forEach((f,i)=>tone(f,.2,t.m==='rock'?'square':'triangle',t.m==='rock'?.05:.08,i*.4));
+ setTimeout(()=>{const p=$('.poser');if(p)p.classList.add('pose');hearts(16);for(let i=0;i<6;i++)tone(1400+Math.random()*600,.03,'square',.03,i*.08)},3300);
+ jr.forEach((r,i)=>setTimeout(()=>{const jd=$('#judges');if(!jd)return;jd.insertAdjacentHTML('beforeend',`<div class="judge"><i>${r.j.e}</i><b>${r.sc}</b><small>${r.j.n} Hakem</small><em>${r.say}</em>${r.fv?`<em class="fav">💖 ${r.j.fav}!</em>`:''}</div>`);tone(400+r.sc*60,.2,'square',.07)},4300+i*800));
+ setTimeout(()=>{if(!$('.runway'))return;const cm=n>=4?'Muhteşem! Tam temaya uygun! 🤩':n===3?'Çok şık! Jüri bayıldı! 😍':n===2?'Çok tatlı olmuş! 💕':'Rengârenk ve neşeli! İpuçlarına bakarsan puanın uçar 😉';
+  const pm=['🥇','🥈','🥉'];
+  $('.runway').insertAdjacentHTML('beforeend',`<div class="resWrap"><div class="result"><h2>${pm[place-1]} ${place}. oldun!</h2><p style="font-size:22px">${tot} / 30 puan ${tot>best&&best?'<br>🎉 Yeni rekor!':''}</p><p>${cm}</p>
+   <div class="podium">${[1,0,2].map(i=>all[i]).map((x,k)=>`<div class="pod ${x.me?'me':''}"><i>${x.e}</i><small>${esc(x.name)}</small><div class="bar" style="height:${[64,86,46][k]}px">${['🥈','🥇','🥉'][k]}<br>${x.tot}</div></div>`).join('')}</div>
    <div class="tips">${t.tips.map((x,i)=>`<span class="${m[i]?'ok':''}">${m[i]?'✅':'⬜'} ${x}</span>`).join('')}</div>
-   <div class="row"><button class="big alt" data-act="dagain">👗 Tekrar Dene</button><button class="big" data-act="dend">Bitir 🎉</button></div></div>`);
-  SND.star();confetti(tot>=24?60:24);if(tot>=24)checkTasks('defile24')},3400+3*700+400)}
+   ${bon.length?`<div class="tips">${bon.map(x=>`<span class="ok" style="background:#fff8d6;box-shadow:0 0 0 2px #ffe58a inset">${x}</span>`).join('')}</div>`:''}
+   <div class="row"><button class="big alt" data-act="dphoto">📸 Fotoğraf</button><button class="big alt" data-act="dagain">👗 Tekrar</button><button class="big" data-act="dend">Bitir 🎉</button></div></div></div>`);
+  SND.star();if(place===1){[784,988,1175,1568].forEach((f,i)=>tone(f,.3,'triangle',.12,.3+i*.15))}confetti(place===1?70:30);hearts(place===1?24:10);
+  const ev=[];if(tot>=24)ev.push('defile24');if(place===1)ev.push('first');checkTasks(ev.length?ev:'defile')},4300+3*800+500)}
+async function runwayPhoto(){try{const sv=$('.runway svg');const cl=sv.cloneNode(true);cl.setAttribute('xmlns','http://www.w3.org/2000/svg');cl.setAttribute('width','800');cl.setAttribute('height','1280');
+ stageEl.querySelectorAll('defs').forEach(d=>cl.insertBefore(d.cloneNode(true),cl.firstChild));cl.querySelectorAll('.fl').forEach(n=>n.remove());
+ const xml=new XMLSerializer().serializeToString(cl);const img=new Image();
+ await new Promise((res,rej)=>{img.onload=res;img.onerror=rej;img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(xml)});
+ const c=document.createElement('canvas');c.width=800;c.height=1280;const x=c.getContext('2d');x.drawImage(img,0,0,800,1280);
+ x.font='900 30px ui-rounded, Arial Rounded MT Bold, Arial';x.fillStyle='rgba(255,255,255,.9)';x.textAlign='right';x.fillText('Moda Dünyası ✨',780,1260);
+ curPng=c.toDataURL('image/png');const tt=document.createElement('canvas');tt.width=500;tt.height=800;tt.getContext('2d').drawImage(c,0,0,500,800);
+ S.gal.push(tt.toDataURL('image/jpeg',.8));if(S.gal.length>12)S.gal.shift();save();SND.snap();$('#photoImg').src=curPng;$('#mPhoto').classList.add('show')}catch(e){toast('Fotoğraf çekilemedi 😢')}}
 
 /* --- tırnak --- */
 const NAILC=['#ff5fa2','#e8406a','#c78bff','#7ec8ff','#7be0b4','#ffe066','#ff8a5c','#ffffff','#3b3b58','g:sim'];
@@ -771,7 +857,7 @@ function cakeTools(){return `<h3>🍰 Kek Rengi</h3>`+swatches(CBASE,'cbase',S.c
 function renderCake(){$('#cSvg').innerHTML=cakeSvg();$('#cTools').innerHTML=cakeTools()}
 
 const G={
- defile:{open:themeCard},
+ defile:{open:themePicker},
  tirnak:{open(){$('#gTitle').textContent='💅 Tırnak Salonu';gBody.innerHTML=`<div class="gwrap"><div class="gstage"><svg id="nSvg" viewBox="10 60 380 380" preserveAspectRatio="xMidYMid meet"></svg></div><div class="content" id="nTools"></div></div>`;
   renderNails();$('#nSvg').addEventListener('click',e=>{const g=e.target.closest('[data-n]');if(!g)return;const i=+g.dataset.n;
    if(ntool.t==='c'){S.nails[i]={c:ntool.v,d:S.nails[i]?S.nails[i].d:null};tone(800,.08,'sine',.12);tone(1100,.08,'sine',.1,.06)}
@@ -785,13 +871,17 @@ const G={
 function gameAct(a,v,btn){
  switch(a){
   case 'game':openGame(v);return true;
-  case 'gclose':closeGame();SND.tap();return true;
+  case 'gclose':closeGame();showBar();SND.tap();return true;
   case 'dnew':SND.tap();themeCard();return true;
-  case 'dstart':theme=lastTheme;closeGame();showBar();SND.pop();toast(`${theme.e} Tema: ${theme.n}! Hazırlanınca "Podyuma Çık"a bas`,3200);return true;
+  case 'dpick':SND.tap();themeCard(THEMES.find(t=>t.id===v));return true;
+  case 'dlist':SND.tap();themePicker();return true;
+  case 'dquick':S.quick=!S.quick;save();SND.pop();themePicker();return true;
+  case 'dstart':theme=lastTheme;closeGame();if(S.quick)startQ();else stopQ();showBar();SND.pop();toast(S.quick?`⏱️ 60 saniye! Tema: ${theme.n} — Hadi!`:`${theme.e} Tema: ${theme.n}! Hazırlanınca "Podyuma Çık"a bas`,3200);return true;
   case 'podyum':podyum();return true;
-  case 'dcancel':theme=null;showBar();SND.tap();return true;
-  case 'dagain':closeGame();SND.tap();return true;
-  case 'dend':theme=null;showBar();closeGame();SND.tap();return true;
+  case 'dcancel':theme=null;stopQ();showBar();SND.tap();return true;
+  case 'dagain':closeGame();if(S.quick)startQ();showBar();SND.tap();return true;
+  case 'dend':theme=null;stopQ();showBar();closeGame();SND.tap();return true;
+  case 'dphoto':runwayPhoto();return true;
   case 'ntool':{const [t,x]=v.split('|');ntool={t,v:x};SND.tap();$('#nTools').innerHTML=nailTools();return true}
   case 'nall':if(ntool.t!=='c'){toast('Önce bir oje rengi seç 💅',1500);return true}S.nails=S.nails.map(n=>({c:ntool.v,d:n?n.d:null}));SND.star();save();renderNails();return true;
   case 'nclear':S.nails=[null,null,null,null,null];SND.pop();save();renderNails();return true;
