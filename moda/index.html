@@ -27,7 +27,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;paddin
 
 /* ---------- sahne ---------- */
 .stagebox{position:relative;background:#fff;border-radius:32px;padding:8px;display:flex;flex-direction:column;min-height:0;
- box-shadow:0 7px 0 #f2a5c8,0 16px 34px rgba(170,60,120,.22);transform:rotate(-.6deg)}
+ box-shadow:0 7px 0 #f2a5c8,0 16px 34px rgba(170,60,120,.22)}
 .topbar{display:flex;align-items:center;gap:8px;padding:2px 4px 8px}
 .chip{display:flex;align-items:center;gap:6px;background:var(--soft);border-radius:999px;padding:6px 14px;font-weight:800;font-size:18px;
  box-shadow:0 0 0 3px #ffd3e8 inset}
@@ -104,7 +104,7 @@ h3:not(:first-child){margin-top:22px}
 .unl span.ok{background:#e6ffef;box-shadow:0 0 0 3px #9be3b6 inset}
 
 /* ---------- modallar ---------- */
-.modal{position:fixed;inset:0;background:rgba(255,190,220,.65);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:none;
+.modal{position:fixed;inset:0;background:rgba(255,190,220,.82);display:none;
  place-items:center;z-index:50;padding:20px}
 .modal.show{display:grid}
 .box{background:#fff;border-radius:34px;padding:22px;max-width:min(560px,94vw);max-height:92vh;overflow:auto;text-align:center;
@@ -211,10 +211,10 @@ h3:not(:first-child){margin-top:22px}
     </filter>
    </defs>
    <g id="bgWrap"><g id="bg"></g><use href="#bg" transform="translate(0 0) scale(-1 1)"/><use href="#bg" transform="translate(800 0) scale(-1 1)"/><use href="#bg" transform="translate(-800 0)"/><use href="#bg" transform="translate(800 0)"/></g>
-   <g transform="translate(50 32)"><g id="dollInner" filter="url(#stk)"></g></g>
-   <g transform="translate(330 604) scale(1.05)"><g id="petInner" filter="url(#stk)"></g></g>
-   <g id="stkLayer" filter="url(#stk2)"></g>
-   <g id="tag" filter="url(#stk2)"></g>
+   <g transform="translate(50 32)"><g id="dollInner"></g></g>
+   <g transform="translate(330 604) scale(1.05)"><g id="petInner"></g></g>
+   <g id="stkLayer"></g>
+   <g id="tag"></g>
   </svg></div>
   <div id="trash">🗑️</div>
   <div id="showBar"></div>
@@ -259,6 +259,9 @@ const C=(cx,cy,r,f,x='')=>`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${f}" st
 const E=(cx,cy,rx,ry,f,x='')=>`<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${f}" stroke="${OL}" stroke-width="3" ${x}/>`;
 const L=(d,c=OL,w=3)=>`<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`;
 const NS='stroke="none"';
+/* sticker çerçevesi: filtre yerine beyaz kenar + gölge kopyası (iPad'de çok daha hızlı) */
+const mono=(str,col,w)=>str.replace(/fill="(?!none)[^"]*"/g,`fill="${col}"`).replace(/stroke="[^"]*"/g,`stroke="${col}"`).replace(/stroke-width="([\d.]+)"/g,(m,v)=>`stroke-width="${+v+w}"`).replace(/ opacity="[^"]*"/g,'');
+const stk=str=>`<g opacity=".22" transform="translate(0 6)">${mono(str,'#7a2a55',12)}</g>${mono(str,'#ffffff',12)}${str}`;
 function shade(h,k){h=h.replace('#','');if(h.length===3)h=h.split('').map(x=>x+x).join('');
  const n=parseInt(h,16);let r=n>>16,g=n>>8&255,b=n&255;
  if(k<=1){r*=k;g*=k;b*=k}else{const t=Math.min(1,k-1);r+=(255-r)*t;g+=(255-g)*t;b+=(255-b)*t}
@@ -514,12 +517,17 @@ const UNLOCKS=[[2,'🌈 Gökkuşağı Elbise'],[4,'🦄 Unicorn Dost'],[6,'🪐 
 const KEY='moda-dunyasi-v1';
 const DEF={name:'',skin:'#f6c9a8',hair:{k:'uzun',c:'#e8c26a'},dress:'prenses',top:'tisort',bottom:'etek',shoes:'babet',
  col:{dress:'#c78bff',top:'#7ec8ff',bottom:'#ff9ccf',shoes:'#ff5fa2'},acc:['fiyonk'],mk:{lip:'yok',shadow:'yok',eye:'#5b3a29',blush:false,sim:false},
- pet:'yok',bg:'oda',stickers:[],done:[],gal:[],pat:{dress:'duz',top:'duz',bottom:'duz'},
+ pet:'yok',bg:'oda',stickers:[],done:[],pat:{dress:'duz',top:'duz',bottom:'duz'},
  trophies:{},quick:false,nails:[null,null,null,null,null],cake:{base:'#ffd6a5',cream:'#ff9ccf',tops:[],lit:true}};
 let S;
 try{S=Object.assign(structuredClone(DEF),JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){S=structuredClone(DEF)}
-if(!Array.isArray(S.gal))S.gal=[];
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){try{S.gal=S.gal.slice(-4);localStorage.setItem(KEY,JSON.stringify(S))}catch(_){}}}
+let GAL=[];try{GAL=JSON.parse(localStorage.getItem(KEY+'-gal')||'[]')}catch(e){}
+if(Array.isArray(S['gal'])&&S['gal'].length&&!GAL.length)GAL=S['gal'];delete S['gal'];
+function saveGal(){for(let k=0;k<3;k++){try{localStorage.setItem(KEY+'-gal',JSON.stringify(GAL));return}catch(e){GAL.splice(0,Math.max(1,GAL.length-4))}}}
+function saveNow(){clearTimeout(svT);try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+let svT=0;function save(){clearTimeout(svT);svT=setTimeout(saveNow,400)}
+addEventListener('pagehide',saveNow);document.addEventListener('visibilitychange',()=>{if(document.hidden)saveNow()});
+saveGal();saveNow();
 const stars=()=>S.done.length;
 const locked=it=>it&&it.lock&&stars()<it.lock;
 
@@ -538,17 +546,20 @@ const stageEl=$('#stage');
 function renderDefs(){let d='';for(const sl of ['dress','top','bottom'])if(S.pat[sl]!=='duz')d+=patDef('pat-'+sl,S.pat[sl],S.col[sl]);
  if(S.hair.c.startsWith('g:')){const g=GRAD[S.hair.c];d+=`<linearGradient id="hairG" gradientUnits="userSpaceOnUse" x1="0" y1="40" x2="0" y2="300">${g.map((c,i)=>`<stop offset="${(i/(g.length-1)).toFixed(2)}" stop-color="${c}"/>`).join('')}</linearGradient>`}
  $('#dyn').innerHTML=d}
+let lastBg=null,lastPet=null;
+function restartAnim(el,cls){el.classList.remove(cls);requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add(cls)))}
 function renderStage(anim){renderDefs();
- $('#bg').innerHTML=BGS[S.bg].d();
- $('#dollInner').innerHTML=doll(S);
- $('#petInner').innerHTML=S.pet!=='yok'?PETS[S.pet].f():'';
+ if(S.bg!==lastBg){lastBg=S.bg;$('#bg').innerHTML=BGS[S.bg].d()}
+ $('#dollInner').innerHTML=stk(doll(S));
+ if(S.pet!==lastPet){lastPet=S.pet;$('#petInner').innerHTML=S.pet!=='yok'?stk(PETS[S.pet].f()):''}
  renderStickers();
  const nm=S.name||'Işıltı',w=nm.length*13+56;
  $('#tag').innerHTML=`<g transform="translate(18 16) rotate(-4)"><rect width="${w}" height="44" rx="22" fill="#fff" stroke="#ff9ccf" stroke-width="4"/><text x="${w/2}" y="29" text-anchor="middle" font-family="ui-rounded,Arial Rounded MT Bold,Arial,sans-serif" font-weight="900" font-size="21" fill="#ff5fa2">✨ ${esc(nm)}</text></g>`;
  $('#nameTxt').textContent=nm;$('#starTxt').textContent=stars();
- if(anim){const d=$('#dollInner');d.classList.remove('bounce');void d.getBBox();d.classList.add('bounce')}
+ if(anim)restartAnim($('#dollInner'),'bounce')
 }
-function renderStickers(){$('#stkLayer').innerHTML=S.stickers.map((s,i)=>`<text class="stk" data-i="${i}" x="${s.x}" y="${s.y}" font-size="${s.s}" text-anchor="middle" dominant-baseline="central" transform="rotate(${s.r} ${s.x} ${s.y})">${s.e}</text>`).join('')}
+const stkT=s=>`translate(${s.x} ${s.y}) rotate(${s.r})`;
+function renderStickers(){$('#stkLayer').innerHTML=S.stickers.map((s,i)=>`<g class="stk" data-i="${i}" transform="${stkT(s)}"><circle cy="4" r="${(s.s*.62).toFixed(1)}" fill="#7a2a55" opacity=".2"/><circle r="${(s.s*.62).toFixed(1)}" fill="#fff"/><text font-size="${s.s}" text-anchor="middle" dominant-baseline="central">${s.e}</text></g>`).join('')}
 
 /* =====================  panel  ===================== */
 const TABS=[['sac','💇‍♀️','Saç'],['elbise','👗','Elbise'],['ust','👚','Üst'],['alt','🩳','Alt'],['ayakkabi','👠','Ayakkabı'],['taki','👑','Takı'],['makyaj','💄','Makyaj'],
@@ -596,7 +607,7 @@ function renderPanel(){
 
 /* =====================  aksiyonlar  ===================== */
 function toast(t,ms=2200){const e=$('#toast');e.textContent=t;e.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('show'),ms)}
-function confetti(n=34){for(let i=0;i<n;i++){const s=document.createElement('div');s.className='conf';s.textContent=rnd(['⭐','💖','✨','🌸','🎀','💎']);
+function confetti(n=34){n=Math.min(n,24);for(let i=0;i<n;i++){const s=document.createElement('div');s.className='conf';s.textContent=rnd(['⭐','💖','✨','🌸','🎀','💎']);
  s.style.left=Math.random()*100+'vw';s.style.animationDuration=(1.8+Math.random()*1.6)+'s';s.style.animationDelay=Math.random()*.5+'s';document.body.appendChild(s);setTimeout(()=>s.remove(),4200)}}
 function checkTasks(ev){const before=stars();let got=[];const evs=[].concat(ev===undefined?[undefined]:ev);
  for(const t of TASKS)if(!S.done.includes(t.id)&&evs.some(e=>t.ok(S,e))){S.done.push(t.id);got.push(t)}
@@ -635,9 +646,9 @@ function act(a,v,btn){
 document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(b)act(b.dataset.act,b.dataset.v,b);
  if(e.target.closest('[data-close]'))e.target.closest('.modal').classList.remove('show')});
 
-function petJump(){const p=$('#petInner');if(!p.firstChild)return;p.classList.remove('jump');void p.getBBox();p.classList.add('jump');SND.pet()}
+function petJump(){const p=$('#petInner');if(!p.firstChild)return;restartAnim(p,'jump');SND.pet()}
 $('#petInner').addEventListener('pointerdown',petJump);
-$('#dollInner').addEventListener('pointerdown',()=>{renderStage(true);tone(990,.08,'sine',.12);tone(1320,.1,'sine',.1,.07)});
+$('#dollInner').addEventListener('pointerdown',()=>{restartAnim($('#dollInner'),'bounce');tone(990,.08,'sine',.12);tone(1320,.1,'sine',.1,.07)});
 
 /* sürpriz kombin */
 $('#btnRand').onclick=()=>{const free=o=>Object.keys(o).filter(k=>!locked(o[k]));
@@ -659,7 +670,7 @@ $('#stkLayer').addEventListener('pointerdown',e=>{const t=e.target.closest('[dat
  trash.classList.add('show');stageEl.setPointerCapture(e.pointerId);SND.tap()});
 stageEl.addEventListener('pointermove',e=>{if(!drag)return;const p=svgPt(e),s=S.stickers[drag.i];
  s.x=Math.round(p.x+drag.dx);s.y=Math.round(p.y+drag.dy);
- drag.t.setAttribute('x',s.x);drag.t.setAttribute('y',s.y);drag.t.setAttribute('transform',`rotate(${s.r} ${s.x} ${s.y})`);
+ drag.t.setAttribute('transform',stkT(s));
  trash.classList.toggle('hot',overTrash(e))});
 function endDrag(e){if(!drag)return;if(overTrash(e)){S.stickers.splice(drag.i,1);tone(260,.15,'sawtooth',.06);toast('Sticker silindi 🗑️',1200)}
  drag=null;trash.classList.remove('show','hot');save();renderStickers();checkTasks()}
@@ -680,15 +691,15 @@ let curPng=null;
 $('#btnPhoto').onclick=async()=>{const f=$('#flash');f.classList.remove('go');void f.offsetWidth;f.classList.add('go');SND.snap();
  try{const c=await snapshot();curPng=c.toDataURL('image/png');$('#photoImg').src=curPng;
   const t=document.createElement('canvas');t.width=500;t.height=800;t.getContext('2d').drawImage(c,0,0,500,800);
-  S.gal.push(t.toDataURL('image/jpeg',.8));if(S.gal.length>12)S.gal.shift();save();
+  GAL.push(t.toDataURL('image/jpeg',.8));if(GAL.length>12)GAL.shift();saveGal();
   $('#mPhoto').classList.add('show');checkTasks('photo')}catch(e){toast('Fotoğraf çekilemedi 😢')}};
 async function sharePic(url){try{const b=await (await fetch(url)).blob();const file=new File([b],'moda-dunyasi.'+(b.type.includes('png')?'png':'jpg'),{type:b.type});
  if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'Moda Dünyası'});return}
  const a=document.createElement('a');a.href=url;a.download=file.name;document.body.appendChild(a);a.click();a.remove()}catch(e){if(e&&e.name!=='AbortError')toast('Resme basılı tutarak kaydedebilirsin 📲',2800)}}
 $('#shareBtn').onclick=()=>curPng&&sharePic(curPng);
-function openGal(){const g=$('#galList');g.innerHTML=S.gal.length?S.gal.slice().reverse().map((u,i)=>`<img src="${u}" data-g="${S.gal.length-1-i}" style="${rot(i)}">`).join(''):'<p style="grid-column:1/-1">Henüz fotoğraf yok. 📸 butonuna bas!</p>';$('#mGal').classList.add('show');SND.tap()}
+function openGal(){const g=$('#galList');g.innerHTML=GAL.length?GAL.slice().reverse().map((u,i)=>`<img src="${u}" data-g="${GAL.length-1-i}" style="${rot(i)}">`).join(''):'<p style="grid-column:1/-1">Henüz fotoğraf yok. 📸 butonuna bas!</p>';$('#mGal').classList.add('show');SND.tap()}
 $('#btnGal').onclick=openGal;
-$('#galList').addEventListener('click',e=>{const im=e.target.closest('img');if(!im)return;curPng=S.gal[+im.dataset.g];$('#photoImg').src=curPng;$('#mGal').classList.remove('show');$('#mPhoto').classList.add('show')});
+$('#galList').addEventListener('click',e=>{const im=e.target.closest('img');if(!im)return;curPng=GAL[+im.dataset.g];$('#photoImg').src=curPng;$('#mGal').classList.remove('show');$('#mPhoto').classList.add('show')});
 
 /* =====================  mini oyunlar  ===================== */
 const gEl=$('#game'),gBody=$('#gBody');
@@ -790,9 +801,9 @@ function podyum(){if(!theme)return;stopQ();const t=theme,m=t.chk(S),n=m.filter(B
  const all=[{name:S.name||'İnci',e:'✨',tot,me:true},...riv].sort((a,b)=>b.tot-a.tot||(b.me?1:0)-(a.me?1:0));const place=all.findIndex(x=>x.me)+1;
  S.trophies=S.trophies||{};const best=S.trophies[t.id]||0;if(tot>best)S.trophies[t.id]=tot;save();
  gEl.classList.add('show');$('#gTitle').textContent=`${t.e} ${t.n}`;
- const petG=S.pet!=='yok'?`<g transform="translate(95 0)"><g class="walker" style="animation-delay:.25s"><g transform="scale(1.1)" filter="url(#stk)">${PETS[S.pet].f()}</g></g></g>`:'';
+ const petG=S.pet!=='yok'?`<g transform="translate(95 0)"><g class="walker" style="animation-delay:.25s"><g transform="scale(1.1)">${stk(PETS[S.pet].f())}</g></g></g>`:'';
  gBody.innerHTML=`<div class="runway"><svg viewBox="0 0 400 640" preserveAspectRatio="xMidYMid meet">${runwayBg(t)}
-  <g transform="translate(${S.pet!=='yok'?180:200} 612)">${petG}<g class="walker"><g class="poser"><g transform="translate(-150 -560)" filter="url(#stk)">${doll(S)}</g></g></g></g></svg><div class="judges" id="judges"></div></div>`;
+  <g transform="translate(${S.pet!=='yok'?180:200} 612)">${petG}<g class="walker"><g class="poser"><g transform="translate(-150 -560)">${stk(doll(S))}</g></g></g></g></svg><div class="judges" id="judges"></div></div>`;
  MEL[t.m].forEach((f,i)=>tone(f,.2,t.m==='rock'?'square':'triangle',t.m==='rock'?.05:.08,i*.4));
  setTimeout(()=>{const p=$('.poser');if(p)p.classList.add('pose');hearts(16);for(let i=0;i<6;i++)tone(1400+Math.random()*600,.03,'square',.03,i*.08)},3300);
  jr.forEach((r,i)=>setTimeout(()=>{const jd=$('#judges');if(!jd)return;jd.insertAdjacentHTML('beforeend',`<div class="judge"><i>${r.j.e}</i><b>${r.sc}</b><small>${r.j.n} Hakem</small><em>${r.say}</em>${r.fv?`<em class="fav">💖 ${r.j.fav}!</em>`:''}</div>`);tone(400+r.sc*60,.2,'square',.07)},4300+i*800));
@@ -812,7 +823,7 @@ async function runwayPhoto(){try{const sv=$('.runway svg');const cl=sv.cloneNode
  const c=document.createElement('canvas');c.width=800;c.height=1280;const x=c.getContext('2d');x.drawImage(img,0,0,800,1280);
  x.font='900 30px ui-rounded, Arial Rounded MT Bold, Arial';x.fillStyle='rgba(255,255,255,.9)';x.textAlign='right';x.fillText('Moda Dünyası ✨',780,1260);
  curPng=c.toDataURL('image/png');const tt=document.createElement('canvas');tt.width=500;tt.height=800;tt.getContext('2d').drawImage(c,0,0,500,800);
- S.gal.push(tt.toDataURL('image/jpeg',.8));if(S.gal.length>12)S.gal.shift();save();SND.snap();$('#photoImg').src=curPng;$('#mPhoto').classList.add('show')}catch(e){toast('Fotoğraf çekilemedi 😢')}}
+ GAL.push(tt.toDataURL('image/jpeg',.8));if(GAL.length>12)GAL.shift();saveGal();SND.snap();$('#photoImg').src=curPng;$('#mPhoto').classList.add('show')}catch(e){toast('Fotoğraf çekilemedi 😢')}}
 
 /* --- tırnak --- */
 const NAILC=['#ff5fa2','#e8406a','#c78bff','#7ec8ff','#7be0b4','#ffe066','#ff8a5c','#ffffff','#3b3b58','g:sim'];
@@ -911,7 +922,7 @@ function fit(){cancelAnimationFrame(fitRaf);fitRaf=requestAnimationFrame(doFit)}
 function doFit(){const r=$('#stageWrap').getBoundingClientRect();const wh=Math.round(r.width)+'x'+Math.round(r.height);if(wh===lastWH)return;lastWH=wh;if(!r.width||!r.height)return;const ar=r.width/r.height;let x=0,y=0,w=400,h=640;
  if(ar>400/640){w=640*ar;x=(400-w)/2}else{h=400/ar;y=(640-h)/2}
  stageEl.setAttribute('viewBox',`${x.toFixed(1)} ${y.toFixed(1)} ${w.toFixed(1)} ${h.toFixed(1)}`);
- const k=Math.max(1,h/640)*1.002;$('#bgWrap').setAttribute('transform',`translate(200 320) scale(${k.toFixed(4)}) translate(-200 -320)`)}
+ const k=Math.max(1,h/640)*1.002;$('#bgWrap').querySelectorAll('use').forEach(u=>u.style.display=w>401?'':'none');$('#bgWrap').setAttribute('transform',`translate(200 320) scale(${k.toFixed(4)}) translate(-200 -320)`)}
 addEventListener('resize',fit);addEventListener('orientationchange',()=>{lastWH='';setTimeout(fit,350);setTimeout(fit,800)});
 if(window.ResizeObserver)new ResizeObserver(fit).observe($('#stageWrap'));
 renderStage();renderPanel();doFit();
