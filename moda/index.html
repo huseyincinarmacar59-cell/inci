@@ -133,7 +133,7 @@ h3:not(:first-child){margin-top:22px}
  background:#ffe6f2 radial-gradient(#ffc9e2 2.5px,transparent 3px) 0 0/30px 30px}
 .game.show{display:flex}
 .ghead{display:flex;align-items:center;gap:12px;flex:none}.ghead h2{margin:0;font-size:26px}
-.gbody{flex:1;min-height:0;display:flex;flex-direction:column}
+.gbody{flex:1;min-height:0;display:flex;flex-direction:column;position:relative}
 .gwrap{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,40%);gap:14px}
 @media (orientation:portrait){.gwrap{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,52fr) minmax(0,48fr)}}
 .gstage{background:#fff;border-radius:30px;box-shadow:0 7px 0 #f2a5c8,0 16px 34px rgba(170,60,120,.2);position:relative;min-height:0;overflow:hidden}
@@ -178,6 +178,46 @@ h3:not(:first-child){margin-top:22px}
 .fan{position:absolute;right:20px;bottom:20px;font-size:80px;z-index:2;animation:wind .25s ease-in-out infinite alternate}
 @keyframes wind{from{transform:translateX(0) scale(1)}to{transform:translateX(-14px) scale(1.12)}}
 .tog small{font-size:12px;opacity:.75}
+.buyprev{width:180px;height:200px;margin:0 auto 8px;background:var(--soft);border-radius:26px;display:grid;place-items:center;box-shadow:0 0 0 4px #fff,0 0 0 7px #ffd6ea}
+.buyprev svg{width:90%;height:90%}
+.giftbox{font-size:110px;cursor:pointer;animation:wiggle 1s ease-in-out infinite}.giftbox.open{animation:pop .5s ease}
+@keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-10deg) scale(1.05)}75%{transform:rotate(10deg) scale(1.05)}}
+.gcard.gift{background:linear-gradient(#fff6c2,#ffe58a);margin-bottom:18px;width:100%}.gcard.gift i{animation:wiggle 1.2s ease-in-out infinite}.gcard.gift.used{background:var(--soft);opacity:.7}.gcard.gift.used i{animation:none}
+button.chip{cursor:pointer}
+.memhud{font-size:20px;font-weight:800;margin:4px 0 14px}
+.memgrid{display:grid;gap:10px;width:100%;max-width:min(680px,calc((100dvh - 230px) / var(--rows) * var(--cols) * .78))}
+.mcard{aspect-ratio:3/4;perspective:700px}
+.mcard .in{position:relative;width:100%;height:100%;transition:transform .35s;transform-style:preserve-3d}
+.mcard.open .in{transform:rotateY(180deg)}
+.mcard .f{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:18px;display:grid;place-items:center;font-size:clamp(28px,5.5vw,56px);box-shadow:0 0 0 4px #fff,0 0 0 7px #ffd6ea,0 6px 0 4px #f6c1db}
+.mcard .back{background:linear-gradient(#ffb2d6,#ff7ab5);font-size:clamp(22px,4vw,40px)}
+.mcard .front{background:#fff;transform:rotateY(180deg)}
+.mcard.done .front{background:#e6ffef;box-shadow:0 0 0 4px #fff,0 0 0 7px #9be3b6}
+.catch{flex:1;min-height:0;position:relative;overflow:hidden;border-radius:30px;background:linear-gradient(#bfe9ff,#ffe6f2);touch-action:none;box-shadow:0 7px 0 #f2a5c8}
+.catch.hurt{animation:shake .4s}
+.chud{position:absolute;left:0;right:0;top:10px;display:flex;justify-content:space-around;font-size:24px;font-weight:900;z-index:2;pointer-events:none}
+.chud span{background:#fff;border-radius:999px;padding:6px 16px;box-shadow:0 0 0 3px #ffd3e8}
+.bag{position:absolute;left:0;bottom:22px;width:72px;text-align:center;font-size:64px;will-change:transform;pointer-events:none}
+.drop{position:absolute;left:0;top:0;font-size:44px;will-change:transform;pointer-events:none}
+.hitpop{position:absolute;font-size:26px;font-weight:900;color:#ff5fa2;pointer-events:none;animation:rise .7s ease-out forwards}
+.dance{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,42fr) minmax(0,58fr);gap:14px}
+@media (orientation:portrait){.dance{grid-template-columns:1fr;grid-template-rows:minmax(0,34fr) minmax(0,66fr)}}
+.dstage{position:relative;border-radius:30px;overflow:hidden;background:radial-gradient(circle at 50% 30%,#ff9ccf,#5c1f7a 75%);box-shadow:0 7px 0 #f2a5c8}
+.dstage svg{position:absolute;inset:0;width:100%;height:100%}
+#dDoll{transform-origin:0 0}.dmove{animation:dm1 .35s ease}.dmove2{animation:dm2 .35s ease}
+@keyframes dm1{50%{transform:rotate(-7deg) translateY(-14px)}}@keyframes dm2{50%{transform:rotate(7deg) translateY(-14px) scale(1.03)}}
+.dhud{position:absolute;left:12px;top:12px;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.dhud b{background:#fff;border-radius:999px;padding:6px 16px;font-size:24px;box-shadow:0 0 0 3px #ffd3e8}.dhud span{color:#fff;font-weight:900;font-size:20px;text-shadow:0 2px 4px rgba(0,0,0,.4)}
+.dfb{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%) scale(.6);opacity:0;font-size:34px;font-weight:900;color:#fff;text-shadow:0 3px 0 #d94584;transition:.15s;pointer-events:none;white-space:nowrap}
+.dfb.show{opacity:1;transform:translate(-50%,-50%) scale(1)}.dfb.pf{color:#ffe066}
+.lanes{position:relative;border-radius:30px;overflow:hidden;background:#2b1650;display:grid;grid-template-columns:repeat(3,1fr);box-shadow:0 7px 0 #f2a5c8;touch-action:none}
+.lane{border-right:2px dashed rgba(255,255,255,.15);background:linear-gradient(rgba(255,255,255,0),rgba(255,255,255,.08))}
+.hitline{position:absolute;left:0;right:0;bottom:110px;height:6px;background:#fff;opacity:.8;box-shadow:0 0 14px #fff}
+.note{position:absolute;top:0;width:52px;height:52px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:30px;will-change:transform;box-shadow:0 0 0 4px rgba(255,255,255,.4)}
+.note.miss{opacity:.2!important;transition:opacity .3s}
+.lbtns{position:absolute;left:0;right:0;bottom:12px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 10px}
+.lbtn{height:84px;border-radius:24px;background:var(--lc);font-size:40px;box-shadow:0 0 0 4px #fff,0 6px 0 4px rgba(0,0,0,.25)}
+.lbtn.hit{animation:pop .2s ease}
 .themebig{font-size:84px;line-height:1;margin:6px 0}
 #flash{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:60}
 #flash.go{animation:flash .5s ease}
@@ -198,6 +238,7 @@ h3:not(:first-child){margin-top:22px}
   <div class="topbar">
    <div class="chip" id="nameChip">✨ <span id="nameTxt"></span></div>
    <div class="chip star">⭐ <span id="starTxt">0</span></div>
+   <button class="chip star" id="coinChip" data-act="tab" data-v="magaza">💰 <span id="coinTxt">0</span></button>
    <div class="sp"></div>
    <button class="tbtn" id="btnRand" aria-label="Sürpriz kombin">🎲</button>
    <button class="tbtn" id="btnGal" aria-label="Galeri">🖼️</button>
@@ -251,6 +292,8 @@ h3:not(:first-child){margin-top:22px}
  <div class="row"><button class="big alt" id="shareBtn">📤 Kaydet</button><button class="big" data-close>Tamam</button></div>
 </div></div>
 
+<div class="modal" id="mBuy"><div class="box"><div id="buyPrev" class="buyprev"></div><h2 id="buyName"></h2><p id="buyPrice"></p>
+ <div class="row"><button class="big alt" data-close>Kapat</button><button class="big" id="buyOk">Satın Al 💰</button></div></div></div>
 <div class="modal" id="mGal"><div class="box">
  <h2>Galerim 🖼️</h2>
  <div id="galList" class="gal"></div>
@@ -336,6 +379,8 @@ const HAIR={
   front:c=>P("M102 110 Q100 54 150 54 Q200 56 198 110 Q190 80 168 74 Q140 70 120 86 Q108 96 102 110 Z",c)+L("M134 64 Q156 58 176 66",shade(c,1.35),4)},
  ikitopuz:{n:'İki Topuz',back:c=>C(110,58,21,c)+C(190,58,21,c)+L("M100 52 Q110 44 120 52 M180 52 Q190 44 200 52",shade(c,.8))+P(CAP,c),
   front:c=>P(MIDF,c)+C(124,64,5,'#ff5fa2')+C(176,64,5,'#ff5fa2')},
+ prenses:{n:'Prenses Saçı',price:35,back:c=>P("M98 100 Q98 46 150 46 Q202 46 202 100 L212 300 Q180 318 150 312 Q120 318 88 300 Z",c)+L("M108 160 Q98 200 110 240 M192 160 Q202 200 190 240 M128 250 Q122 280 132 300 M172 250 Q178 280 168 300",shade(c,.8)),
+  front:c=>{let o=P("M102 112 Q100 58 150 58 Q200 58 198 112 Q182 82 150 80 Q118 82 102 112 Z",c);for(let i=0;i<=8;i++){const a=Math.PI*(1-i/8);o+=C((150+48*Math.cos(a)).toFixed(1),(96-40*Math.sin(a)).toFixed(1),7.5,shade(c,.88))}return o+C(150,56,5,'#ff9ccf')}},
  yanorgu:{n:'Yan Örgü',back:c=>P(CAP,c),front:c=>{let o=P("M102 112 Q100 56 150 56 Q200 56 198 112 Q186 72 140 74 Q114 80 102 112 Z",c);
   for(let i=0;i<7;i++)o+=E(192-i*2,150+i*19,12,11,c);return o+C(180,284,6,'#ff5fa2')+P("M174 288 L180 312 L186 288 Z",c)}}
 };
@@ -371,6 +416,13 @@ const DRESS={
   +C(132,208,4,'#ffd23f')+C(168,208,4,'#ffd23f')+P("M140 222 L160 222 L160 240 Q150 246 140 240 Z",shade(c,1.3))+heart(150,231,5,'#ff5fa2'),s:P(TS_L,'#fff')+P(TS_R,'#fff')})},
  abiye:{n:'Abiye',f:c=>({m:P("M122 186 L180 176 L184 270 Q198 420 216 548 Q150 562 84 548 Q102 420 116 270 Z",c)+L("M180 178 L176 170",c,6)+P("M164 420 L180 548 L196 546 Z",shade(c,.8))
   +[[140,230],[160,260],[132,300],[170,330],[146,380],[120,470],[180,500]].map(a=>star(a[0],a[1],4,'#fff',false)).join('')+P("M116 262 Q150 270 184 262 L185 274 Q150 282 115 274 Z",shade(c,1.4)),s:''})},
+ gelinlik:{n:'Kraliçe Elbisesi',price:60,f:c=>{const l=shade(c,1.4);let r='';for(let i=0;i<=12;i++){const t=i/12;r+=C(q(52,150,248,t).toFixed(1),q(470,506,470,t).toFixed(1),10,l)}
+  return {m:r+P("M118 256 Q56 380 52 470 Q150 506 248 470 Q244 380 182 256 Z",c)+P("M122 256 Q90 340 96 410 Q150 430 204 410 Q210 340 178 256 Z",l)+L("M70 440 Q150 470 230 440",'#ffd23f',4)
+   +[[100,420],[150,446],[200,420],[124,380],[176,380]].map(a=>star(a[0],a[1],5,'#ffd23f')).join('')+P("M118 186 Q134 178 150 190 Q166 178 182 186 L180 262 Q150 268 120 262 Z",c)
+   +P("M120 252 Q150 258 180 252 L180 264 Q150 270 120 264 Z",'#ffd23f')+C(150,214,6,'#7ec8ff'),s:P("M120 186 Q98 186 96 210 Q110 220 124 204 Z",l)+P("M180 186 Q202 186 204 210 Q190 220 176 204 Z",l)}}},
+ simli:{n:'Payetli Elbise',price:40,f:c=>{const l=shade(c,1.5),sh="M122 182 Q150 176 178 182 L184 250 Q200 320 206 368 Q150 382 94 368 Q100 320 116 250 Z";let d='';
+  for(let y=194;y<=372;y+=12)for(let x=94+((y/12)%2)*6;x<=206;x+=12)d+=`<circle cx="${x}" cy="${y}" r="2.6" fill="${l}"/>`;
+  return {m:`<clipPath id="spc"><path d="${sh}"/></clipPath>`+P(sh,c)+`<g clip-path="url(#spc)">${d}</g>`+L("M128 184 L126 172 M172 184 L174 172",c,5)+[[136,220],[166,260],[130,320],[176,340]].map(a=>star(a[0],a[1],4,'#fff',false)).join(''),s:''}}},
  gokkusagi:{n:'Gökkuşağı',lock:2,f:c=>{const cols=['#ff6b6b','#ffa94d','#ffe066','#7be0b4','#7ec8ff','#c78bff'];let o='';
   for(let i=5;i>=0;i--)o+=P(`M${120-i*5} ${256+i*14} Q150 ${248+i*14} ${180+i*5} ${256+i*14} L${200+i*8} ${300+i*18} Q150 ${318+i*18} ${100-i*8} ${300+i*18} Z`,cols[i]);
   return {m:o+P("M118 178 Q150 170 182 178 L180 262 Q150 268 120 262 Z",c)+star(150,214,12,'#fff'),s:C(114,190,14,'#ffe066')+C(186,190,14,'#7ec8ff')}}}
@@ -410,6 +462,7 @@ const SHOES={
  spor:{n:'Spor',f:c=>P("M121 544 Q121 537 132 537 L144 537 Q153 539 153 550 L153 558 L121 558 Z",'#fff')+L("M126 546 L148 546",c,5)+L("M122 556 L152 556",shade(c,.75),3)},
  bot:{n:'Bot',f:c=>P("M124 472 L150 472 L150 557 L119 557 Q117 547 124 540 Z",c)+P("M122 466 L152 466 L152 482 L122 482 Z",shade(c,1.4))},
  sandalet:{n:'Sandalet',f:c=>P("M121 554 Q122 548 136 548 Q152 548 152 554 L152 559 L121 559 Z",shade(c,.75))+L("M126 548 L146 544 M128 544 L134 538",c,4)},
+ kristal:{n:'Kristal Ayakkabı',price:35,f:()=>P("M121 548 Q124 538 140 540 Q152 542 152 551 Q150 557 140 557 L124 557 Z",'#d6f3ff')+P("M121 552 L120 566 L126 566 L127 556 Z",'#bfe9ff')+star(138,546,3.5,'#fff',false)+star(128,551,2.5,'#7ec8ff',false)},
  paten:{n:'Paten',lock:12,f:c=>P("M123 500 L150 500 L152 552 L121 552 Q118 540 123 532 Z",c)+P("M119 550 L154 550 L154 558 L119 558 Z",'#fff')+C(126,566,5.5,'#ffe066')+C(147,566,5.5,'#ffe066')+L("M126 512 L146 512 M126 524 L146 524",'#fff',2.5)}
 };
 const ACC={
@@ -433,6 +486,10 @@ const ACC={
  yildizgozluk:{n:'Yıldız Gözlük',f:()=>star(133,117,16,'#ffe066')+star(167,117,16,'#ffe066')+`<circle cx="133" cy="118" r="7" fill="#7ec8ff" opacity=".7"/><circle cx="167" cy="118" r="7" fill="#7ec8ff" opacity=".7"/>`+L("M146 114 Q150 110 154 114")},
  pelerin:{n:'Pelerin',back:()=>P("M114 178 Q150 166 186 178 L252 528 Q150 552 48 528 Z",'#c78bff')+[[110,300],[190,330],[100,450],[200,470],[150,500]].map(a=>star(a[0],a[1],8,'#ffe066')).join(''),
   f:()=>P("M124 178 Q150 190 176 178 L178 186 Q150 198 122 186 Z",'#a96cf5')+C(150,190,6,'#ffe066')},
+ perikanat:{n:'Peri Kanatları',price:50,back:()=>`<g opacity=".92">`+E(96,226,42,64,'#e3d4ff','transform="rotate(-28 96 226)"')+E(204,226,42,64,'#e3d4ff','transform="rotate(28 204 226)"')
+  +E(106,320,26,40,'#ffd6ea','transform="rotate(20 106 320)"')+E(194,320,26,40,'#ffd6ea','transform="rotate(-20 194 320)"')+`</g>`+star(84,206,6,'#fff',false)+star(216,206,6,'#fff',false)+star(102,326,4,'#fff',false)+star(198,326,4,'#fff',false),f:()=>''},
+ kalpcanta:{n:'Kalp Çanta',price:25,f:()=>L("M184 336 Q196 310 208 336",OL,5)+L("M184 336 Q196 310 208 336",'#ffd23f',2.5)+heart(196,350,16,'#ff5fa2')+star(196,348,4,'#fff',false)},
+ mikrofon:{n:'Mikrofon',price:30,f:()=>L("M104 330 L94 296",OL,10)+L("M104 330 L94 296",'#4a4a6a',6)+C(91,288,11,'#d9d9e6')+L("M84 284 L98 292 M86 292 L96 284",'#9a9ab0',2)+star(70,270,5,'#ffe066',false)+star(112,262,4,'#ffe066',false)},
  asa:{n:'Sihirli Asa',lock:8,f:()=>L("M104 328 L76 268",OL,9)+L("M104 328 L76 268",'#c78bff',5)+star(74,262,16,'#ffe066')+star(52,244,5,'#fff')+star(96,240,4,'#fff')+star(60,286,4,'#fff')}
 };
 
@@ -501,6 +558,15 @@ const PETS={
   +L("M-34 -44 L-50 -46 M-34 -41 L-50 -38 M-14 -44 L2 -46 M-14 -41 L2 -38",OL,1.8)+P("M-40 -32 Q-24 -24 -8 -32 L-8 -27 Q-24 -19 -40 -27Z",'#7ec8ff')}},
  tavsan:{n:'Tavşan',f:()=>E(-30,-86,8,22,'#fff')+E(-30,-86,3.5,14,'#ffb3d1',NS)+E(-12,-88,8,22,'#fff')+E(-12,-88,3.5,14,'#ffb3d1',NS)+C(34,-22,9,'#fff')+E(8,-24,28,22,'#fff')+C(-20,-50,21,'#fff')
   +`<circle cx="-28" cy="-53" r="3.5" fill="${OL}"/><circle cx="-12" cy="-53" r="3.5" fill="${OL}"/>`+heart(-20,-45,3.5,'#ff7aa8')+`<ellipse cx="-34" cy="-43" rx="5" ry="3" fill="#ff9ccf" opacity=".6"/><ellipse cx="-6" cy="-43" rx="5" ry="3" fill="#ff9ccf" opacity=".6"/>`},
+ panda:{n:'Panda',price:40,f:()=>E(10,-24,32,22,'#fff')+E(-6,-6,9,7,'#2b2b2b')+E(26,-6,9,7,'#2b2b2b')+C(-40,-68,8,'#2b2b2b')+C(-8,-68,8,'#2b2b2b')+C(-24,-50,23,'#fff')
+  +E(-32,-52,6,8,'#2b2b2b','transform="rotate(-20 -32 -52)"')+E(-16,-52,6,8,'#2b2b2b','transform="rotate(20 -16 -52)"')+`<circle cx="-32" cy="-52" r="2.5" fill="#fff"/><circle cx="-16" cy="-52" r="2.5" fill="#fff"/>`+E(-24,-42,4,3,'#2b2b2b')+E(22,-34,10,13,'#2b2b2b')},
+ penguen:{n:'Penguen',price:40,f:()=>E(-26,-36,6,16,'#2b2b3b','transform="rotate(20 -26 -36)"')+E(26,-36,6,16,'#2b2b3b','transform="rotate(-20 26 -36)"')+E(0,-40,26,38,'#2b2b3b')+E(0,-34,17,28,'#fff')
+  +`<circle cx="-8" cy="-56" r="3.5" fill="${OL}"/><circle cx="8" cy="-56" r="3.5" fill="${OL}"/>`+P("M-6 -48 L6 -48 L0 -40 Z",'#ffa94d')+E(-12,-2,9,4,'#ffa94d')+E(12,-2,9,4,'#ffa94d')
+  +`<ellipse cx="-14" cy="-46" rx="4" ry="2.5" fill="#ff9ccf" opacity=".7"/><ellipse cx="14" cy="-46" rx="4" ry="2.5" fill="#ff9ccf" opacity=".7"/>`+P("M-16 -76 Q0 -88 16 -76 L14 -70 Q0 -78 -14 -70 Z",'#ff5fa2')},
+ ejder:{n:'Minik Ejderha',price:70,f:()=>{const g='#6fd69f',d='#3fae78';return P("M8 -46 Q30 -86 54 -70 Q40 -60 44 -46 Q30 -54 18 -40 Z",'#c9a0ff')+P("M30 -18 Q60 -14 62 -40 Q56 -30 44 -30 Z",g)+E(10,-26,30,22,g)+E(8,-22,18,14,'#fff3b0')
+  +[[2,-46],[16,-48],[30,-42]].map(a=>P(`M${a[0]-5} ${a[1]} L${a[0]} ${a[1]-10} L${a[0]+5} ${a[1]} Z`,d)).join('')+C(-22,-54,22,g)+P("M-34 -72 L-38 -88 L-26 -76 Z",'#ffe066')+P("M-14 -74 L-10 -90 L-4 -74 Z",'#ffe066')
+  +`<circle cx="-30" cy="-56" r="4" fill="${OL}"/><circle cx="-14" cy="-56" r="4" fill="${OL}"/><circle cx="-29" cy="-57.5" r="1.5" fill="#fff"/><circle cx="-13" cy="-57.5" r="1.5" fill="#fff"/>`+L("M-30 -44 Q-22 -38 -14 -44",OL,2.5)
+  +`<ellipse cx="-36" cy="-46" rx="4" ry="2.5" fill="#ff9ccf" opacity=".7"/><ellipse cx="-8" cy="-46" rx="4" ry="2.5" fill="#ff9ccf" opacity=".7"/>`+P("M-8 -8 L-8 2 L2 2 L2 -6Z",g)+P("M18 -8 L18 2 L28 2 L28 -6Z",g)}},
  midilli:{n:'Unicorn',lock:4,f:()=>{const m=['#ff6b6b','#ffe066','#7ec8ff','#c78bff'];let tail='',mane='';
   m.forEach((c,i)=>{tail+=L(`M40 ${-40+i*3} Q${62+i*2} ${-44+i*6} ${54+i*2} ${-8+i*2}`,OL,9)+L(`M40 ${-40+i*3} Q${62+i*2} ${-44+i*6} ${54+i*2} ${-8+i*2}`,c,5);mane+=C(-14+i*6,-80+i*9,8,c)});
   return tail+[[-14],[0],[20],[32]].map(a=>P(`M${a[0]-4} -26 L${a[0]-4} 2 L${a[0]+6} 2 L${a[0]+6} -26Z`,'#fff')).join('')+E(10,-36,36,20,'#fff')
@@ -510,6 +576,8 @@ const PETS={
 
 /* =====================  arka planlar  ===================== */
 function seeded(n,f){let s=7;const r=()=>(s=(s*9301+49297)%233280)/233280;let o='';for(let i=0;i<n;i++)o+=f(r);return o}
+const fish=(x,y,c,fl)=>`<g transform="translate(${x} ${y}) scale(${fl?-1:1} 1)">${E(0,0,20,12,c)}${P("M16 0 L32 -10 L32 10 Z",c)}<circle cx="-9" cy="-3" r="3" fill="${OL}"/></g>`;
+const tree=(x,y)=>P(`M${x} ${y-120} L${x-34} ${y-50} L${x+34} ${y-50}Z`,'#3fae5c')+P(`M${x} ${y-90} L${x-42} ${y} L${x+42} ${y}Z`,'#3fae5c')+P(`M${x} ${y-120} L${x-14} ${y-92} L${x+14} ${y-92}Z`,'#fff')+`<rect x="${x-7}" y="${y}" width="14" height="18" fill="#b07a4a" stroke="${OL}" stroke-width="3"/>`;
 const BGS={
  oda:{n:'Odam',d:()=>`<rect width="400" height="640" fill="#ffd6ea"/>`+seeded(40,r=>heart((r()*400).toFixed(0),(r()*480).toFixed(0),6,'#ffc0de','stroke="none"'))
   +`<rect x="34" y="70" width="112" height="130" rx="12" fill="#bfe9ff" stroke="${OL}" stroke-width="4"/>`+L("M90 72 L90 198 M36 135 L144 135",'#fff',6)+`<circle cx="66" cy="100" r="12" fill="#fff" opacity=".8"/>`
@@ -535,6 +603,22 @@ const BGS={
   +P("M50 420 L50 330 L64 330 L64 420Z",'#b07a4a')+C(57,300,40,'#4fbf6a')+C(30,322,24,'#4fbf6a')+C(84,320,26,'#4fbf6a')
   +P("M336 400 L336 310 L350 310 L350 400Z",'#b07a4a')+C(343,280,38,'#5ccf72')+C(372,300,22,'#5ccf72')
   +seeded(18,r=>{const x=(r()*400).toFixed(0),y=(500+r()*130).toFixed(0),c=rnd(['#ff5fa2','#ffe066','#c78bff','#fff']);return `<circle cx="${x}" cy="${y}" r="7" fill="${c}" stroke="${OL}" stroke-width="2"/><circle cx="${x}" cy="${y}" r="2.5" fill="#ffd23f"/>`})},
+ okyanus:{n:'Okyanus',price:45,d:()=>`<defs><linearGradient id="go" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5fd0f0"/><stop offset="1" stop-color="#1a6fb0"/></linearGradient></defs><rect width="400" height="640" fill="url(#go)"/>`
+  +`<polygon points="60,0 120,0 200,640 0,640" fill="#fff" opacity=".07"/><polygon points="250,0 300,0 400,640 230,640" fill="#fff" opacity=".07"/>`
+  +seeded(22,r=>`<circle cx="${(r()*400).toFixed(0)}" cy="${(r()*520).toFixed(0)}" r="${(3+r()*7).toFixed(1)}" fill="none" stroke="#fff" stroke-width="2" opacity=".7"/>`)
+  +fish(70,160,'#ffa94d')+fish(320,240,'#ff9ccf',1)+fish(90,380,'#ffe066',1)+fish(300,110,'#c78bff')
+  +P("M-10 520 Q100 500 200 520 Q300 540 410 515 L410 650 L-10 650Z",'#f6dca0')+P("M40 520 Q30 470 46 430 Q52 470 50 520Z",'#4fbf6a')+P("M60 525 Q70 460 58 410 Q80 460 72 525Z",'#3fae5c')+P("M340 520 Q330 480 350 440 Q356 480 352 520Z",'#4fbf6a')
+  +P("M300 530 Q296 500 306 490 Q300 470 316 466 Q330 470 322 490 Q336 500 328 530Z",'#ff7aa8')+star(250,575,14,'#ff8a5c')+`<ellipse cx="120" cy="590" rx="14" ry="9" fill="#ffc0de" stroke="${OL}" stroke-width="3"/>`},
+ dondurma:{n:'Dondurmacı',price:35,d:()=>{let o=`<rect width="400" height="640" fill="#fff3f9"/>`;for(let x=0;x<400;x+=40)o+=`<rect x="${x}" width="20" height="640" fill="#ffe0ef"/>`;
+  for(let x=0;x<400;x+=50)o+=`<rect x="${x}" y="0" width="50" height="60" fill="${(x/50)%2?'#fff':'#ff7ab5'}"/>`+C(x+25,60,25,(x/50)%2?'#fff':'#ff7ab5');
+  o+=`<rect x="20" y="230" width="360" height="12" rx="4" fill="#e7a46e" stroke="${OL}" stroke-width="3"/>`;
+  [[60,'#ff9ccf'],[120,'#7be0b4'],[280,'#ffe066'],[340,'#c78bff']].forEach(([x,c])=>{o+=P(`M${x-14} 200 L${x} 230 L${x+14} 200 Z`,'#e8b07a')+C(x,192,15,c)+C(x,172,11,shade(c,1.2))+C(x,160,4,'#e8406a')});
+  o+=`<rect x="150" y="110" width="100" height="80" rx="14" fill="#fff" stroke="${OL}" stroke-width="4"/><text x="200" y="166" font-size="44" text-anchor="middle">🍦</text>`;
+  return o+`<rect y="500" width="400" height="140" fill="#ff9ccf"/>`+L("M0 500 L400 500",OL,4)+`<rect y="500" width="400" height="16" fill="#fff"/>`+seeded(10,r=>heart((r()*400).toFixed(0),(540+r()*90).toFixed(0),6,'#fff'))}},
+ kar:{n:'Kar Diyarı',price:40,d:()=>`<rect width="400" height="640" fill="#cfeeff"/>`+seeded(50,r=>`<circle cx="${(r()*400).toFixed(0)}" cy="${(r()*600).toFixed(0)}" r="${(1.5+r()*3).toFixed(1)}" fill="#fff"/>`)
+  +P("M-10 430 Q100 360 220 420 Q320 370 410 410 L410 650 L-10 650Z",'#fff')+P("M-10 500 Q200 460 410 500 L410 650 L-10 650Z",'#f2f9ff')+tree(60,420)+tree(352,404)+tree(110,450)
+  +C(318,528,30,'#fff')+C(318,478,22,'#fff')+`<rect x="302" y="440" width="32" height="18" rx="3" fill="#3b3b58" stroke="${OL}" stroke-width="3"/><rect x="296" y="454" width="44" height="6" rx="3" fill="#3b3b58"/>`
+  +`<circle cx="311" cy="474" r="3" fill="${OL}"/><circle cx="325" cy="474" r="3" fill="${OL}"/>`+P("M318 480 L336 485 L318 488 Z",'#ffa94d')+P("M300 496 Q318 506 336 496 L336 504 Q318 514 300 504 Z",'#e8406a')},
  uzay:{n:'Uzay',lock:6,d:()=>`<rect width="400" height="640" fill="#150d3d"/>`+seeded(70,r=>`<circle cx="${(r()*400).toFixed(0)}" cy="${(r()*520).toFixed(0)}" r="${(r()*2.2+.6).toFixed(1)}" fill="#fff" opacity="${(.5+r()*.5).toFixed(2)}"/>`)
   +C(320,130,40,'#ff9ccf')+`<ellipse cx="320" cy="130" rx="66" ry="14" fill="none" stroke="#ffe066" stroke-width="7" transform="rotate(-18 320 130)"/>`
   +C(70,200,22,'#ffe066')+C(64,194,5,'#f2c94c',NS)+star(200,70,10,'#fff',false)+star(120,330,7,'#ffe066',false)
@@ -546,6 +630,9 @@ const BGS={
   +`<rect x="70" y="250" width="20" height="30" rx="10" fill="#7ec8ff" stroke="${OL}" stroke-width="3"/><rect x="310" y="250" width="20" height="30" rx="10" fill="#7ec8ff" stroke="${OL}" stroke-width="3"/><rect x="190" y="200" width="20" height="34" rx="10" fill="#7ec8ff" stroke="${OL}" stroke-width="3"/>`
   +heart(200,300,14,'#ff5fa2')+P("M-10 470 Q200 450 410 470 L410 650 L-10 650Z",'#8fdc7a')+seeded(14,r=>heart((r()*400).toFixed(0),(500+r()*130).toFixed(0),6,'#ff5fa2'))}
 };
+const PACKS={kalp:{n:'💞 Kalp Paketi',p:15,e:['💞','💝','💗','💓','❣️','💟','💘','🩷']},hayvan:{n:'🐾 Hayvan Paketi',p:20,e:['🐱','🐶','🐰','🐼','🦊','🐸','🐨','🐯']},
+ yemek:{n:'🍕 Lezzet Paketi',p:20,e:['🍕','🍩','🍪','🧃','🍉','🥞','🍿','🧋']},uzay:{n:'🚀 Uzay Paketi',p:25,e:['🚀','🪐','👽','🌟','☄️','🛸','🌍','🌙']}};
+const myStickers=()=>STICKERS.concat(...Object.entries(PACKS).filter(([k])=>(S.owned||[]).includes('pk:'+k)).map(([k,v])=>v.e));
 const STICKERS=['💖','⭐','🌸','🌈','🦋','✨','🎀','🍓','👑','🌙','🧁','🦄','🍭','💎','🌻','🐣','🍦','🎈'];
 
 /* =====================  görevler  ===================== */
@@ -568,6 +655,10 @@ const TASKS=[
  {id:'nmus',i:'💅',t:'Tırnak müşterisine 3 yıldız al',ok:(s,e)=>e==='n3'},
  {id:'cmus',i:'🎂',t:'Pasta müşterisine 3 yıldız al',ok:(s,e)=>e==='c3'},
  {id:'altin',i:'💰',t:'Toplam 100 altın kazan',ok:s=>(s.earned||0)>=100},
+ {id:'alisveris',i:'🛍️',t:'Mağazadan bir şey satın al',ok:s=>(s.owned||[]).length>0},
+ {id:'hafiza',i:'🧠',t:'Hafıza oyununu bitir',ok:(s,e)=>e==='hafiza'},
+ {id:'dans',i:'💃',t:'Dansta 30 kombo yap',ok:(s,e)=>e==='combo30'},
+ {id:'yakala',i:'🛍️',t:'Alışveriş Yağmuru’nda 40 puan al',ok:(s,e)=>e==='yakala40'},
  {id:'kupa5',i:'🏆',t:'5 farklı temada 24+ puan al',ok:s=>Object.values(s.trophies||{}).filter(v=>v>=24).length>=5}
 ];
 const UNLOCKS=[[2,'🌈 Gökkuşağı Elbise'],[4,'🦄 Unicorn Dost'],[6,'🪐 Uzay'],[8,'🪄 Sihirli Asa'],[10,'🏰 Şato'],[12,'🛼 Paten'],[14,'🌈 Gökkuşağı Saç'],[16,'💎 Elmas Taç']];
@@ -590,7 +681,8 @@ let svT=0;function save(){clearTimeout(svT);svT=setTimeout(saveNow,400)}
 addEventListener('pagehide',saveNow);document.addEventListener('visibilitychange',()=>{if(document.hidden)saveNow()});
 saveGal();saveNow();
 const stars=()=>S.done.length;
-const locked=it=>it&&it.lock&&stars()<it.lock;
+const ownedP=it=>(S.owned||[]).includes('p:'+it.pid);
+const locked=it=>!!it&&((it.lock&&stars()<it.lock)||(it.price&&!ownedP(it)));
 
 /* =====================  ses  ===================== */
 let AC=null;
@@ -616,7 +708,7 @@ function renderStage(anim){renderDefs();
  renderStickers();
  const nm=S.name||'Işıltı',w=nm.length*13+56;
  $('#tag').innerHTML=`<g transform="translate(18 16) rotate(-4)"><rect width="${w}" height="44" rx="22" fill="#fff" stroke="#ff9ccf" stroke-width="4"/><text x="${w/2}" y="29" text-anchor="middle" font-family="ui-rounded,Arial Rounded MT Bold,Arial,sans-serif" font-weight="900" font-size="21" fill="#ff5fa2">✨ ${esc(nm)}</text></g>`;
- $('#nameTxt').textContent=nm;$('#starTxt').textContent=stars();
+ $('#nameTxt').textContent=nm;$('#starTxt').textContent=stars();$('#coinTxt').textContent=S.coins||0;
  if(anim)restartAnim($('#dollInner'),'bounce')
 }
 const stkT=s=>`translate(${s.x} ${s.y}) rotate(${s.r})`;
@@ -624,7 +716,7 @@ function renderStickers(){$('#stkLayer').innerHTML=S.stickers.map((s,i)=>`<g cla
 
 /* =====================  panel  ===================== */
 const TABS=[['sac','💇‍♀️','Saç'],['elbise','👗','Elbise'],['ust','👚','Üst'],['alt','🩳','Alt'],['susle','🎀','Süsle'],['ayakkabi','👠','Ayakkabı'],['taki','👑','Takı'],['makyaj','💄','Makyaj'],
- ['ten','🎨','Ten'],['dost','🐶','Dost'],['yer','🏰','Yer'],['sticker','✨','Sticker'],['oyun','🎮','Oyunlar'],['gorev','⭐','Görev']];
+ ['ten','🎨','Ten'],['dost','🐶','Dost'],['yer','🏰','Yer'],['sticker','✨','Sticker'],['oyun','🎮','Oyunlar'],['magaza','🛍️','Mağaza'],['gorev','⭐','Görev']];
 let tab='elbise';
 $('#tabs').innerHTML=TABS.map((t,i)=>`<button class="tab" data-act="tab" data-v="${t[0]}" style="--r:${(i%3-1)*2}deg"><i>${t[1]}</i><span>${t[2]}</span></button>`).join('');
 const rot=i=>`--r:${[-2,1.5,-1,2,-1.5,1][i%6]}deg`;
@@ -633,7 +725,7 @@ const withS=f=>{const c=structuredClone(S);f(c);return c};
 function cards(obj,act,cur,vb,mk){return '<div class="grid">'+Object.entries(obj).map(([k,it],i)=>{
  const lk=locked(it),sel=Array.isArray(cur)?cur.includes(k):cur===k;
  const body=k==='yok'?`<div class="none">🚫</div>`:mk(k);
- return `<button class="card ${sel?'sel':''} ${lk?'lock':''}" style="${rot(i)}" data-act="${act}" data-v="${k}">${body}<span>${it.n}</span>${lk?`<b class="lk">🔒 ⭐${it.lock}</b>`:''}</button>`}).join('')+'</div>'}
+ return `<button class="card ${sel?'sel':''} ${lk?'lock':''}" style="${rot(i)}" data-act="${act}" data-v="${k}">${body}<span>${it.n}</span>${lk?(it.price&&!ownedP(it)?`<b class="lk">💰 ${it.price}</b>`:`<b class="lk">🔒 ⭐${it.lock}</b>`):''}</button>`}).join('')+'</div>'}
 function swatches(list,act,cur){return '<div class="sws">'+list.map(c=>c==='yok'?`<button class="sw x ${cur==='yok'?'sel':''}" data-act="${act}" data-v="yok">✕</button>`
  :`<button class="sw ${cur===c?'sel':''} ${swLock(act,c)?'lock':''}" style="--c:${bgOf(c)}" data-act="${act}" data-v="${c}">${swLock(act,c)?'🔒':''}</button>`).join('')+'</div>'}
 function patRow(slot){return `<h3>🌸 Desen</h3><div class="sws">`+Object.entries(PATS).map(([k,n])=>`<button class="sw pat ${S.pat[slot]===k?'sel':''}" data-act="pat" data-v="${slot}:${k}" aria-label="${n}"><svg viewBox="0 0 48 48">${k==='duz'?'':`<defs>${patDef('pp-'+slot+'-'+k,k,S.col[slot])}</defs>`}<circle cx="24" cy="24" r="24" fill="${k==='duz'?S.col[slot]:`url(#pp-${slot}-${k})`}"/></svg></button>`).join('')+'</div>'}
@@ -657,11 +749,16 @@ function renderPanel(){
   case 'dost':h=`<h3>🐶 Dostunu Seç</h3><div class="hint">Dostuna dokun, zıplasın! 💕</div>`+cards(PETS,'pet',S.pet,'',k=>`<svg viewBox="-70 -125 140 135">${PETS[k].f()}</svg>`);break;
   case 'yer':h=`<h3>🏰 Nerede Olalım?</h3>`+cards(BGS,'bg',S.bg,'',k=>`<svg viewBox="0 0 400 640" preserveAspectRatio="xMidYMid slice">${BGS[k].d()}</svg>`);break;
   case 'sticker':h=`<h3>✨ Sticker Yapıştır</h3><div class="hint">Dokun → sahneye yapışır. Parmağınla sürükle, 🗑️ çöpe atarak sil!</div><div class="emo">`
-   +STICKERS.map((e,i)=>`<button style="${rot(i)}" data-act="stk" data-v="${e}">${e}</button>`).join('')+`</div><button class="big alt" data-act="clearstk">🧽 Hepsini Temizle</button>`;break;
+   +myStickers().map((e,i)=>`<button style="${rot(i)}" data-act="stk" data-v="${e}">${e}</button>`).join('')+`</div><div class="hint" style="margin-top:14px">🛍️ Mağazadan yeni sticker paketleri alabilirsin!</div><button class="big alt" data-act="clearstk">🧽 Hepsini Temizle</button>`;break;
   case 'oyun':h=`<h3>🎮 Mini Oyunlar</h3><div class="gcards">
    <button class="gcard" style="--r:-1deg" data-act="game" data-v="defile"><i>🎤</i><b>Defile Yarışması</b><span>Temaya göre giyin, jüri puan versin!</span></button>
    <button class="gcard" style="--r:1deg" data-act="game" data-v="tirnak"><i>💅</i><b>Tırnak Salonu</b><span>Oje sür, kalp ve yıldız yapıştır!</span></button>
-   <button class="gcard" style="--r:-1deg" data-act="game" data-v="pasta"><i>🎂</i><b>Pasta Atölyesi</b><span>Pastanı süsle, mumları üfle!</span></button></div>`;break;
+   <button class="gcard" style="--r:-1deg" data-act="game" data-v="pasta"><i>🎂</i><b>Pasta Atölyesi</b><span>Pastanı süsle, mumları üfle!</span></button>
+   <button class="gcard" style="--r:1deg" data-act="game" data-v="dans"><i>💃</i><b>Dans Partisi</b><span>Ritme göre bas, İnci dans etsin!</span></button>
+   <button class="gcard" style="--r:-1deg" data-act="game" data-v="yakala"><i>🛍️</i><b>Alışveriş Yağmuru</b><span>Yağan kıyafetleri çantayla yakala!</span></button>
+   <button class="gcard" style="--r:1deg" data-act="game" data-v="hafiza"><i>🧠</i><b>Hafıza Kartları</b><span>Kartları çevir, eşlerini bul!</span></button></div>`;
+   h=`<button class="gcard gift ${S.giftDay===today()?'used':''}" data-act="gift"><i>🎁</i><b>Günlük Hediye</b><span>${S.giftDay===today()?'Bugün aldın! Yarın yine gel ⏰':'Her gün bedava altın! Hemen aç!'}</span></button>`+h;break;
+  case 'magaza':h=`<h3>🛍️ Mağaza</h3>`+shopPanel();break;
   case 'gorev':h=`<h3>⭐ Görevler (${stars()}/${TASKS.length})</h3>`+TASKS.map(t=>{const ok=S.done.includes(t.id);return `<div class="task ${ok?'ok':''}"><i>${t.i}</i>${t.t}<b>${ok?'⭐':'☆'}</b></div>`}).join('')
    +`<h3>🎁 Açılan Sürprizler</h3><div class="unl">`+UNLOCKS.map(u=>`<span class="${stars()>=u[0]?'ok':''}">${stars()>=u[0]?'✅':'🔒 ⭐'+u[0]} ${u[1]}</span>`).join('')+`</div>`
    +`<button class="big" data-act="gal">🖼️ Galerim</button><button class="big alt" data-act="rename">✏️ İsmi Değiştir</button>`;break;
@@ -680,9 +777,11 @@ function checkTasks(ev){const before=stars();let got=[];const evs=[].concat(ev==
   const u=UNLOCKS.find(u=>before<u[0]&&stars()>=u[0]);if(u)setTimeout(()=>{toast(`🎁 Yeni sürpriz açıldı: ${u[1]}!`,3200);confetti(50)},2700);
   $('#starTxt').textContent=stars();renderPanel()},350)}
 const LOOK={socks:SOCKS,emb:EMB,dress:DRESS,top:TOPS,bottom:BOTTOMS,shoes:SHOES,acc:ACC,pet:PETS,bg:BGS,hair:HAIR};
+for(const [cat,o] of Object.entries(LOOK))for(const [k,it] of Object.entries(o))if(it.price)it.pid=cat+':'+k;
 function act(a,v,btn){
  if(gameAct(a,v,btn))return;
  if(swLock(a,v)){SND.no();toast('🔒 Gökkuşağı saç için ⭐14 yıldız lazım! Görevlere bak 😉',2800);return}
+ if(LOOK[a]&&LOOK[a][v]&&LOOK[a][v].price&&!ownedP(LOOK[a][v])){openBuy(a,v);return}
  if(LOOK[a]&&locked(LOOK[a][v])){SND.no();btn&&(btn.classList.remove('shake'),void btn.offsetWidth,btn.classList.add('shake'));toast(`🔒 Bunu açmak için ⭐${LOOK[a][v].lock} yıldız lazım! Görevlere bak 😉`,2800);return}
  let anim=true;
  switch(a){
@@ -770,7 +869,7 @@ $('#galList').addEventListener('click',e=>{const im=e.target.closest('img');if(!
 /* =====================  mini oyunlar  ===================== */
 const gEl=$('#game'),gBody=$('#gBody');
 function openGame(id){SND.tap();gEl.classList.add('show');G[id].open()}
-function closeGame(){gEl.classList.remove('show');gBody.innerHTML=''}
+function closeGame(){stopYk();stopDn();gEl.classList.remove('show');gBody.innerHTML='';renderPanel()}
 function gPt(svg,e){const p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;return p.matrixTransform(svg.getScreenCTM().inverse())}
 const isPink=c=>['#ff5fa2','#ff9ccf','#e8406a'].includes(c);
 const mainCol=s=>s.dress!=='yok'?s.col.dress:s.col.top;
@@ -875,13 +974,13 @@ function podyum(){if(!theme)return;stopQ();const t=theme,m=t.chk(S),n=m.filter(B
  jr.forEach((r,i)=>setTimeout(()=>{const jd=$('#judges');if(!jd)return;jd.insertAdjacentHTML('beforeend',`<div class="judge"><i>${r.j.e}</i><b>${r.sc}</b><small>${r.j.n} Hakem</small><em>${r.say}</em>${r.fv?`<em class="fav">💖 ${r.j.fav}!</em>`:''}</div>`);tone(400+r.sc*60,.2,'square',.07)},4300+i*800));
  setTimeout(()=>{if(!$('.runway'))return;const cm=n>=4?'Muhteşem! Tam temaya uygun! 🤩':n===3?'Çok şık! Jüri bayıldı! 😍':n===2?'Çok tatlı olmuş! 💕':'Rengârenk ve neşeli! İpuçlarına bakarsan puanın uçar 😉';
   const pm=['🥇','🥈','🥉'];
-  $('.runway').insertAdjacentHTML('beforeend',`<div class="resWrap"><div class="result"><h2>${pm[place-1]} ${place}. oldun!</h2><p style="font-size:22px">${tot} / 30 puan ${tot>best&&best?'<br>🎉 Yeni rekor!':''}</p><p>${cm}</p>
+  $('.runway').insertAdjacentHTML('beforeend',`<div class="resWrap"><div class="result"><h2>${pm[place-1]} ${place}. oldun!</h2><p style="font-size:22px">${tot} / 30 puan · +${[15,10,5][place-1]} 💰 ${tot>best&&best?'<br>🎉 Yeni rekor!':''}</p><p>${cm}</p>
    <div class="podium">${[1,0,2].map(i=>all[i]).map((x,k)=>`<div class="pod ${x.me?'me':''}"><i>${x.e}</i><small>${esc(x.name)}</small><div class="bar" style="height:${[64,86,46][k]}px">${['🥈','🥇','🥉'][k]}<br>${x.tot}</div></div>`).join('')}</div>
    <div class="tips">${t.tips.map((x,i)=>`<span class="${m[i]?'ok':''}">${m[i]?'✅':'⬜'} ${x}</span>`).join('')}</div>
    ${bon.length?`<div class="tips">${bon.map(x=>`<span class="ok" style="background:#fff8d6;box-shadow:0 0 0 2px #ffe58a inset">${x}</span>`).join('')}</div>`:''}
    <div class="row"><button class="big alt" data-act="dphoto">📸 Fotoğraf</button><button class="big alt" data-act="dagain">👗 Tekrar</button><button class="big" data-act="dend">Bitir 🎉</button></div></div></div>`);
   SND.star();if(place===1){[784,988,1175,1568].forEach((f,i)=>tone(f,.3,'triangle',.12,.3+i*.15))}confetti(place===1?70:30);hearts(place===1?24:10);
-  const ev=[];if(tot>=24)ev.push('defile24');if(place===1)ev.push('first');checkTasks(ev.length?ev:'defile')},4300+3*800+500)}
+  addCoins([15,10,5][place-1]);const ev=[];if(tot>=24)ev.push('defile24');if(place===1)ev.push('first');checkTasks(ev.length?ev:'defile')},4300+3*800+500)}
 async function runwayPhoto(){try{const sv=$('.runway svg');const cl=sv.cloneNode(true);cl.setAttribute('xmlns','http://www.w3.org/2000/svg');cl.setAttribute('width','800');cl.setAttribute('height','1280');
  stageEl.querySelectorAll('defs').forEach(d=>cl.insertBefore(d.cloneNode(true),cl.firstChild));cl.querySelectorAll('.fl').forEach(n=>n.remove());
  const xml=new XMLSerializer().serializeToString(cl);const img=new Image();
@@ -897,7 +996,7 @@ const SHOP=[
  {id:'n-rain',g:'n',n:'🌈 Gökkuşağı Oje',p:25},{id:'n-dia',g:'n',n:'💎 Elmas Süs',p:15},{id:'n-uni',g:'n',n:'🦄 Unicorn Süs',p:20},{id:'n-crown',g:'n',n:'👑 Taçlı Yüzük',p:20},
  {id:'c-3kat',g:'c',n:'🎂 3. Kat',p:20},{id:'c-gold',g:'c',n:'✨ Altın Krema',p:25},{id:'c-uni',g:'c',n:'🦄 Unicorn Süsü',p:20},{id:'c-star',g:'c',n:'⭐ Yıldız Serpme',p:15}];
 const own=id=>(S.owned||[]).includes(id);
-function updCoins(){const c=$('#gCoins');if(c)c.querySelector('span').textContent=S.coins||0}
+function updCoins(){const c=$('#gCoins');if(c)c.querySelector('span').textContent=S.coins||0;const t=$('#coinTxt');if(t)t.textContent=S.coins||0}
 function addCoins(n){S.coins=(S.coins||0)+n;S.earned=(S.earned||0)+n;save();updCoins();[1046,1318,1568].forEach((f,i)=>tone(f,.12,'square',.05,i*.07));checkTasks()}
 function shopHtml(g){const it=SHOP.filter(x=>x.g===g);return `<h3>🛍️ Dükkân <small style="font-size:14px;opacity:.7">(müşterilerden altın kazan!)</small></h3><div class="toggles">`+
  it.map(x=>own(x.id)?`<div class="tog sel" style="text-align:center">${x.n} ✅</div>`:`<button class="tog" data-act="buy" data-v="${x.id}">${x.n}<br><b>💰 ${x.p}</b></button>`).join('')+'</div>'}
@@ -1033,6 +1132,9 @@ function giveCake(){const r=scoreOrder(cOrd);S.served=(S.served||0)+1;
 
 const G={
  defile:{open(){$('#gCoins').style.display='none';themePicker()}},
+ hafiza:{open(){$('#gCoins').style.display='';updCoins();memMenu()}},
+ yakala:{open(){$('#gCoins').style.display='';updCoins();ykMenu()}},
+ dans:{open(){$('#gCoins').style.display='';updCoins();dnMenu()}},
  tirnak:{open(){$('#gTitle').textContent='💅 Tırnak Salonu';$('#gCoins').style.display='';updCoins();
   gBody.innerHTML=`<div class="gwrap"><div class="gstage" id="nStage"><svg id="nSvg" viewBox="10 60 380 380" preserveAspectRatio="xMidYMid meet"></svg><div id="nOrder"></div></div><div class="content" id="nTools"></div></div>`;
   renderNails();$('#nSvg').addEventListener('click',e=>{const g=e.target.closest('[data-n],[data-f]');if(!g)return;const i=+(g.dataset.n!==undefined?g.dataset.n:g.dataset.f),n=S.nails[i];
@@ -1057,6 +1159,15 @@ function addCream(x,y){const t={e:'krema',x:Math.round(x),y:Math.round(y),c:S.ca
 function gameAct(a,v,btn){
  switch(a){
   case 'game':openGame(v);return true;
+  case 'gift':openGift();return true;
+  case 'pack':{const pk=PACKS[v];if(!pk||(S.owned||[]).includes('pk:'+v))return true;if((S.coins||0)<pk.p){SND.no();toast(`💰 ${pk.p} altın lazım! Mini oyun oyna 🎮`,2200);return true}
+   S.coins-=pk.p;S.owned=[...(S.owned||[]),'pk:'+v];save();updCoins();SND.star();confetti(20);toast(`${pk.n} senin oldu! Sticker sekmesine bak ✨`,2400);renderPanel();checkTasks();return true}
+  case 'mmenu':memMenu();SND.tap();return true;
+  case 'mstart':memStart(+v);SND.pop();return true;
+  case 'mflip':memFlip(+v);return true;
+  case 'ystart':ykStart();SND.pop();return true;
+  case 'dnmenu':dnMenu();SND.tap();return true;
+  case 'dnstart':dnStart(+v);return true;
   case 'gclose':closeGame();showBar();SND.tap();return true;
   case 'dnew':SND.tap();themeCard();return true;
   case 'dpick':SND.tap();themeCard(THEMES.find(t=>t.id===v));return true;
@@ -1069,7 +1180,7 @@ function gameAct(a,v,btn){
   case 'dend':theme=null;stopQ();showBar();closeGame();SND.tap();return true;
   case 'dphoto':runwayPhoto();return true;
   case 'buy':{const it=SHOP.find(x=>x.id===v);if(!it||own(v))return true;if((S.coins||0)<it.p){SND.no();toast(`💰 ${it.p} altın lazım! Müşterilere hizmet et 😉`,2200);return true}
-   S.coins-=it.p;S.owned=[...(S.owned||[]),v];save();updCoins();SND.star();confetti(16);toast(`${it.n} senin oldu! 🎉`,2000);if(it.g==='n')renderNails();else renderCake();return true}
+   S.coins-=it.p;S.owned=[...(S.owned||[]),v];save();updCoins();SND.star();confetti(16);toast(`${it.n} senin oldu! 🎉`,2000);if($('#nTools'))renderNails();else if($('#cTools'))renderCake();else renderPanel();checkTasks();return true}
   case 'ntool':{const [t,x]=v.split('|');ntool={t,v:x};SND.tap();$('#nTools').innerHTML=nailTools();return true}
   case 'nbrace':S.brace=v;SND.pop();save();renderNails();return true;
   case 'nall':{const t=ntool;if(t.t==='c')S.nails=S.nails.map(n=>({c:t.v,p:n?n.p:null,d:n?n.d:null,dry:false}));
@@ -1101,6 +1212,119 @@ function gameAct(a,v,btn){
   case 'cbye':cOrd=null;SND.tap();renderCake();return true;
  }
  return false}
+
+/* =====================  mağaza  ===================== */
+function accVB(k){return ['canta','asa','kalpcanta','mikrofon'].includes(k)?'40 200 200 180':k==='kolye'?'95 120 110 100':k==='sapka'?'60 5 180 160':k==='pelerin'?'20 150 260 400':k==='perikanat'?'20 140 260 260':k==='atki'?'95 150 110 110':k==='kep'?'75 15 160 150':'75 25 150 150'}
+function thumbFor(cat,k){switch(cat){
+ case 'dress':return mini('40 160 220 410',withS(c=>{c.dress=k;c.acc=[];c.emb=[]}));
+ case 'shoes':return mini('104 452 94 120',withS(c=>{c.shoes=k;c.dress='yok';c.bottom='sort';c.socks='yok'}));
+ case 'acc':return mini(accVB(k),withS(c=>{c.acc=[k]}));
+ case 'hair':return mini('50 12 200 320',withS(c=>{c.hair.k=k;c.acc=[]}));
+ case 'pet':return `<svg viewBox="-70 -125 140 135">${PETS[k].f()}</svg>`;
+ case 'bg':return `<svg viewBox="0 0 400 640" preserveAspectRatio="xMidYMid slice">${BGS[k].d()}</svg>`}return ''}
+let buyItem=null;
+function openBuy(cat,k){const it=LOOK[cat][k];buyItem={cat,k,it};SND.tap();$('#buyOk').style.display='';
+ $('#buyPrev').innerHTML=thumbFor(cat,k);$('#buyName').textContent=it.n;
+ $('#buyPrice').innerHTML=`Fiyatı: <b>💰 ${it.price}</b> · Senin altının: <b>💰 ${S.coins||0}</b>`;$('#mBuy').classList.add('show')}
+$('#buyOk').onclick=()=>{if(!buyItem)return;const {cat,k,it}=buyItem;
+ if((S.coins||0)<it.price){SND.no();const b=$('#buyOk');b.classList.remove('shake');void b.offsetWidth;b.classList.add('shake');toast(`💰 ${it.price-(S.coins||0)} altın daha lazım! Mini oyun oyna 🎮`,2400);return}
+ S.coins-=it.price;S.owned=[...(S.owned||[]),'p:'+it.pid];save();updCoins();$('#mBuy').classList.remove('show');SND.star();confetti(24);toast(`${it.n} senin oldu! 🎉`,2200);
+ buyItem=null;act(cat,k);checkTasks()};
+function shopPanel(){const sec=(t,cat,obj)=>{const it=Object.entries(obj).filter(([k,v])=>v.price);if(!it.length)return '';
+  return `<h3>${t}</h3><div class="grid">`+it.map(([k,v],i)=>{const ow=ownedP(v);return `<button class="card ${ow?'sel':''}" style="${rot(i)}" data-act="${cat}" data-v="${k}">${thumbFor(cat,k)}<span>${v.n}</span><b class="lk" style="${ow?'box-shadow:0 0 0 3px #9be3b6':''}">${ow?'✅ Senin':'💰 '+v.price}</b></button>`}).join('')+'</div>'};
+ return `<div class="hint">💰 Altının: <b>${S.coins||0}</b> — Mini oyunlardan, defileden, müşterilerden ve günlük hediyeden altın kazan!</div>`
+  +sec('👗 Kıyafetler','dress',DRESS)+sec('👠 Ayakkabılar','shoes',SHOES)+sec('👑 Takılar','acc',ACC)+sec('💇‍♀️ Saçlar','hair',HAIR)+sec('🐾 Dostlar','pet',PETS)+sec('🏞️ Mekanlar','bg',BGS)
+  +`<h3>✨ Sticker Paketleri</h3><div class="toggles">`+Object.entries(PACKS).map(([k,v])=>(S.owned||[]).includes('pk:'+k)?`<div class="tog sel" style="text-align:center">${v.n} ✅<br><small>${v.e.slice(0,5).join('')}</small></div>`
+   :`<button class="tog" data-act="pack" data-v="${k}">${v.n}<br><small>${v.e.slice(0,5).join('')}</small><br><b>💰 ${v.p}</b></button>`).join('')+'</div>'
+  +shopHtml('n').replace('🛍️ Dükkân','💅 Tırnak Salonu')+shopHtml('c').replace('🛍️ Dükkân','🎂 Pasta Atölyesi')}
+
+/* =====================  günlük hediye  ===================== */
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()};
+function openGift(){if(S.giftDay===today()){SND.no();toast('Bugünkü hediyeni aldın! Yarın yine gel ⏰',2200);return}
+ const r=Math.random(),n=r<.05?60:r<.2?30:r<.5?20:15;S.giftDay=today();save();
+ const m=$('#mBuy');$('#buyPrev').innerHTML='<div class="giftbox">🎁</div>';$('#buyName').textContent='Günlük Hediye!';$('#buyPrice').innerHTML='Kutuya dokun!';$('#buyOk').style.display='none';m.classList.add('show');
+ const g=m.querySelector('.giftbox');g.onclick=()=>{if(g.dataset.o)return;g.dataset.o=1;g.textContent='💰';g.classList.add('open');$('#buyName').textContent=`+${n} altın!`;$('#buyPrice').innerHTML=n>=60?'🤩 SÜPER HEDİYE!':'Yarın yine gel! ⏰';
+  addCoins(n);SND.star();confetti(30);setTimeout(renderPanel,400)}}
+
+/* =====================  hafıza kartları  ===================== */
+const MEMPOOL=['👗','👠','👑','💄','🎀','💎','👜','🦄','🌸','🍓','⭐','🧁','🐱','🌈','🦋','💅','🎂','🍭'];
+let mem=null;
+function memMenu(){$('#gTitle').textContent='🧠 Hafıza Kartları';gBody.innerHTML=`<div class="box" style="margin:auto"><div class="themebig">🧠</div><h2>Eşini Bul!</h2><p>Kartları çevir, aynı resimleri eşleştir. Ne kadar az hamle, o kadar çok altın! 💰</p>
+ <div class="row"><button class="big alt" data-act="mstart" data-v="6">😊 Kolay</button><button class="big" data-act="mstart" data-v="8">😎 Orta</button><button class="big alt" data-act="mstart" data-v="10">🤯 Zor</button></div></div>`}
+function memStart(n){const em=shuf(MEMPOOL).slice(0,n),deck=shuf([...em,...em]),cols=n===6?4:n===8?4:5,rows=deck.length/cols;
+ mem={n,deck,open:[],done:new Set(),moves:0,lock:false};
+ gBody.innerHTML=`<div class="content" style="flex:1;display:flex;flex-direction:column;align-items:center"><div class="memhud">👆 Hamle: <b id="mMoves">0</b> · ✅ Eşleşme: <b id="mPairs">0/${n}</b></div>
+  <div class="memgrid" id="memGrid" style="grid-template-columns:repeat(${cols},1fr);--rows:${rows};--cols:${cols}">${deck.map((e,i)=>`<button class="mcard" data-act="mflip" data-v="${i}"><div class="in"><div class="f back">💖</div><div class="f front">${e}</div></div></button>`).join('')}</div></div>`}
+function memFlip(i){const m=mem;if(!m||m.lock||m.done.has(i)||m.open.includes(i))return;const cs=$('#memGrid').children;cs[i].classList.add('open');m.open.push(i);tone(700,.06,'triangle',.1);
+ if(m.open.length<2)return;m.moves++;$('#mMoves').textContent=m.moves;const [a,b]=m.open;
+ if(m.deck[a]===m.deck[b]){m.done.add(a);m.done.add(b);m.open=[];setTimeout(()=>{cs[a].classList.add('done');cs[b].classList.add('done')},250);[880,1175].forEach((f,k)=>tone(f,.1,'triangle',.12,k*.08));
+  $('#mPairs').textContent=`${m.done.size/2}/${m.n}`;if(m.done.size===m.deck.length)setTimeout(memWin,600)}
+ else{m.lock=true;setTimeout(()=>{cs[a].classList.remove('open');cs[b].classList.remove('open');m.open=[];m.lock=false},850)}}
+function memWin(){const m=mem,extra=m.moves-m.n,st=extra<=m.n*.5?3:extra<=m.n?2:1,coin=m.n+[0,0,m.n/2,m.n][st]|0;
+ gameResult('🧠',`${STARS(st)}`,`${m.moves} hamlede bitirdin!`,coin,'mmenu');checkTasks('hafiza')}
+function gameResult(emo,title,txt,coin,again){addCoins(coin);SND.star();confetti(30);
+ gBody.insertAdjacentHTML('beforeend',`<div class="resWrap" style="border-radius:30px"><div class="result"><div class="themebig">${emo}</div><h2>${title}</h2><p>${txt}</p><p style="font-size:24px">+${coin} 💰</p>
+  <div class="row"><button class="big alt" data-act="${again}">🔁 Tekrar</button><button class="big" data-act="gclose">Bitir 🎉</button></div></div></div>`)}
+
+/* =====================  alışveriş yağmuru (yakala)  ===================== */
+const GOOD=['👗','👠','👑','💄','🎀','👜','💅','🧁'],BONUS=['💎','⭐'];
+let yk=null;
+function ykMenu(){$('#gTitle').textContent='🛍️ Alışveriş Yağmuru';gBody.innerHTML=`<div class="box" style="margin:auto"><div class="themebig">🛍️</div><h2>Yağanları Yakala!</h2>
+ <p>Parmağını kaydırarak çantayı oynat. 👗👠👑 = 1 puan · 💎⭐ = 3 puan</p><p>🌧️ bulutlarından kaç! 3 canın var ❤️❤️❤️</p><button class="big" data-act="ystart">Başla! 🚀</button></div>`}
+function ykStart(){stopYk();gBody.innerHTML=`<div class="catch" id="catch"><div class="chud"><span id="ySc">⭐ 0</span><span id="yLv">❤️❤️❤️</span><span id="yTm">⏱️ 45</span></div><div class="bag" id="bag">🛍️</div></div>`;
+ const box=$('#catch'),bag=$('#bag'),W=()=>box.clientWidth,H=()=>box.clientHeight;
+ yk={items:[],score:0,lives:3,t:45,x:W()/2,tx:W()/2,last:performance.now(),spawn:0,run:true};
+ const mv=e=>{const r=box.getBoundingClientRect();yk.tx=Math.max(30,Math.min(r.width-30,e.clientX-r.left))};box.addEventListener('pointerdown',mv);box.addEventListener('pointermove',mv);
+ const loop=now=>{if(!yk||!yk.run)return;const dt=Math.min(.05,(now-yk.last)/1000);yk.last=now;yk.t-=dt;const k=H()/600,el=45-yk.t;
+  yk.x+=(yk.tx-yk.x)*Math.min(1,dt*14);bag.style.transform=`translate3d(${yk.x-36}px,0,0)`;
+  yk.spawn-=dt;if(yk.spawn<=0){yk.spawn=Math.max(.32,.9-el*.014);const r=Math.random(),e=r<.18?'🌧️':r<.3?rnd(BONUS):rnd(GOOD);const d=document.createElement('div');d.className='drop';d.textContent=e;box.appendChild(d);
+   yk.items.push({d,e,x:30+Math.random()*(W()-60),y:-50,v:(150+el*4+Math.random()*60)*k})}
+  const by=H()-70;
+  for(const it of yk.items){it.y+=it.v*dt;it.d.style.transform=`translate3d(${it.x-22}px,${it.y}px,0)`;
+   if(!it.gone&&it.y>by-30&&it.y<by+30&&Math.abs(it.x-yk.x)<52){it.gone=1;it.d.remove();
+    if(it.e==='🌧️'){yk.lives--;tone(200,.2,'sawtooth',.08);box.classList.remove('hurt');void box.offsetWidth;box.classList.add('hurt')}
+    else{const p=BONUS.includes(it.e)?3:1;yk.score+=p;tone(p>1?1320:880,.08,'triangle',.12);pop(box,it.x,by-30,'+'+p)}}
+   if(!it.gone&&it.y>H()+10){it.gone=1;it.d.remove()}}
+  yk.items=yk.items.filter(i=>!i.gone);
+  $('#ySc').textContent='⭐ '+yk.score;$('#yLv').textContent='❤️'.repeat(Math.max(0,yk.lives))+'🤍'.repeat(3-Math.max(0,yk.lives));$('#yTm').textContent='⏱️ '+Math.max(0,Math.ceil(yk.t));
+  if(yk.t<=0||yk.lives<=0){yk.run=false;const sc=yk.score,coin=Math.min(30,Math.max(2,Math.floor(sc/2)));
+   gameResult(sc>=40?'🏆':'🛍️',`${sc} puan!`,yk.lives<=0?'Bulutlar seni yakaladı ama harikaydın!':'Süre doldu, süper topladın!',coin,'ystart');if(sc>=40)checkTasks('yakala40');return}
+  requestAnimationFrame(loop)};
+ requestAnimationFrame(loop)}
+function stopYk(){if(yk)yk.run=false}
+function pop(box,x,y,t){const d=document.createElement('div');d.className='hitpop';d.textContent=t;d.style.left=x+'px';d.style.top=y+'px';box.appendChild(d);setTimeout(()=>d.remove(),700)}
+
+/* =====================  dans (ritim)  ===================== */
+const LANES=[['💖','#ff7ab5'],['⭐','#ffd23f'],['🎀','#a96cf5']];
+let dn=null;
+function dnMenu(){$('#gTitle').textContent='💃 Dans Partisi';gBody.innerHTML=`<div class="box" style="margin:auto"><div class="themebig">💃</div><h2>Ritmi Yakala!</h2>
+ <p>Düşen şekiller çizgiye gelince altındaki butona bas! Arka arkaya bilirsen kombo yaparsın 🔥</p><div class="row"><button class="big alt" data-act="dnstart" data-v="96">🐢 Yavaş</button><button class="big" data-act="dnstart" data-v="118">🐇 Hızlı</button></div></div>`}
+function dnStart(bpm){stopDn();audio();const beat=60/bpm,notes=[];
+ for(let b=4;b<52;b++){if(Math.random()<.78)notes.push({t:b*beat,l:(Math.random()*3)|0});if(b>20&&Math.random()<.22)notes.push({t:(b+.5)*beat,l:(Math.random()*3)|0})}
+ gBody.innerHTML=`<div class="dance"><div class="dstage"><svg viewBox="-170 -600 340 620" preserveAspectRatio="xMidYMid meet"><g id="dDoll"><g transform="translate(-150 -580)">${stk(doll(S))}</g></g></svg><div class="dhud"><b id="dSc">0</b><span id="dCb"></span></div><div id="dFb" class="dfb"></div></div>
+  <div class="lanes" id="lanes">${LANES.map((l,i)=>`<div class="lane" style="--lc:${l[1]}"></div>`).join('')}<div class="hitline"></div>
+  <div class="lbtns">${LANES.map((l,i)=>`<button class="lbtn" data-l="${i}" style="--lc:${l[1]}">${l[0]}</button>`).join('')}</div></div></div>`;
+ const lanes=$('#lanes'),fall=1.7,melody=[523,587,659,784,880,784,659,587];
+ dn={notes,score:0,combo:0,best:0,hit:0,t0:performance.now()/1000+.6,run:true,beat,end:52*beat+1.2};
+ for(const n of notes){const d=document.createElement('div');d.className='note';d.textContent=LANES[n.l][0];d.style.left=`calc(${n.l*33.33}% + 16.66% - 26px)`;lanes.appendChild(d);n.d=d}
+ for(let b=0;b<52;b++){tone(b%4===0?131:196,.12,'triangle',.07,.6+b*beat);if(b%2)tone(1800,.02,'square',.015,.6+b*beat)}
+ notes.forEach((n,i)=>tone(melody[(i*3+n.l)%melody.length],.16,'sine',.06,.6+n.t));
+ const press=l=>{if(!dn||!dn.run)return;const now=performance.now()/1000-dn.t0;let best=null,bd=9;
+  for(const n of dn.notes)if(!n.done&&n.l===l){const d=Math.abs(n.t-now);if(d<bd){bd=d;best=n}}
+  const b=lanes.querySelectorAll('.lbtn')[l];b.classList.remove('hit');void b.offsetWidth;b.classList.add('hit');
+  if(best&&bd<.2){best.done=1;best.d.remove();const pf=bd<.09;dn.score+=pf?100:50;dn.combo++;dn.hit++;dn.best=Math.max(dn.best,dn.combo);fb(pf?'MÜKEMMEL! ✨':'İyi! 👍',pf);
+   const dl=$('#dDoll');dl.classList.remove('dmove','dmove2');void dl.getBoundingClientRect();dl.classList.add(dn.combo%2?'dmove':'dmove2');if(dn.combo===30)checkTasks('combo30')}
+  else{dn.combo=0;fb('Hop! 😅',false)}};
+ lanes.querySelectorAll('.lbtn').forEach(b=>b.addEventListener('pointerdown',e=>{e.preventDefault();press(+b.dataset.l)}));
+ const loop=()=>{if(!dn||!dn.run)return;const now=performance.now()/1000-dn.t0,H=lanes.clientHeight,hy=H-110;
+  for(const n of dn.notes){if(n.done)continue;const y=hy-(n.t-now)/fall*hy;n.d.style.transform=`translate3d(0,${y-26}px,0)`;n.d.style.opacity=y<-60?0:1;
+   if(now-n.t>.22){n.done=1;n.d.classList.add('miss');setTimeout(()=>n.d.remove(),300);dn.combo=0}}
+  $('#dSc').textContent=dn.score;$('#dCb').textContent=dn.combo>=3?`🔥 ${dn.combo} kombo`:'';
+  if(now>dn.end){dn.run=false;const tot=dn.notes.length,r=dn.hit/tot,st=r>=.9?3:r>=.65?2:1,coin=Math.min(30,Math.round(dn.score/140)+2);
+   gameResult('💃',STARS(st),`${dn.hit}/${tot} doğru · En iyi kombo: ${dn.best} 🔥`,coin,'dnmenu');return}
+  requestAnimationFrame(loop)};requestAnimationFrame(loop)}
+function fb(t,pf){const f=$('#dFb');if(!f)return;f.textContent=t;f.className='dfb show'+(pf?' pf':'');clearTimeout(fb.t);fb.t=setTimeout(()=>f.className='dfb',450)}
+function stopDn(){if(dn)dn.run=false}
 
 /* =====================  başlangıç  ===================== */
 function openStart(){$('#nameIn').value=S.name||'';$('#mStart').classList.add('show')}
