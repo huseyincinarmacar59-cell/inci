@@ -1654,7 +1654,7 @@ function esDone(){const done=es.reqs.filter(r=>r.ok()).length,n=es.reqs.length,s
  setTimeout(()=>{gameResult(['','🙂','😊','😍'][st],STARS(st),`${done}/${n} istek tamam! ${st===3?'Müşteri yeni haline bayıldı! 💖':'Müşteri teşekkür etti!'}`,coin,'esgo','👩‍⚕️ Sonraki Müşteri');if(st===3)checkTasks('es3')},900)}
 /* =====================  başlangıç  ===================== */
 function openStart(){$('#nameIn').value=S.name||'';$('#mStart').classList.add('show')}
-const ADMH='b1102bfaec97ffda2655208fce47947a2adacfb267613767239447734be9d87c',YANH='ebf348e22cc45de0aa5e0a7ccb318074e9e08a5c9beaf28b8a60e1a88455f816';
+const ADMH='b1102bfaec97ffda2655208fce47947a2adacfb267613767239447734be9d87c';
 async function sha(t){try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){return ''}}
 let admArm=0;
 function cfgItems(){const out=[];for(const [cat,ob] of Object.entries(LOOK))for(const [k,it] of Object.entries(ob))if(it.basePrice)out.push({id:'p:'+it.pid,n:it.n,base:it.basePrice,cur:it.price,e:{dress:'👗',shoes:'👠',acc:'👑',hair:'💇‍♀️',pet:'🐾',bg:'🏞️'}[cat]||'✨'});
@@ -1676,8 +1676,8 @@ function cfgAct(a,v){const c=S.cfg;switch(a){
  case 'cfgsave':document.querySelectorAll('#cfgBody [data-pid]').forEach(i=>{const n=Math.max(0,parseInt(i.value)||0);c.prices[i.dataset.pid]=n});toast('💾 Fiyatlar kaydedildi!',1500);break;
  case 'cfgdef':c.prices={};toast('↩️ Fiyatlar varsayılana döndü',1500);break}
  applyCfg();save();updCoins();renderPanel();admInfo();openCfg();SND.pop()}
-function admInfo(){if(S.admin&&!S.role)S.role='admin';const r=S.role;$('#admInfo').innerHTML=`💰 ${S.coins||0} altın · ⭐ ${stars()}/${TASKS.length} görev · 🛍️ ${(S.owned||[]).length} eşya · ✖️ ${S.cfg.mult} altın çarpanı`;
- $('#btnAdm').style.display=r?'':'none';$('#btnAdm').textContent=r==='yanci'?'🤝':'🛠️';$('#admTitle').textContent=r==='yanci'?'🤝 Yancı Modu':'🛠️ Yönetici Modu';
+function admInfo(){if(S.role!=='admin')S.role=S.admin?'admin':null;const r=S.role;$('#admInfo').innerHTML=`💰 ${S.coins||0} altın · ⭐ ${stars()}/${TASKS.length} görev · 🛍️ ${(S.owned||[]).length} eşya · ✖️ ${S.cfg.mult} altın çarpanı`;
+ $('#btnAdm').style.display=r?'':'none';$('#btnAdm').textContent='🛠️';$('#admTitle').textContent='🛠️ Yönetici Modu';
  document.querySelectorAll('#mAdmin .ao').forEach(b=>b.style.display=r==='admin'?'':'none')}
 function openAdmin(){admInfo();$('#mAdmin').classList.add('show');SND.star()}
 function admin(v){switch(v){
@@ -1696,7 +1696,7 @@ function admin(v){switch(v){
   try{localStorage.removeItem(KEY);localStorage.removeItem(KEY+'-gal')}catch(e){}location.replace(location.pathname+'?r='+Date.now());return}
  SND.pop();confetti(14);save();renderStage();renderPanel();updCoins();admInfo()}
 $('#mAdmin').querySelector('[data-close]').addEventListener('click',()=>{if(!S.name)setTimeout(openStart,200)});
-$('#startBtn').onclick=async()=>{const raw=$('#nameIn').value.trim(),h=raw?await sha(raw):'';if(h===ADMH||h===YANH){S.role=h===ADMH?'admin':'yanci';S.admin=S.role==='admin';save();$('#mStart').classList.remove('show');$('#nameIn').blur();openAdmin();return}
+$('#startBtn').onclick=async()=>{const raw=$('#nameIn').value.trim(),h=raw?await sha(raw):'';if(h===ADMH){S.role='admin';S.admin=true;save();$('#mStart').classList.remove('show');$('#nameIn').blur();openAdmin();return}
  S.name=(raw||'Işıltı').slice(0,14);save();$('#mStart').classList.remove('show');$('#nameIn').blur();renderStage(true);SND.star();confetti(24)};
 $('#nameIn').addEventListener('keydown',e=>{if(e.key==='Enter')$('#startBtn').click()});
 $('#nameChip').onclick=openStart;
@@ -1712,7 +1712,8 @@ function doFit(){const r=$('#stageWrap').getBoundingClientRect();const wh=Math.r
  const k=Math.max(1,h/640)*1.002;$('#bgWrap').querySelectorAll('use').forEach(u=>u.style.display=w>401?'':'none');$('#bgWrap').setAttribute('transform',`translate(200 320) scale(${k.toFixed(4)}) translate(-200 -320)`)}
 addEventListener('resize',fit);addEventListener('orientationchange',()=>{lastWH='';setTimeout(fit,350);setTimeout(fit,800)});
 if(window.ResizeObserver)new ResizeObserver(fit).observe($('#stageWrap'));
-const APPV='202611151116'/* yeni sürüm kontrolü: önbellekte eski sürüm kaldıysa kendini yeniler */
+const APPV='202611151935';
+/* yeni sürüm kontrolü: önbellekte eski sürüm kaldıysa kendini yeniler */
 async function checkUpdate(){try{const r=await fetch(location.pathname+'?t='+Date.now(),{cache:'no-store'});const t=await r.text();const m=t.match(/const APPV='(\d+)'/);
  if(m&&m[1]!==APPV){saveNow();toast('✨ Yeni sürüm geldi! Yükleniyor...',2000);setTimeout(()=>location.replace(location.pathname+'?v='+m[1]),1200)}}catch(e){}}
 setTimeout(checkUpdate,1500);document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate()});
