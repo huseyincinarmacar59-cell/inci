@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Susen Butik</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%20%3Cdefs%3E%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%20%3Cstop%20offset%3D%220%22%20stop-color%3D%22%2393587a%22/%3E%20%3Cstop%20offset%3D%221%22%20stop-color%3D%22%235e3449%22/%3E%20%3C/linearGradient%3E%20%3ClinearGradient%20id%3D%22gd%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%20%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f6dca4%22/%3E%20%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23d9a95b%22/%3E%20%3C/linearGradient%3E%20%3C/defs%3E%20%3Crect%20width%3D%22512%22%20height%3D%22512%22%20fill%3D%22url%28%23bg%29%22/%3E%20%3Ccircle%20cx%3D%22256%22%20cy%3D%22256%22%20r%3D%22214%22%20fill%3D%22none%22%20stroke%3D%22%23f3b6b0%22%20stroke-opacity%3D%22.35%22%20stroke-width%3D%224%22/%3E%20%3Cg%20fill%3D%22none%22%20stroke%3D%22url%28%23gd%29%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%20%3Cg%20transform%3D%22translate%280%2C-14%29%22%3E%3Cpath%20d%3D%22M256%20158%20V140%20C256%20122%20274%20110%20291%20117%20C307%20124%20309%20148%20293%20156%22%20stroke-width%3D%2216%22/%3E%20%3Cpath%20d%3D%22M256%20160%20L104%20280%20Q92%20292%20108%20294%20H404%20Q420%20292%20408%20280%20Z%22%20stroke-width%3D%2217%22/%3E%3C/g%3E%20%3Cpath%20transform%3D%22translate%280%2C14%29%22%20d%3D%22M300%20336%20C292%20318%20268%20312%20250%20316%20C226%20321%20218%20344%20238%20356%20C254%20366%20286%20368%20296%20390%20C306%20414%20282%20432%20256%20432%20C234%20432%20216%20422%20208%20406%22%20stroke-width%3D%2224%22/%3E%20%3C/g%3E%20%3Ccircle%20cx%3D%22352%22%20cy%3D%22352%22%20r%3D%226%22%20fill%3D%22%23f6dca4%22/%3E%20%3Ccircle%20cx%3D%22166%22%20cy%3D%22396%22%20r%3D%224%22%20fill%3D%22%23f6dca4%22%20fill-opacity%3D%22.8%22/%3E%20%3C/svg%3E">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#5e3449">
+<meta name="apple-mobile-web-app-title" content="Susen Butik">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -49,6 +54,7 @@ body.working #dialog{bottom:calc(env(safe-area-inset-bottom) + 128px)}
 #fade{position:absolute;inset:0;background:#2b1d25;opacity:0;transition:opacity .3s}
 .screen{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(60,32,46,.45);pointer-events:auto;padding:20px}
 .card{background:var(--cream);border-radius:28px;padding:28px 24px;width:min(460px,100%);max-height:92vh;overflow:auto;box-shadow:0 14px 40px rgba(40,20,30,.4);text-align:center;border:4px solid #f0d9c8}
+.card .logo{width:120px;height:120px;border-radius:28px;display:block;margin:0 auto 10px;box-shadow:0 6px 18px rgba(80,40,60,.3)}
 .card h1{font-size:44px;margin:0;color:var(--plum);letter-spacing:.5px}
 .card h2{font-size:28px;margin:0 0 6px;color:var(--plum)}
 .card p{margin:8px 0;line-height:1.45}
@@ -299,7 +305,7 @@ function buildFront(){
  // sign
  const sc2=document.createElement('canvas');sc2.width=1024;sc2.height=256;const signTex=new THREE.CanvasTexture(sc2);
  function drawSign(){const x=sc2.getContext('2d');x.clearRect(0,0,1024,256);x.fillStyle='#7a4a63';const r=110;x.beginPath();x.moveTo(r,0);x.arcTo(1024,0,1024,256,r);x.arcTo(1024,256,0,256,r);x.arcTo(0,256,0,0,r);x.arcTo(0,0,1024,0,r);x.fill();
-  x.strokeStyle='#e8c38a';x.lineWidth=10;x.stroke();x.fillStyle='#fff3e6';x.font='600 130px Fredoka, sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText('Susen Butik',512,138);signTex.needsUpdate=true;}
+  x.strokeStyle='#e8c38a';x.lineWidth=10;x.stroke();x.fillStyle='#fff3e6';x.font='600 120px Fredoka, sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText('Susen Butik',560,138);x.strokeStyle='#e8c38a';x.lineWidth=12;x.lineCap='round';x.lineJoin='round';x.beginPath();x.moveTo(130,92);x.lineTo(130,80);x.bezierCurveTo(130,62,150,54,162,64);x.bezierCurveTo(172,74,166,90,154,92);x.stroke();x.beginPath();x.moveTo(130,94);x.lineTo(64,170);x.lineTo(196,170);x.closePath();x.stroke();signTex.needsUpdate=true;}
  drawSign();if(document.fonts&&document.fonts.load)document.fonts.load('600 130px Fredoka').then(drawSign).catch(()=>{});
  const sg=new THREE.Mesh(new THREE.PlaneGeometry(2.4,.6),new THREE.MeshStandardMaterial({map:signTex,transparent:true,roughness:.6}));sg.position.set(0,2.92,6.94);sg.rotation.y=Math.PI;scene.add(sg);
  // rug
@@ -562,7 +568,7 @@ function hideOverlay(){overlay.style.display='none';}
 function applyUpgrades(){for(const id in upObj)upObj[id].forEach(o=>o.visible=!!G.up[id]);}
 function titleScreen(){S.phase='title';$('#hud').style.opacity=0;showCust(false);showNav(false);hideDialog();
  const sv=load();
- showOverlay(`<h1>Susen Butik</h1><div class="sub">Kasaya gelen müşteriyi dinle, arkaya al; giydir, saçını ve makyajını yap.</div>
+ showOverlay(`<svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"> <defs> <linearGradient id="lbg" x1="0" y1="0" x2="0" y2="1"> <stop offset="0" stop-color="#93587a"/> <stop offset="1" stop-color="#5e3449"/> </linearGradient> <linearGradient id="lgd" x1="0" y1="0" x2="1" y2="1"> <stop offset="0" stop-color="#f6dca4"/> <stop offset="1" stop-color="#d9a95b"/> </linearGradient> </defs> <rect width="512" height="512" fill="url(#lbg)"/> <circle cx="256" cy="256" r="214" fill="none" stroke="#f3b6b0" stroke-opacity=".35" stroke-width="4"/> <g fill="none" stroke="url(#lgd)" stroke-linecap="round" stroke-linejoin="round"> <g transform="translate(0,-14)"><path d="M256 158 V140 C256 122 274 110 291 117 C307 124 309 148 293 156" stroke-width="16"/> <path d="M256 160 L104 280 Q92 292 108 294 H404 Q420 292 408 280 Z" stroke-width="17"/></g> <path transform="translate(0,14)" d="M300 336 C292 318 268 312 250 316 C226 321 218 344 238 356 C254 366 286 368 296 390 C306 414 282 432 256 432 C234 432 216 422 208 406" stroke-width="24"/> </g> <circle cx="352" cy="352" r="6" fill="#f6dca4"/> <circle cx="166" cy="396" r="4" fill="#f6dca4" fill-opacity=".8"/> </svg><h1>Susen Butik</h1><div class="sub">Kasaya gelen müşteriyi dinle, arkaya al; giydir, saçını ve makyajını yap.</div>
  <div class="how"><div><b>1.</b> Müşterinin isteğini kasada dikkatle oku, sonra yazı kaybolur.</div>
  <div><b>2.</b> Arka odada dolaptan kıyafet, ayakkabılıktan ayakkabı seç; kuaförde peruk modeli ve boya, makyaj masasında ruj, far, allık.</div>
  <div><b>3.</b> Sabır çubuğu biterse müşteri kızıp gider. Müşteriye dokunursan isteğini tekrar söyler ama sabrı azalır.</div>
