@@ -248,6 +248,7 @@ button.chip{cursor:pointer}
 .magicfx{position:absolute;inset:0;display:grid;place-items:center;font-size:140px;pointer-events:none;z-index:4;animation:magic .7s ease forwards}
 @keyframes magic{0%{opacity:0;transform:scale(.3) rotate(-30deg)}40%{opacity:1;transform:scale(1.2) rotate(10deg)}100%{opacity:0;transform:scale(1.6) rotate(30deg)}}
 .ksteps.k7{grid-template-columns:repeat(7,1fr)}
+.admgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}.admgrid .tog{min-width:0;font-size:16px;padding:12px}
 .themebig{font-size:84px;line-height:1;margin:6px 0}
 #flash{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:60}
 #flash.go{animation:flash .5s ease}
@@ -270,6 +271,7 @@ button.chip{cursor:pointer}
    <div class="chip star">⭐ <span id="starTxt">0</span></div>
    <button class="chip star" id="coinChip" data-act="tab" data-v="magaza">💰 <span id="coinTxt">0</span></button>
    <div class="sp"></div>
+   <button class="tbtn" id="btnAdm" aria-label="Yönetici" data-act="adm" data-v="open" style="display:none">🛠️</button>
    <button class="tbtn" id="btnRand" aria-label="Sürpriz kombin">🎲</button>
    <button class="tbtn" id="btnGal" aria-label="Galeri">🖼️</button>
    <button class="tbtn cam" id="btnPhoto" aria-label="Fotoğraf çek">📸</button>
@@ -324,6 +326,14 @@ button.chip{cursor:pointer}
 
 <div class="modal" id="mBuy"><div class="box"><div id="buyPrev" class="buyprev"></div><h2 id="buyName"></h2><p id="buyPrice"></p>
  <div class="row"><button class="big alt" data-close>Kapat</button><button class="big" id="buyOk">Satın Al 💰</button></div></div></div>
+<div class="modal" id="mAdmin"><div class="box"><h2>🛠️ Yönetici Modu</h2><p id="admInfo"></p>
+ <div class="admgrid">
+  <button class="tog" data-act="adm" data-v="c1k">💰 +1.000 altın</button><button class="tog" data-act="adm" data-v="c10k">💰 +10.000 altın</button>
+  <button class="tog" data-act="adm" data-v="shop">🛍️ Mağazadaki her şeyi aç</button><button class="tog" data-act="adm" data-v="tasks">⭐ Tüm görevleri tamamla</button>
+  <button class="tog" data-act="adm" data-v="m3">💎 Tüm seviyeleri aç</button><button class="tog" data-act="adm" data-v="butik">🏬 Butiği tam süsle</button>
+  <button class="tog" data-act="adm" data-v="gift">🎁 Günlük hediyeyi yenile</button><button class="tog" data-act="adm" data-v="hard">🔥 Müşterileri zorlaştır</button>
+  <button class="tog" data-act="adm" data-v="exit">🚪 Yönetici modundan çık</button><button class="tog" data-act="adm" data-v="reset" style="color:#e8406a">🧹 Her şeyi sıfırla</button>
+ </div><button class="big" data-close>Kapat</button></div></div>
 <div class="modal" id="mGal"><div class="box">
  <h2>Galerim 🖼️</h2>
  <div id="galList" class="gal"></div>
@@ -1245,6 +1255,7 @@ function addCream(x,y){const t={e:'krema',x:Math.round(x),y:Math.round(y),c:S.ca
 function gameAct(a,v,btn){
  switch(a){
   case 'game':openGame(v);return true;
+  case 'adm':admin(v);return true;
   case 'gift':openGift();return true;
   case 'pack':{const pk=PACKS[v];if(!pk||(S.owned||[]).includes('pk:'+v))return true;if((S.coins||0)<pk.p){SND.no();toast(`💰 ${pk.p} altın lazım! Mini oyun oyna 🎮`,2200);return true}
    S.coins-=pk.p;S.owned=[...(S.owned||[]),'pk:'+v];save();updCoins();SND.star();confetti(20);toast(`${pk.n} senin oldu! Sticker sekmesine bak ✨`,2400);renderPanel();checkTasks();return true}
@@ -1638,7 +1649,27 @@ function esDone(){const done=es.reqs.filter(r=>r.ok()).length,n=es.reqs.length,s
  setTimeout(()=>{gameResult(['','🙂','😊','😍'][st],STARS(st),`${done}/${n} istek tamam! ${st===3?'Müşteri yeni haline bayıldı! 💖':'Müşteri teşekkür etti!'}`,coin,'esgo','👩‍⚕️ Sonraki Müşteri');if(st===3)checkTasks('es3')},900)}
 /* =====================  başlangıç  ===================== */
 function openStart(){$('#nameIn').value=S.name||'';$('#mStart').classList.add('show')}
-$('#startBtn').onclick=()=>{S.name=($('#nameIn').value.trim()||'Işıltı').slice(0,14);save();$('#mStart').classList.remove('show');$('#nameIn').blur();renderStage(true);SND.star();confetti(24)};
+const ADMH='b1102bfaec97ffda2655208fce47947a2adacfb267613767239447734be9d87c';
+async function sha(t){try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){return ''}}
+let admArm=0;
+function admInfo(){$('#admInfo').innerHTML=`💰 ${S.coins||0} altın · ⭐ ${stars()}/${TASKS.length} görev · 🛍️ ${(S.owned||[]).length} eşya`;$('#btnAdm').style.display=S.admin?'':'none'}
+function openAdmin(){admInfo();$('#mAdmin').classList.add('show');SND.star()}
+function admin(v){switch(v){
+ case 'open':openAdmin();return;
+ case 'c1k':addCoins(1000);break; case 'c10k':addCoins(10000);break;
+ case 'shop':{const o=new Set(S.owned||[]);for(const ob of Object.values(LOOK))for(const it of Object.values(ob))if(it.price)o.add('p:'+it.pid);Object.keys(PACKS).forEach(k=>o.add('pk:'+k));SHOP.forEach(x=>o.add(x.id));S.owned=[...o];toast('🛍️ Her şey açıldı!',1800);break}
+ case 'tasks':S.done=TASKS.map(t=>t.id);toast('⭐ Tüm görevler tamam, kilitler açıldı!',1800);break;
+ case 'm3':S.m3max=Math.max(S.m3max||1,40);toast('💎 40 seviye açıldı!',1600);break;
+ case 'butik':S.butikDay=Math.max(S.butikDay||1,6);toast('🏬 Butik tam süslendi!',1600);break;
+ case 'gift':S.giftDay=null;toast('🎁 Günlük hediye yenilendi!',1600);break;
+ case 'hard':S.served=Math.max(S.served||0,10);S.kfDone=Math.max(S.kfDone||0,6);S.esDone=Math.max(S.esDone||0,6);toast('🔥 Müşteriler artık en zor seviyede!',1800);break;
+ case 'exit':S.admin=false;save();$('#mAdmin').classList.remove('show');admInfo();toast('🚪 Yönetici modundan çıkıldı',1600);return;
+ case 'reset':if(Date.now()-admArm>3000){admArm=Date.now();SND.no();toast('⚠️ Emin misin? Silmek için 3 saniye içinde tekrar bas',2800);return}
+  try{localStorage.removeItem(KEY);localStorage.removeItem(KEY+'-gal')}catch(e){}location.replace(location.pathname+'?r='+Date.now());return}
+ SND.pop();confetti(14);save();renderStage();renderPanel();updCoins();admInfo()}
+$('#mAdmin').querySelector('[data-close]').addEventListener('click',()=>{if(!S.name)setTimeout(openStart,200)});
+$('#startBtn').onclick=async()=>{const raw=$('#nameIn').value.trim();if(raw&&await sha(raw)===ADMH){S.admin=true;save();$('#mStart').classList.remove('show');$('#nameIn').blur();openAdmin();return}
+ S.name=(raw||'Işıltı').slice(0,14);save();$('#mStart').classList.remove('show');$('#nameIn').blur();renderStage(true);SND.star();confetti(24)};
 $('#nameIn').addEventListener('keydown',e=>{if(e.key==='Enter')$('#startBtn').click()});
 $('#nameChip').onclick=openStart;
 document.addEventListener('gesturestart',e=>e.preventDefault());
@@ -1653,12 +1684,12 @@ function doFit(){const r=$('#stageWrap').getBoundingClientRect();const wh=Math.r
  const k=Math.max(1,h/640)*1.002;$('#bgWrap').querySelectorAll('use').forEach(u=>u.style.display=w>401?'':'none');$('#bgWrap').setAttribute('transform',`translate(200 320) scale(${k.toFixed(4)}) translate(-200 -320)`)}
 addEventListener('resize',fit);addEventListener('orientationchange',()=>{lastWH='';setTimeout(fit,350);setTimeout(fit,800)});
 if(window.ResizeObserver)new ResizeObserver(fit).observe($('#stageWrap'));
-const APPV='202611151048';
+const APPV='202611151107'
 /* yeni sürüm kontrolü: önbellekte eski sürüm kaldıysa kendini yeniler */
 async function checkUpdate(){try{const r=await fetch(location.pathname+'?t='+Date.now(),{cache:'no-store'});const t=await r.text();const m=t.match(/const APPV='(\d+)'/);
  if(m&&m[1]!==APPV){saveNow();toast('✨ Yeni sürüm geldi! Yükleniyor...',2000);setTimeout(()=>location.replace(location.pathname+'?v='+m[1]),1200)}}catch(e){}}
 setTimeout(checkUpdate,1500);document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate()});
-renderStage();renderPanel();doFit();
+renderStage();renderPanel();doFit();admInfo();
 if(!S.name)openStart();
 </script>
 </body>
