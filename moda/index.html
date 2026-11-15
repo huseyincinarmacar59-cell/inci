@@ -1653,6 +1653,11 @@ function doFit(){const r=$('#stageWrap').getBoundingClientRect();const wh=Math.r
  const k=Math.max(1,h/640)*1.002;$('#bgWrap').querySelectorAll('use').forEach(u=>u.style.display=w>401?'':'none');$('#bgWrap').setAttribute('transform',`translate(200 320) scale(${k.toFixed(4)}) translate(-200 -320)`)}
 addEventListener('resize',fit);addEventListener('orientationchange',()=>{lastWH='';setTimeout(fit,350);setTimeout(fit,800)});
 if(window.ResizeObserver)new ResizeObserver(fit).observe($('#stageWrap'));
+const APPV='202611151048';
+/* yeni sürüm kontrolü: önbellekte eski sürüm kaldıysa kendini yeniler */
+async function checkUpdate(){try{const r=await fetch(location.pathname+'?t='+Date.now(),{cache:'no-store'});const t=await r.text();const m=t.match(/const APPV='(\d+)'/);
+ if(m&&m[1]!==APPV){saveNow();toast('✨ Yeni sürüm geldi! Yükleniyor...',2000);setTimeout(()=>location.replace(location.pathname+'?v='+m[1]),1200)}}catch(e){}}
+setTimeout(checkUpdate,1500);document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate()});
 renderStage();renderPanel();doFit();
 if(!S.name)openStart();
 </script>
