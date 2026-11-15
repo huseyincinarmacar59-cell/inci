@@ -252,7 +252,8 @@ button.chip{cursor:pointer}
 .cfgprices{display:grid;gap:8px;max-height:40vh;overflow:auto;padding:4px}.cfgprices label{display:flex;align-items:center;justify-content:space-between;gap:10px;font-weight:800;background:var(--soft);border-radius:16px;padding:6px 8px 6px 14px}
 .mxtabs{display:grid;grid-template-columns:repeat(auto-fit,minmax(70px,1fr));gap:8px}.mxtabs .tog{min-width:0;padding:6px 2px;font-size:13px;text-align:center}.mxtabs .tog i{display:block;font-style:normal;font-size:26px}
 .mxtabs .tog.done:not(.sel){background:#e6ffef;box-shadow:0 0 0 4px #fff,0 0 0 7px #9be3b6}
-.mxbub .reqs span.oth{background:#fff3c4;box-shadow:0 0 0 2px #ffe066 inset}.mxbub .reqs span.oth.ok{background:#e6ffef;box-shadow:0 0 0 2px #9be3b6 inset}.mxbub{max-height:34%;overflow:auto}
+.mxbub .reqs span.oth{background:#fff3c4;box-shadow:0 0 0 2px #ffe066 inset}.mxbub .reqs span.oth.ok{background:#e6ffef;box-shadow:0 0 0 2px #9be3b6 inset}.mxbub{max-height:38%;overflow:auto}
+.mxtime{position:relative;height:24px;border-radius:999px;background:#f1f1f1;overflow:hidden;margin-bottom:6px}.mxtime i{position:absolute;left:0;top:0;bottom:0;transition:width .9s linear,background .3s}.mxtime b{position:relative;display:block;text-align:center;font-size:14px;line-height:24px}
 .gcard.mxcard{background:linear-gradient(#e3d4ff,#ffd6ea);margin-bottom:18px;width:100%}.gcard.mxcard i{animation:wiggle 1.6s ease-in-out infinite}
 .admgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}.admgrid .tog{min-width:0;font-size:16px;padding:12px}
 .themebig{font-size:84px;line-height:1;margin:6px 0}
@@ -972,7 +973,7 @@ $('#galList').addEventListener('click',e=>{const im=e.target.closest('img');if(!
 /* =====================  mini oyunlar  ===================== */
 const gEl=$('#game'),gBody=$('#gBody');
 function openGame(id){SND.tap();gEl.classList.add('show');G[id].open()}
-function closeGame(){mx=null;NST=null;CST=null;if(kf)kf.combo=false;if(es)es.combo=false;if(bt&&bt.combo)bt.combo=false;if(typeof bt==='object'&&bt&&bt.tm)clearInterval(bt.tm);if(m3)m3.busy=true;gEl.classList.remove('show');gBody.innerHTML='';renderPanel()}
+function closeGame(){if(mx&&mx.tm)clearInterval(mx.tm);mx=null;NST=null;CST=null;if(kf)kf.combo=false;if(es)es.combo=false;if(bt&&bt.combo)bt.combo=false;if(typeof bt==='object'&&bt&&bt.tm)clearInterval(bt.tm);if(m3)m3.busy=true;gEl.classList.remove('show');gBody.innerHTML='';renderPanel()}
 function gPt(svg,e){const p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;return p.matrixTransform(svg.getScreenCTM().inverse())}
 const isPink=c=>['#ff5fa2','#ff9ccf','#e8406a'].includes(c);
 const mainCol=s=>s.dress!=='yok'?s.col.dress:s.col.top;
@@ -1679,30 +1680,54 @@ const MXD={kuafor:['💇‍♀️','Kuaför'],tirnak:['💅','Tırnak'],butik:['
 function mxMenu(){$('#gTitle').textContent='🏪 Güzellik Merkezi';const n=S.mxServed||0;
  gBody.innerHTML=`<div class="box" style="margin:auto"><div class="themebig">🏪</div><h2>${esc(S.name||'İnci')}'nin Güzellik Merkezi</h2>
   <p>💇‍♀️ Kuaför · 💅 Tırnak · 👗 Butik · 👩‍⚕️ Estetik · 🎂 Pastane</p><p>Hepsi tek dükkânda! Müşteri birden fazla şey isteyecek. İstasyonlar arasında gez, hepsini yap, sonra hesabı kapat 💳</p>
-  <p style="font-size:15px;opacity:.75">Hizmet ettiğin müşteri: <b>${n}</b> · Müşteriler gittikçe daha çok istasyon istiyor!</p><button class="big" data-act="mxgo">🔑 Dükkânı Aç!</button></div>`}
-function mxStart(){$('#gTitle').textContent='🏪 Güzellik Merkezi';const c=randDoll();c.top='tisort';c.col.top='#ffffff';c.acc=[];c.mk={...c.mk,lip:'yok',shadow:'yok',blush:false,sim:false};
+  <p style="font-size:15px;opacity:.75">Hizmet ettiğin müşteri: <b>${n}</b> · ⏱️ Süre sınırı var! Bazı müşteriler fikrini değiştirir 💭 Gittikçe zorlaşır!</p><button class="big" data-act="mxgo">🔑 Dükkânı Aç!</button></div>`}
+function mxStart(){$('#gTitle').textContent='🏪 Güzellik Merkezi';if(mx&&mx.tm)clearInterval(mx.tm);
+ const c=randDoll();c.top='tisort';c.col.top='#ffffff';c.acc=[];c.mk={...c.mk,lip:'yok',shadow:'yok',blush:false,sim:false};
  c.nails=[null,null,null,null,null];c.rings=[null,null,null,null,null];c.brace='#ff9ccf';c.cake={base:'#ffd6a5',cream:'#ffffff',tops:[],lit:true,tiers:1,text:'',bites:[]};
- const served=S.mxServed||0,k=Math.min(5,2+Math.floor(served/2)),deps=shuf(Object.keys(MXD)).slice(0,k),reqs=[];
- const add=(d,t,ok)=>reqs.push({d,t,ok});
- const wantMask=Math.random()<.5;
+ const served=S.mxServed||0,L=Math.min(3,Math.floor(served/2)),k=Math.min(5,3+Math.floor(served/3)),deps=shuf(Object.keys(MXD)).slice(0,k),reqs=[];
+ const add=(d,t,ok,alt)=>reqs.push({d,t,ok,alt});const pick=(a,ex)=>rnd(a.filter(x=>x!==ex));const f5=()=>(Math.random()*5)|0;
+ const HC={'#3b2416':'koyu kahve','#c47a3a':'bakır','#e8c26a':'sarı','#d9534f':'kızıl','#ff8fc8':'pembe','#9b7bff':'mor','#4fc3f7':'mavi'};
+ const NC=['#ff5fa2','#e8406a','#c78bff','#7ec8ff','#7be0b4','#ffe066','#ff8a5c','#ffffff','#3b3b58'],cols=Object.keys(CLN);
  mx={c,deps,reqs,st:deps[0]};
  for(const d of deps){
-  if(d==='kuafor'){const st=rnd(freeKeys(HAIR).filter(x=>x!==c.hair.k)),col=rnd(['#3b2416','#c47a3a','#e8c26a','#d9534f','#ff8fc8','#9b7bff','#4fc3f7']),a=rnd(KACC);
-   const cn={'#3b2416':'koyu kahve','#c47a3a':'bakır','#e8c26a':'sarı','#d9534f':'kızıl','#ff8fc8':'pembe','#9b7bff':'mor','#4fc3f7':'mavi'};
-   add(d,'Saç yıkanıp kurutulsun',()=>mx.kf&&mx.kf.step>=3);add(d,`${HAIR[st].n} saç`,()=>c.hair.k===st);add(d,`${capF(cn[col])} saç`,()=>c.hair.c===col);if(served>=2)add(d,ACC[a].n,()=>c.acc.includes(a))}
-  if(d==='tirnak'){const col=rnd(['#ff5fa2','#e8406a','#c78bff','#7ec8ff','#7be0b4','#ffe066','#ff8a5c']),pt=rnd(['french','cizgi','puan','ombre','sim']),dc=rnd(['💖','⭐','🌸','🦋','🍓']);
-   add(d,`Tırnaklar ${NCN[col]}`,()=>c.nails.every(n=>n&&n.c===col));if(Math.random()<.5)add(d,`Tırnaklar ${NPN[pt]}`,()=>c.nails.every(n=>n&&n.p===pt));else add(d,`2 tırnakta ${dc}`,()=>c.nails.filter(n=>n&&n.d===dc).length>=2);
-   add(d,'Tırnaklar kurusun 💨',()=>c.nails.some(Boolean)&&c.nails.every(n=>!n||n.dry))}
-  if(d==='butik'){const cols=Object.keys(CLN);if(Math.random()<.6){const kk=rnd(freeKeys(DRESS)),cc=rnd(cols);add(d,`${DRESS[kk].n} elbise`,()=>c.dress===kk);add(d,`Elbise ${CLN[cc]}`,()=>c.dress!=='yok'&&c.col.dress===cc)}
-   else{const a=rnd(freeKeys(TOPS)),b=rnd(freeKeys(BOTTOMS));add(d,TOPS[a].n,()=>c.dress==='yok'&&c.top===a);add(d,BOTTOMS[b].n,()=>c.dress==='yok'&&c.bottom===b)}
-   const sh=rnd(freeKeys(SHOES));add(d,`${SHOES[sh].n} ayakkabı`,()=>c.shoes===sh)}
-  if(d==='estetik'){const [k1,k2]=shuf(['shape','eyes','brow','nose','mouth']),v1=rnd(Object.keys(FACE[k1]).filter(v=>v!==c.face[k1])),v2=rnd(Object.keys(FACE[k2]).filter(v=>v!==c.face[k2])),lp=rnd(Object.keys(LIPN));
-   if(wantMask)add(d,'Yüz maskesi 🧴🥒',()=>mx.es&&mx.es.step>=3);add(d,`${FACE[k1][v1]} ${FSUF[k1]}`,()=>c.face[k1]===v1);if(served>=1)add(d,`${FACE[k2][v2]} ${FSUF[k2]}`,()=>c.face[k2]===v2);add(d,`${capF(LIPN[lp])} ruj`,()=>c.mk.lip===lp)}
-  if(d==='pasta'){const ti=rnd([1,2]),cr=rnd(CCREAM.slice(0,7)),tp=rnd(['🍓','🍒','🫐','🍬','🍫','⭐','🌸']),n=3+((Math.random()*2)|0),m=rnd([0,1,2,3]),C=c.cake,cnt=e=>C.tops.filter(t=>t.e===e).length;
-   add(d,`${ti} katlı pasta`,()=>C.tiers===ti);add(d,`${capF(CCN[cr])} krema`,()=>C.cream===cr);add(d,`${n} tane ${tp}`,()=>cnt(tp)>=n);if(m)add(d,`${m} mum 🕯️`,()=>cnt('mum')===m)}}
+  if(d==='kuafor'){const st=pick(freeKeys(HAIR),c.hair.k),[a1,a2]=shuf(KACC);
+   const hc=()=>{const v=rnd(Object.keys(HC));return {t:`${capF(HC[v])} saç`,ok:()=>c.hair.c===v}};const h0=hc();
+   add(d,'Saç yıkanıp kurutulsun',()=>mx.kf&&mx.kf.step>=3);add(d,`${HAIR[st].n} saç`,()=>c.hair.k===st);add(d,h0.t,h0.ok,hc);add(d,ACC[a1].n,()=>c.acc.includes(a1));if(L>=1)add(d,ACC[a2].n,()=>c.acc.includes(a2))}
+  if(d==='tirnak'){const N=c.nails,[c1,c2]=shuf(NC),g=f5(),p=rnd(['french','cizgi','puan','ombre','sim']),fp=f5(),dc=rnd(['💖','⭐','🌸','🦋','🍓','🍒']),fd=f5(),r=rnd(['gumus','altin','kalp']),fr=f5(),b=pick(Object.keys(BRN),'#ff9ccf');
+   const allc=()=>{const v=rnd(NC);return {t:`Tırnaklar ${NCN[v]}`,ok:()=>N.every(n=>n&&n.c===v)}};
+   switch((Math.random()*4)|0){case 0:{const a=allc();add(d,a.t,a.ok,allc);break}
+    case 1:add(d,`Başparmak ${NCN[c1]}, diğerleri ${NCN[c2]}`,()=>N[0]&&N[0].c===c1&&N.slice(1).every(n=>n&&n.c===c2));break;
+    case 2:add(d,`Sırayla ${NCN[c1]} - ${NCN[c2]}`,()=>N.every((n,i)=>n&&n.c===(i%2?c2:c1)));break;
+    default:add(d,`${capF(FN[g])} ${NCN[c1]}, diğerleri ${NCN[c2]}`,()=>N.every((n,i)=>n&&n.c===(i===g?c1:c2)))}
+   add(d,`${capF(FN[fp])} ${NPN[p]}`,()=>N[fp]&&N[fp].p===p);add(d,`${dc} süs → ${FN[fd]}`,()=>N[fd]&&N[fd].d===dc);
+   if(L>=1)add(d,`${RINGS[r].n} yüzük → ${FN[fr]}`,()=>c.rings[fr]===r);if(L>=2)add(d,`${capF(BRN[b])} bileklik`,()=>c.brace===b);
+   add(d,'Tırnaklar kurusun 💨',()=>N.some(Boolean)&&N.every(n=>!n||n.dry))}
+  if(d==='butik'){let slot;
+   if(Math.random()<.55){slot='dress';const kk=rnd(freeKeys(DRESS));add(d,`${DRESS[kk].n} elbise`,()=>c.dress===kk);const dcol=()=>{const v=rnd(cols);return {t:`Elbise ${CLN[v]}`,ok:()=>c.dress!=='yok'&&c.col.dress===v}};const x=dcol();add(d,x.t,x.ok,dcol)}
+   else{slot='top';const a=rnd(freeKeys(TOPS)),bb=rnd(freeKeys(BOTTOMS));add(d,TOPS[a].n,()=>c.dress==='yok'&&c.top===a);add(d,BOTTOMS[bb].n,()=>c.dress==='yok'&&c.bottom===bb);
+    const tcol=()=>{const v=rnd(cols);return {t:`Üst ${CLN[v]}`,ok:()=>c.dress==='yok'&&c.col.top===v}};const x=tcol();add(d,x.t,x.ok,tcol)}
+   const pt=rnd(Object.keys(PATN)),sh=rnd(freeKeys(SHOES)),shc=rnd(cols),so=rnd(Object.keys(SOCKS).filter(x=>x!=='yok')),ac=rnd(freeKeys(ACC).filter(x=>x!=='pelerin'&&!KACC.includes(x))),em=rnd(Object.keys(EMBN));
+   add(d,`${PATN[pt]} ${slot==='dress'?'elbise':'üst'}`,()=>c.pat[slot]===pt);add(d,`${SHOES[sh].n} ayakkabı`,()=>c.shoes===sh);
+   if(L>=1){add(d,`Ayakkabı ${CLN[shc]}`,()=>c.shoes!=='yok'&&c.col.shoes===shc);add(d,`${SOCKS[so].n} çorap`,()=>c.socks===so)}if(L>=2){add(d,ACC[ac].n,()=>c.acc.includes(ac));add(d,EMBN[em],()=>c.emb.includes(em))}}
+  if(d==='estetik'){const ks=shuf(['shape','eyes','brow','nose','mouth']),nf=2+(L>=1?1:0)+(L>=3?1:0),ex=rnd(Object.keys(FACE.extra)),sd=rnd(Object.keys(SHN));
+   if(Math.random()<.6)add(d,'Yüz maskesi 🧴🥒',()=>mx.es&&mx.es.step>=3);
+   ks.slice(0,nf).forEach(kk=>{const v=pick(Object.keys(FACE[kk]),c.face[kk]);add(d,`${FACE[kk][v]} ${FSUF[kk]}`,()=>c.face[kk]===v)});
+   if(L>=2&&!c.face.extra.includes(ex))add(d,FACE.extra[ex],()=>c.face.extra.includes(ex));
+   const lr=()=>{const v=rnd(Object.keys(LIPN));return {t:`${capF(LIPN[v])} ruj`,ok:()=>c.mk.lip===v}};const x=lr();add(d,x.t,x.ok,lr);if(L>=1)add(d,`${capF(SHN[sd])} far`,()=>c.mk.shadow===sd)}
+  if(d==='pasta'){const C=c.cake,cnt=e=>C.tops.filter(t=>t.e===e).length,ti=rnd(own('c-3kat')?[1,2,3]:[1,2]),bs=rnd(Object.keys(CKN)),[ta,tb]=shuf(['🍓','🍒','🫐','🍬','🍫','⭐','🌸','🍭']),na=3+((Math.random()*3)|0),m=1+((Math.random()*5)|0),tx=rnd(CTXT);
+   add(d,`${ti} katlı pasta`,()=>C.tiers===ti);const cr=()=>{const v=rnd(CCREAM.slice(0,7));return {t:`${capF(CCN[v])} krema`,ok:()=>C.cream===v}};const x=cr();add(d,x.t,x.ok,cr);
+   add(d,`${capF(CKN[bs])} kek`,()=>C.base===bs);add(d,`${na} tane ${ta}`,()=>cnt(ta)>=na);add(d,`Tam ${m} mum 🕯️`,()=>cnt('mum')===m);
+   if(L>=1)add(d,`En az 2 ${tb}`,()=>cnt(tb)>=2);if(L>=2)add(d,`"${tx}" yazsın`,()=>(C.text||'').toLocaleLowerCase('tr').includes(tx.toLocaleLowerCase('tr')));if(L>=3)add(d,'Krema süslemeli 🍦',()=>cnt('krema')>=8)}}
+ const pt=S.cfg&&S.cfg.pat===0;mx.limit=pt?0:Math.round(40+reqs.length*11);mx.left=mx.limit;mx.changed=false;mx.changeAt=served>=2?Math.round(mx.limit*(.45+Math.random()*.2)):-1;
  gBody.innerHTML=`<div class="gwrap"><div class="gstage" id="mxStage"><div id="mxView" style="position:absolute;inset:0"></div><div class="btbub kfbub mxbub" id="mxBub"></div></div>
   <div class="content" style="display:flex;flex-direction:column;gap:10px"><div class="mxtabs" id="mxTabs"></div><div id="mxTools" style="flex:1"></div><button class="big" data-act="mxpay" style="position:sticky;bottom:-16px">💳 Hesabı Kapat</button></div></div>`;
- tone(1320,.1,'triangle',.1);tone(1760,.15,'triangle',.08,.1);toast(`👋 Yeni müşteri! ${deps.map(d=>MXD[d][0]).join(' ')} istiyor`,2400);mxStation(deps[0])}
+ tone(1320,.1,'triangle',.1);tone(1760,.15,'triangle',.08,.1);toast(`👋 Yeni müşteri! ${deps.map(d=>MXD[d][0]).join(' ')} · ${reqs.length} istek!`,2400);mxStation(deps[0]);
+ if(mx.limit)mx.tm=setInterval(mxTick,1000)}
+function mxTick(){if(!mx||!$('#mxBub')){if(mx&&mx.tm)clearInterval(mx.tm);return}if(mx.paid)return;mx.left--;
+ if(!mx.changed&&mx.left===mx.limit-mx.changeAt){const al=mx.reqs.filter(r=>r.alt&&!r.ok.isAlt);if(al.length){const r=rnd(al),old=r.t;let n;let tries=0;do{n=r.alt();tries++}while(n.t===old&&tries<10);r.t=n.t;r.ok=n.ok;mx.changed=true;
+  toast(`💭 Müşteri fikrini değiştirdi! Artık: ${n.t}`,3200);[660,520,660,880].forEach((f,i)=>tone(f,.12,'triangle',.1,i*.1));const b=$('#mxBub');b.classList.remove('shake');void b.offsetWidth;b.classList.add('shake')}}
+ if(mx.left<=10&&mx.left>0)tone(880,.06,'square',.05);
+ if(mx.left<=0){mx.left=0;mxPay(true);return}mxBubble()}
 function mxStation(st){mx.st=st;const c=mx.c,V=$('#mxView'),T=$('#mxTools');NST=null;CST=null;
  if(st==='kuafor'){if(!mx.kf){const dirt=[];for(let i=0;i<9;i++)dirt.push({x:105+Math.random()*90,y:55+Math.random()*90,r:5+Math.random()*5});mx.kf={c,step:0,foam:[],dirt,wet:0,foamMax:0,progress:0,cool:0,reqs:[],combo:true}}
   kf=mx.kf;V.innerHTML=`<div id="kfStage" style="position:absolute;inset:0"><svg id="kfSvg" viewBox="40 10 220 270" preserveAspectRatio="xMidYMid meet" style="position:absolute;inset:0;width:100%;height:100%"></svg><div class="kftool" id="kfTool"></div></div>`;
@@ -1721,12 +1746,13 @@ function mxStation(st){mx.st=st;const c=mx.c,V=$('#mxView'),T=$('#mxTools');NST=
 function mxDepDone(d){const r=mx.reqs.filter(x=>x.d===d);return r.length&&r.every(x=>x.ok())}
 function mxTabs(){$('#mxTabs').innerHTML=Object.entries(MXD).filter(([d])=>mx.deps.includes(d)).map(([d,[e,n]])=>`<button class="tog ${mx.st===d?'sel':''} ${mxDepDone(d)?'done':''}" data-act="mxst" data-v="${d}"><i>${mxDepDone(d)?'✅':e}</i>${n}</button>`).join('')}
 function mxBubble(){if(!mx||!$('#mxBub'))return;const cur=mx.reqs.filter(r=>r.d===mx.st),oth=mx.deps.filter(d=>d!==mx.st);
- $('#mxBub').innerHTML=`<div class="reqs">${cur.map(r=>{const k=r.ok();return `<span class="${k?'ok':''}">${k?'✅':'⬜'} ${r.t}</span>`}).join('')}${oth.map(d=>{const rs=mx.reqs.filter(r=>r.d===d),k=rs.filter(r=>r.ok()).length;return `<span class="oth ${k===rs.length?'ok':''}">${MXD[d][0]} ${k}/${rs.length}</span>`}).join('')}</div>`;mxTabs()}
+ $('#mxBub').innerHTML=(mx.limit?`<div class="mxtime"><i style="width:${(mx.left/mx.limit*100).toFixed(1)}%;background:${mx.left<15?'#e8406a':mx.left<mx.limit*.4?'#ffb02e':'#7be0b4'}"></i><b>⏱️ ${mx.left} sn</b></div>`:'')+`<div class="reqs">${cur.map(r=>{const k=r.ok();return `<span class="${k?'ok':''}">${k?'✅':'⬜'} ${r.t}</span>`}).join('')}${oth.map(d=>{const rs=mx.reqs.filter(r=>r.d===d),k=rs.filter(r=>r.ok()).length;return `<span class="oth ${k===rs.length?'ok':''}">${MXD[d][0]} ${k}/${rs.length}</span>`}).join('')}</div>`;mxTabs()}
 document.addEventListener('pointerup',()=>{if(mx&&$('#mxBub'))setTimeout(mxBubble,60)});document.addEventListener('click',()=>{if(mx&&$('#mxBub'))setTimeout(mxBubble,60)});
-function mxPay(){const done=mx.reqs.filter(r=>r.ok()).length,n=mx.reqs.length,st=done===n?3:done/n>=.65?2:done/n>=.3?1:0,coin=Math.max(2,Math.round(n*5*done/n))+(st===3?15:0);S.mxServed=(S.mxServed||0)+1;save();
+function mxPay(timeout){if(!mx||mx.paid)return;mx.paid=true;if(mx.tm)clearInterval(mx.tm);const done=mx.reqs.filter(r=>r.ok()).length,n=mx.reqs.length,fr=done/n;
+ const st=timeout?0:done===n?3:fr>=.8?2:fr>=.5?1:0,coin=Math.max(1,Math.round(n*5*fr*(timeout?.4:1)))+(st===3?20+Math.floor((mx.left||0)/4):0);S.mxServed=(S.mxServed||0)+1;save();
  const c=mx.c;NST=null;CST=null;$('#mxView').innerHTML=`<svg viewBox="0 0 600 640" preserveAspectRatio="xMidYMid meet" style="position:absolute;inset:0;width:100%;height:100%">${btScene()}<g transform="translate(172 128) scale(.85)">${cDefs(c,'cp')}${stk(doll({...c,_pid:'cp'}))}</g></svg>`;
  $('#mxStage').insertAdjacentHTML('beforeend','<div class="mirrorfx"></div>');[784,988,1175,1568].forEach((f,i)=>tone(f,.2,'triangle',.1,i*.1));
- setTimeout(()=>{gameResult(['😢','🙂','😊','😍'][st],STARS(st),`${done}/${n} istek tamam! ${st===3?'Müşteri her şeye bayıldı! 💖':st?'Müşteri teşekkür etti!':'Müşteri pek memnun kalmadı...'}`,coin,'mxgo','👋 Sonraki Müşteri');if(st===3)checkTasks('mx3')},900)}
+ setTimeout(()=>{gameResult(timeout?'😤':['😢','🙂','😊','😍'][st],timeout?'Süre bitti!':STARS(st),`${done}/${n} istek tamam! ${timeout?'Müşteri beklemekten sıkılıp gitti...':st===3?'Müşteri her şeye bayıldı! 💖'+(mx.left?` <br>⚡ Hız bonusu: +${Math.floor(mx.left/4)}`:''):st?'Müşteri teşekkür etti ama bazı şeyler eksikti.':'Müşteri hiç memnun kalmadı...'}`,coin,'mxgo','👋 Sonraki Müşteri');if(st===3)checkTasks('mx3')},900)}
 /* =====================  başlangıç  ===================== */
 function openStart(){$('#nameIn').value=S.name||'';$('#mStart').classList.add('show')}
 const ADMH='b1102bfaec97ffda2655208fce47947a2adacfb267613767239447734be9d87c';
@@ -1787,7 +1813,7 @@ function doFit(){const r=$('#stageWrap').getBoundingClientRect();const wh=Math.r
  const k=Math.max(1,h/640)*1.002;$('#bgWrap').querySelectorAll('use').forEach(u=>u.style.display=w>401?'':'none');$('#bgWrap').setAttribute('transform',`translate(200 320) scale(${k.toFixed(4)}) translate(-200 -320)`)}
 addEventListener('resize',fit);addEventListener('orientationchange',()=>{lastWH='';setTimeout(fit,350);setTimeout(fit,800)});
 if(window.ResizeObserver)new ResizeObserver(fit).observe($('#stageWrap'));
-const APPV='202611151947';
+const APPV='202611152031';
 /* yeni sürüm kontrolü: önbellekte eski sürüm kaldıysa kendini yeniler */
 async function checkUpdate(){try{const r=await fetch(location.pathname+'?t='+Date.now(),{cache:'no-store'});const t=await r.text();const m=t.match(/const APPV='(\d+)'/);
  if(m&&m[1]!==APPV){saveNow();toast('✨ Yeni sürüm geldi! Yükleniyor...',2000);setTimeout(()=>location.replace(location.pathname+'?v='+m[1]),1200)}}catch(e){}}
