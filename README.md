@@ -18,6 +18,6 @@ Oyna: https://huseyincinarmacar59-cell.github.io/inci/moda/
 
 # Susen Butik
 
-Good Coffee Great Coffee tarzı 3D butik işletme oyunu (iPhone ve iPad, yatay ve dikey). Müşteri kasaya gelir, isteğini söyler; arkada dolaptan giydir, kuaförde saçını, masada makyajını yap. Sabır biterse müşteri gider, itibar sıfırlanırsa dükkan kapanır.
+Good Coffee Great Coffee tarzı 2D çizim butik işletme oyunu (iPhone ve iPad, yatay ve dikey). Müşteri kasaya gelir, isteğini söyler; arkada dolaptan giydir, kuaförde saçını, masada makyajını yap. Sabır biterse müşteri gider, itibar sıfırlanırsa dükkan kapanır.
 
 Oyna: https://huseyincinarmacar59-cell.github.io/inci/susen-butik/
