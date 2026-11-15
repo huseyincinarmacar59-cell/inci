@@ -486,29 +486,58 @@ function randLook(){const s={top:null,bottom:null,dress:null,shoes:{type:pick(ke
   hair:{style:pick(keys(HAIRS)),color:pick(['siyah','kahve','sari','kizil','siyah','kahve'])},lip:R()<.35?pick(keys(LIPC)):null,eye:R()<.25?pick(keys(EYEC)):null,blush:R()<.3};
  if(R()<.3)s.dress={type:pick(keys(DRESS)),color:pick(keys(CLOTH))};else{s.top={type:pick(keys(TOPS)),color:pick(keys(CLOTH))};s.bottom={type:pick(keys(BOTS)),color:pick(keys(CLOTH))};}
  return s;}
+const META={
+ cloth:{kirmizi:'domates renginde',mavi:'gökyüzü renginde',siyah:'gece renginde',beyaz:'kar renginde',pembe:'pamuk şeker renginde',yesil:'çimen renginde'},
+ hair:{siyah:'kömür renginde',kahve:'kestane renginde',sari:'buğday renginde',kizil:'ateş renginde',pembe:'pamuk şeker renginde',mor:'lavanta renginde'},
+ lip:{kirmizi:'kiraz renginde',pembe:'gül renginde',mor:'erik renginde',nude:'ten renginde',turuncu:'mandalina renginde'},
+ eye:{mavi:'deniz renginde',mor:'menekşe renginde',altin:'güneş renginde',kahve:'çikolata renginde',yesil:'zümrüt renginde'}};
+function colName(c){const v=c.value;
+ if(c.slot==='hair')return c.meta?META.hair[v]:HAIRC[v][0];
+ if(c.slot==='lip')return c.meta?META.lip[v]:LIPC[v][0];
+ if(c.slot==='eye')return c.meta?META.eye[v]:EYEC[v][0];
+ return c.meta?META.cloth[v]:CLOTH[v][0];}
+function colorCons(cons,slot){return cons.filter(c=>c.slot===slot&&c.field==='color');}
+function relConflict(cons,r){const A=colorCons(cons,r.a),B=colorCons(cons,r.b);const pa=A.find(c=>!c.neg),pb=B.find(c=>!c.neg),na=A.find(c=>c.neg),nb=B.find(c=>c.neg);
+ if(r.kind==='same'){if(pa&&pb&&pa.value!==pb.value)return true;if(pa&&nb&&pa.value===nb.value)return true;if(pb&&na&&pb.value===na.value)return true;return false;}
+ if(r.kind==='diff'){return !!(pa&&pb&&pa.value===pb.value);}return false;}
+function colorSat(cons){const cols=keys(CLOTH),sl=['top','bottom','dress','shoes'];
+ const ok=(asg)=>cons.every(c=>{if(c.slot==='rel'){const a=asg[c.a],b=asg[c.b];return c.kind==='same'?a===b:a!==b;}if(c.field==='color'&&sl.includes(c.slot))return c.neg?asg[c.slot]!==c.value:asg[c.slot]===c.value;return true;});
+ for(const t of cols)for(const b of cols)for(const sh of cols)for(const d of cols){if(ok({top:t,bottom:b,shoes:sh,dress:d}))return true;}return false;}
+function anyConflict(cons){return !colorSat(cons);}
 function genRequest(day){
  const dressMode=R()<.35;
  const outfit=dressMode?[['dress','type'],['dress','color']]:[['top','type'],['top','color'],['bottom','type'],['bottom','color']];
  const others=[['shoes','type'],['shoes','color'],['hair','style'],['hair','color'],['lip',null],['eye',null],['blush',null]];
- const k=Math.min(2+day,outfit.length+others.length);
+ const k=Math.min(4+day,outfit.length+others.length);
  const o=shuffle(outfit.slice());const first=o.shift();
  const chosen=[first].concat(shuffle(o.concat(others)).slice(0,k-1));
- const negP=day>=3?Math.min(.12+.04*day,.35):0;
- const cons=chosen.map(([slot,field])=>{const c={slot,field,neg:false};
+ const negP=Math.min(.18+.04*day,.4),metaP=Math.min(.22+.06*day,.55);
+ const cons=chosen.map(([slot,field])=>{const c={slot,field,neg:false,meta:false};
   if(field==='type')c.value=pick(keys({top:TOPS,bottom:BOTS,dress:DRESS,shoes:SHOES}[slot]));
   else if(field==='color')c.value=pick(keys(CLOTH));
   else if(field==='style')c.value=pick(keys(HAIRS));
   if(slot==='hair'&&field==='color')c.value=pick(keys(HAIRC));
-  if(slot==='lip')c.value=R()<.15?'yok':pick(keys(LIPC));
-  if(slot==='eye')c.value=R()<.15?'yok':pick(keys(EYEC));
+  if(slot==='lip')c.value=R()<.12?'yok':pick(keys(LIPC));
+  if(slot==='eye')c.value=R()<.12?'yok':pick(keys(EYEC));
   if(slot==='blush')c.value=R()<.65;
   const colorish=field==='color'||((slot==='lip'||slot==='eye')&&c.value!=='yok');
   if(colorish&&R()<negP)c.neg=true;
+  if(colorish&&R()<metaP)c.meta=true;
   return c;});
- return {cons,occasion:pick(OCC),text:describe(cons)};}
+ // renk uyumu istekleri
+ const relP=Math.min(.35+.08*day,.8);
+ const relOpts=dressMode?[{kind:'same',a:'dress',b:'shoes'}]:[{kind:'same',a:'top',b:'shoes'},{kind:'diff',a:'top',b:'bottom'},{kind:'same',a:'top',b:'bottom'},{kind:'same',a:'bottom',b:'shoes'}];
+ const nRel=R()<relP?(day>=4&&R()<.4?2:1):0;
+ shuffle(relOpts);let added=0;
+ for(const r of relOpts){if(added>=nRel)break;const c={slot:'rel',field:null,kind:r.kind,a:r.a,b:r.b};cons.push(c);if(anyConflict(cons)){cons.pop();}else added++;}
+ const req={cons,occasion:pick(OCC)};req.text=describe(cons);
+ req.mind=day>=2&&R()<Math.min(.25+.07*day,.6);req.mindAt=10+R()*16;
+ return req;}
+function relText(c){const W={top:'üstüm',bottom:'altım',dress:'elbisem',shoes:'ayakkabılarım'},W2={top:'üstümle',bottom:'altımla',dress:'elbisemle',shoes:'ayakkabılarımla'};
+ return c.kind==='same'?`${cap(W2[c.a])} ${W[c.b]} aynı renk olsun.`:`${cap(W2[c.a])} ${W[c.b]} farklı renk olsun.`;}
 function describe(cons){const by={};cons.forEach(c=>{(by[c.slot]=by[c.slot]||[]).push(c);});const P=[];
  const cl=(slot)=>{const cs=by[slot];if(!cs)return;const t=cs.find(c=>c.field==='type'),co=cs.find(c=>c.field==='color');
-  const N={top:TOPS,bottom:BOTS,dress:DRESS,shoes:SHOES}[slot];const tn=t&&N[t.value],cn=co&&CLOTH[co.value][0];
+  const N={top:TOPS,bottom:BOTS,dress:DRESS,shoes:SHOES}[slot];const tn=t&&N[t.value],cn=co&&colName(co);
   const T={
    top:{full:`Üstüme ${cn} bir ${tn} istiyorum.`,type:`Üstte ${tn} olsun, rengi fark etmez.`,col:`Üstüm ${cn} olsun, modeli sana kalmış.`,typeNeg:`Üstüme ${tn} istiyorum ama ${cn} olmasın.`,neg:`Üstüme bir şey giyeceğim ama sakın ${cn} olmasın.`},
    bottom:{full:`Altıma ${cn} bir ${tn} istiyorum.`,type:`Altta ${tn} olsun, rengi fark etmez.`,col:`Altım ${cn} olsun, ne olduğu fark etmez.`,typeNeg:`Altıma ${tn} istiyorum ama ${cn} olmasın.`,neg:`Altıma bir şey giyeceğim ama ${cn} olmasın.`},
@@ -516,23 +545,34 @@ function describe(cons){const by={};cons.forEach(c=>{(by[c.slot]=by[c.slot]||[])
    shoes:{full:`Ayağıma ${cn} ${tn} lazım.`,type:`Ayakkabı olarak ${tn} giyeyim, rengi fark etmez.`,col:`Ayakkabılarım ${cn} olsun.`,typeNeg:`Ayağıma ${tn} lazım ama ${cn} olmasın.`,neg:`Ayakkabılarım ${cn} olmasın.`}}[slot];
   if(t&&co)P.push(co.neg?T.typeNeg:T.full);else if(t)P.push(T.type);else P.push(co.neg?T.neg:T.col);};
  cl('dress');cl('top');cl('bottom');cl('shoes');
+ if(by.rel)by.rel.forEach(c=>P.push(relText(c)));
  if(by.hair){const st=by.hair.find(c=>c.field==='style'),co=by.hair.find(c=>c.field==='color');
   if(st)P.push(`Saç modelim ${HAIRS[st.value]} olsun.`);
-  if(co)P.push(co.neg?`Saçım ${HAIRC[co.value][0]} olmasın, ondan sıkıldım.`:`Saçımı ${HAIRC[co.value][0]} yap.`);}
- if(by.lip){const c=by.lip[0];P.push(c.value==='yok'?'Ruj istemiyorum.':c.neg?`Ruj sürersen ${LIPC[c.value][0]} olmasın.`:`Dudaklarıma ${LIPC[c.value][0]} ruj sür.`);}
- if(by.eye){const c=by.eye[0];P.push(c.value==='yok'?'Far sürme lütfen.':c.neg?`Far sürersen ${EYEC[c.value][0]} olmasın.`:`Gözlerime ${EYEC[c.value][0]} far.`);}
+  if(co)P.push(co.neg?`Saçım ${colName(co)} olmasın, ondan sıkıldım.`:`Saçımı ${colName(co)} yap.`);}
+ if(by.lip){const c=by.lip[0];P.push(c.value==='yok'?'Ruj istemiyorum.':c.neg?`Ruj sürersen ${colName(c)} olmasın.`:`Dudaklarıma ${colName(c)} ruj sür.`);}
+ if(by.eye){const c=by.eye[0];P.push(c.value==='yok'?'Far sürme lütfen.':c.neg?`Far sürersen ${colName(c)} olmasın.`:`Gözlerime ${colName(c)} far.`);}
  if(by.blush){P.push(by.blush[0].value?'Yanaklarıma biraz allık.':'Allık istemem.');}
  return P.join(' ');}
+/* müşteri fikir değiştirir: bir isteğin değerini değiştirir */
+function changeMind(req){const cand=req.cons.filter(c=>c.slot!=='rel'&&c.slot!=='blush'&&!(c.value==='yok'));if(!cand.length)return null;
+ for(let tries=0;tries<8;tries++){const c=pick(cand);const old={value:c.value,neg:c.neg};
+  let pool;if(c.field==='type')pool=keys({top:TOPS,bottom:BOTS,dress:DRESS,shoes:SHOES}[c.slot]);else if(c.field==='style')pool=keys(HAIRS);else if(c.slot==='hair')pool=keys(HAIRC);else if(c.slot==='lip')pool=keys(LIPC);else if(c.slot==='eye')pool=keys(EYEC);else pool=keys(CLOTH);
+  c.value=pick(pool.filter(v=>v!==old.value));c.neg=false;
+  if(anyConflict(req.cons)){c.value=old.value;c.neg=old.neg;continue;}
+  req.text=describe(req.cons);return describe([c]);}
+ return null;}
+function outfitCol(s,slot){if(slot==='dress')return s.dress?s.dress.color:null;if(slot==='top'||slot==='bottom')return(!s.dress&&s[slot])?s[slot].color:null;if(slot==='shoes')return s.shoes?s.shoes.color:null;return null;}
 const cmpC=(v,c)=>c.neg?v!==c.value:v===c.value;
 function checkCon(s,c){
+ if(c.slot==='rel'){const a=outfitCol(s,c.a),b=outfitCol(s,c.b);if(!a||!b)return false;return c.kind==='same'?a===b:a!==b;}
  if(c.slot==='top'||c.slot==='bottom'){if(s.dress||!s[c.slot])return false;return cmpC(s[c.slot][c.field],c);}
  if(c.slot==='dress'){if(!s.dress)return false;return cmpC(s.dress[c.field],c);}
  if(c.slot==='shoes'){if(!s.shoes)return false;return cmpC(s.shoes[c.field],c);}
  if(c.slot==='hair')return cmpC(s.hair[c.field],c);
  if(c.slot==='lip'||c.slot==='eye'){const v=s[c.slot];if(c.value==='yok')return v==null;return c.neg?v!==c.value:v===c.value;}
  if(c.slot==='blush')return s.blush===c.value;return false;}
-function conLabel(c){const L={top:'üst',bottom:'alt',dress:'elbise',shoes:'ayakkabı'};if(L[c.slot])return L[c.slot]+(c.field==='color'?' rengi':' modeli');return{hair:c.field==='color'?'saç rengi':'saç modeli',lip:'ruj',eye:'far',blush:'allık'}[c.slot];}
-function patDur(){let d=Math.max(48,115-(G.day-1)*8);if(G.up.koltuk)d*=1.15;if(G.up.muzik)d*=1.15;return d;}
+function conLabel(c){if(c.slot==='rel')return 'renk uyumu';const L={top:'üst',bottom:'alt',dress:'elbise',shoes:'ayakkabı'};if(L[c.slot])return L[c.slot]+(c.field==='color'?' rengi':' modeli');return{hair:c.field==='color'?'saç rengi':'saç modeli',lip:'ruj',eye:'far',blush:'allık'}[c.slot];}
+function patDur(){let d=Math.max(100,190-(G.day-1)*7);if(G.up.koltuk)d*=1.15;if(G.up.muzik)d*=1.15;return d;}
 
 /* ---------------- UI ---------------- */
 const dlg=$('#dialog'),dText=$('#dText'),dName=$('#dName'),dBtns=$('#dBtns'),dExtra=$('#dExtra');
@@ -572,7 +612,8 @@ function titleScreen(){S.phase='title';$('#hud').style.opacity=0;showCust(false)
  <div class="how"><div><b>1.</b> Müşterinin isteğini kasada dikkatle oku, sonra yazı kaybolur.</div>
  <div><b>2.</b> Arka odada dolaptan kıyafet, ayakkabılıktan ayakkabı seç; kuaförde peruk modeli ve boya, makyaj masasında ruj, far, allık.</div>
  <div><b>3.</b> Sabır çubuğu biterse müşteri kızıp gider. Müşteriye dokunursan isteğini tekrar söyler ama sabrı azalır.</div>
- <div><b>4.</b> Hazır olunca kasaya dön ve ödemeyi almak için kasaya dokun. İtibar sıfırlanırsa dükkan kapanır.</div></div>
+ <div><b>4.</b> Müşteriler renkleri bazen benzetmeyle söyler (gökyüzü renginde, ateş renginde...), bazen renk uyumu ister, bazen de arkada fikrini değiştirir.</div>
+ <div><b>5.</b> Hazır olunca kasaya dön ve ödemeyi almak için kasaya dokun. İtibar sıfırlanırsa dükkan kapanır.</div></div>
  <div class="btns">${sv&&(sv.day>1||sv.money>0)?`<button class="btn primary" id="bCont">Devam et (Gün ${sv.day})</button><button class="btn" id="bNew">Yeni oyun</button>`:`<button class="btn primary" id="bNew">Dükkanı aç</button>`}</div>`);
  const bc=$('#bCont');if(bc)bc.onclick=()=>{ac();G=sv;startDay();};
  $('#bNew').onclick=()=>{ac();G=freshG();save();startDay();};}
@@ -586,7 +627,7 @@ function showOrder(){const txt=`${pick(GREET)} ${S.req.occasion} ${S.req.text}`;
  dialog(S.cust.name,txt,[{t:'Buyrun, arkaya geçelim',primary:true,fn:goBack}]);
  if(G.up.kahve)setTimeout(()=>{if(S.phase==='order'&&!S.coffeeUsed)toast('İpucu: kahve makinesine dokunup ikram edebilirsin');},2500);}
 function goBack(){if(S.phase!=='order')return;S.phase='trans';hideDialog();
- fade(()=>{setRoom('back');const c=S.cust;if(c.walkT)c.walkT.dead=true;c.root.position.set(SPOTS.over[0],0,SPOTS.over[1]);c.face(0);S.phase='work';setView('over',true);showNav(true);});}
+ fade(()=>{setRoom('back');const c=S.cust;if(c.walkT)c.walkT.dead=true;c.root.position.set(SPOTS.over[0],0,SPOTS.over[1]);c.face(0);S.phase='work';S.workT=0;S.mindDone=false;setView('over',true);showNav(true);});}
 function goStation(v){if(S.phase!=='work')return;if(S.view===v&&v!=='over')v='over';setView(v);const sp=SPOTS[v];S.cust.walkTo(sp[0],sp[1],.55,null,0);}
 function deliver(){if(S.phase!=='work')return;S.phase='trans';showNav(false);hideDialog();
  fade(()=>{setRoom('front');setView('counter',true);const c=S.cust;if(c.walkT)c.walkT.dead=true;c.root.position.set(0,0,.55);c.face(Math.PI);S.phase='pay';
@@ -622,7 +663,7 @@ function gameOver(){S.phase='over';showCust(false);showNav(false);hideDialog();c
  $('#bAgain').onclick=()=>{G=freshG();save();startDay();};}
 
 /* ---------------- ACTIONS ---------------- */
-function repeatRequest(){if(S.phase!=='work'||!S.cust)return;S.pat-=.12;updPat();S.cust.pop();sfx.tap();
+function repeatRequest(){if(S.phase!=='work'||!S.cust)return;S.pat-=.06;updPat();S.cust.pop();sfx.tap();
  dialog(S.cust.name,pick(['Yine mi? Peki, tekrar söylüyorum: ','Unuttun mu? ','Dinle bak: '])+S.req.text,[{t:'Tamam',fn:hideDialog}],{instant:true,html:'<div style="font-size:13px;color:#b04a4a">Sabrı azaldı</div>'});}
 function act(a,obj){
  if(a.kind==='register'){if(S.phase==='pay')payNow();else if(S.phase!=='title')toast('Kasa şu an boş');return;}
@@ -672,6 +713,7 @@ function frame(){requestAnimationFrame(frame);const dt=Math.min(clock.getDelta()
  const k=1-Math.exp(-dt*5.5);cam.pos.lerp(cam.tPos,k);cam.look.lerp(cam.tLook,k);cam.fov+=(cam.tFov-cam.fov)*k;
  camera.position.copy(cam.pos);camera.lookAt(cam.look);if(Math.abs(camera.fov-cam.fov)>.01){camera.fov=cam.fov;camera.updateProjectionMatrix();}
  if(S.cust&&!S.cust.walking){S.cust.body.rotation.y=Math.sin(tt*.9)*.05;S.cust.body.position.y=Math.sin(tt*1.8)*.004;}
+ if(S.phase==='work'&&S.req&&S.req.mind&&!S.mindDone){S.workT+=dt;if(S.workT>S.req.mindAt){S.mindDone=true;const ch=changeMind(S.req);if(ch){sfx.bell();S.cust.pop();dialog(S.cust.name,pick(['Aa bu arada, fikrimi değiştirdim! ','Dur dur, vazgeçtim: ','Şimdi düşündüm de... '])+ch,[{t:'Tamam',fn:hideDialog}],{instant:true,html:'<div style="font-size:13px;color:#8a6475">Müşteri fikrini değiştirdi, eski istek geçersiz</div>'});}}}
  if(S.phase==='order'||S.phase==='work'){S.pat-=dt/S.patDur;updPat();if(S.pat<=0){S.pat=0;angryLeave();}}
  if(registerG){const s=S.phase==='pay'?1+Math.max(0,Math.sin(tt*6))*.06:1;registerG.scale.setScalar(s);}
  if(coffeeG&&coffeeG.visible){const s=S.phase==='order'&&!S.coffeeUsed?1+Math.max(0,Math.sin(tt*4))*.03:1;coffeeG.scale.setScalar(s);}
