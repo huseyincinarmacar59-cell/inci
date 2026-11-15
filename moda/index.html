@@ -244,6 +244,10 @@ button.chip{cursor:pointer}
 .mirrorfx{position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.95) 50%,transparent 70%);background-size:300% 100%;animation:mirror .9s ease forwards;pointer-events:none;z-index:4}
 @keyframes mirror{from{background-position:100% 0}to{background-position:-100% 0}}
 
+.btcats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.btcats .tog{min-width:0;padding:6px 2px;font-size:12.5px;text-align:center;flex:none}.btcats .tog i{display:block;font-style:normal;font-size:24px}
+.magicfx{position:absolute;inset:0;display:grid;place-items:center;font-size:140px;pointer-events:none;z-index:4;animation:magic .7s ease forwards}
+@keyframes magic{0%{opacity:0;transform:scale(.3) rotate(-30deg)}40%{opacity:1;transform:scale(1.2) rotate(10deg)}100%{opacity:0;transform:scale(1.6) rotate(30deg)}}
+.ksteps.k7{grid-template-columns:repeat(7,1fr)}
 .themebig{font-size:84px;line-height:1;margin:6px 0}
 #flash{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:60}
 #flash.go{animation:flash .5s ease}
@@ -372,7 +376,7 @@ function patTile(k,c){const m=c.toLowerCase()==='#ffffff'?'#ff9ccf':(['#ffe066',
   case 'ekose':return `<rect width="24" height="6" fill="${m}" opacity=".6"/><rect width="6" height="24" fill="${m}" opacity=".6"/><rect x="15" width="2" height="24" fill="${shade(c,.7)}" opacity=".5"/>`;
   default:return ''}}
 const patDef=(id,k,c)=>`<pattern id="${id}" patternUnits="userSpaceOnUse" width="24" height="24"><rect width="24" height="24" fill="${c}"/>${patTile(k,c)}</pattern>`;
-const pat=(str,s,slot)=>s.pat&&s.pat[slot]&&s.pat[slot]!=='duz'?str.split(`fill="${s.col[slot]}"`).join(`fill="url(#pat-${slot})"`):str;
+const pat=(str,s,slot)=>s.pat&&s.pat[slot]&&s.pat[slot]!=='duz'?str.split(`fill="${s.col[slot]}"`).join(`fill="url(#${s._pid||'pat'}-${slot})"`):str;
 const CLOTHC=['#ff5fa2','#ff9ccf','#c78bff','#7ec8ff','#7be0b4','#ffe066','#ff8a5c','#e8406a','#ffffff','#3b3b58'];
 const LIPC=['yok','#e8406a','#ff7aa8','#c2185b','#ff8a5c','#9b4dca'];
 const SHADC=['yok','#c78bff','#7ec8ff','#ff9ccf','#7be0b4','#ffd23f'];
@@ -405,7 +409,7 @@ const HAIR={
   front:c=>P("M102 110 Q100 54 150 54 Q200 56 198 110 Q190 80 168 74 Q140 70 120 86 Q108 96 102 110 Z",c)+L("M134 64 Q156 58 176 66",shade(c,1.35),4)},
  ikitopuz:{n:'İki Topuz',back:c=>C(110,58,21,c)+C(190,58,21,c)+L("M100 52 Q110 44 120 52 M180 52 Q190 44 200 52",shade(c,.8))+P(CAP,c),
   front:c=>P(MIDF,c)+C(124,64,5,'#ff5fa2')+C(176,64,5,'#ff5fa2')},
- prenses:{n:'Prenses Saçı',price:35,back:c=>P("M98 100 Q98 46 150 46 Q202 46 202 100 L212 300 Q180 318 150 312 Q120 318 88 300 Z",c)+L("M108 160 Q98 200 110 240 M192 160 Q202 200 190 240 M128 250 Q122 280 132 300 M172 250 Q178 280 168 300",shade(c,.8)),
+ prenses:{n:'Prenses Saçı',price:200,back:c=>P("M98 100 Q98 46 150 46 Q202 46 202 100 L212 300 Q180 318 150 312 Q120 318 88 300 Z",c)+L("M108 160 Q98 200 110 240 M192 160 Q202 200 190 240 M128 250 Q122 280 132 300 M172 250 Q178 280 168 300",shade(c,.8)),
   front:c=>{let o=P("M102 112 Q100 58 150 58 Q200 58 198 112 Q182 82 150 80 Q118 82 102 112 Z",c);for(let i=0;i<=8;i++){const a=Math.PI*(1-i/8);o+=C((150+48*Math.cos(a)).toFixed(1),(96-40*Math.sin(a)).toFixed(1),7.5,shade(c,.88))}return o+C(150,56,5,'#ff9ccf')}},
  yanorgu:{n:'Yan Örgü',back:c=>P(CAP,c),front:c=>{let o=P("M102 112 Q100 56 150 56 Q200 56 198 112 Q186 72 140 74 Q114 80 102 112 Z",c);
   for(let i=0;i<7;i++)o+=E(192-i*2,150+i*19,12,11,c);return o+C(180,284,6,'#ff5fa2')+P("M174 288 L180 312 L186 288 Z",c)}}
@@ -442,11 +446,11 @@ const DRESS={
   +C(132,208,4,'#ffd23f')+C(168,208,4,'#ffd23f')+P("M140 222 L160 222 L160 240 Q150 246 140 240 Z",shade(c,1.3))+heart(150,231,5,'#ff5fa2'),s:P(TS_L,'#fff')+P(TS_R,'#fff')})},
  abiye:{n:'Abiye',f:c=>({m:P("M122 186 L180 176 L184 270 Q198 420 216 548 Q150 562 84 548 Q102 420 116 270 Z",c)+L("M180 178 L176 170",c,6)+P("M164 420 L180 548 L196 546 Z",shade(c,.8))
   +[[140,230],[160,260],[132,300],[170,330],[146,380],[120,470],[180,500]].map(a=>star(a[0],a[1],4,'#fff',false)).join('')+P("M116 262 Q150 270 184 262 L185 274 Q150 282 115 274 Z",shade(c,1.4)),s:''})},
- gelinlik:{n:'Kraliçe Elbisesi',price:60,f:c=>{const l=shade(c,1.4);let r='';for(let i=0;i<=12;i++){const t=i/12;r+=C(q(52,150,248,t).toFixed(1),q(470,506,470,t).toFixed(1),10,l)}
+ gelinlik:{n:'Kraliçe Elbisesi',price:400,f:c=>{const l=shade(c,1.4);let r='';for(let i=0;i<=12;i++){const t=i/12;r+=C(q(52,150,248,t).toFixed(1),q(470,506,470,t).toFixed(1),10,l)}
   return {m:r+P("M118 256 Q56 380 52 470 Q150 506 248 470 Q244 380 182 256 Z",c)+P("M122 256 Q90 340 96 410 Q150 430 204 410 Q210 340 178 256 Z",l)+L("M70 440 Q150 470 230 440",'#ffd23f',4)
    +[[100,420],[150,446],[200,420],[124,380],[176,380]].map(a=>star(a[0],a[1],5,'#ffd23f')).join('')+P("M118 186 Q134 178 150 190 Q166 178 182 186 L180 262 Q150 268 120 262 Z",c)
    +P("M120 252 Q150 258 180 252 L180 264 Q150 270 120 264 Z",'#ffd23f')+C(150,214,6,'#7ec8ff'),s:P("M120 186 Q98 186 96 210 Q110 220 124 204 Z",l)+P("M180 186 Q202 186 204 210 Q190 220 176 204 Z",l)}}},
- simli:{n:'Payetli Elbise',price:40,f:c=>{const l=shade(c,1.5),sh="M122 182 Q150 176 178 182 L184 250 Q200 320 206 368 Q150 382 94 368 Q100 320 116 250 Z";let d='';
+ simli:{n:'Payetli Elbise',price:250,f:c=>{const l=shade(c,1.5),sh="M122 182 Q150 176 178 182 L184 250 Q200 320 206 368 Q150 382 94 368 Q100 320 116 250 Z";let d='';
   for(let y=194;y<=372;y+=12)for(let x=94+((y/12)%2)*6;x<=206;x+=12)d+=`<circle cx="${x}" cy="${y}" r="2.6" fill="${l}"/>`;
   return {m:`<clipPath id="spc"><path d="${sh}"/></clipPath>`+P(sh,c)+`<g clip-path="url(#spc)">${d}</g>`+L("M128 184 L126 172 M172 184 L174 172",c,5)+[[136,220],[166,260],[130,320],[176,340]].map(a=>star(a[0],a[1],4,'#fff',false)).join(''),s:''}}},
  gokkusagi:{n:'Gökkuşağı',lock:2,f:c=>{const cols=['#ff6b6b','#ffa94d','#ffe066','#7be0b4','#7ec8ff','#c78bff'];let o='';
@@ -488,7 +492,7 @@ const SHOES={
  spor:{n:'Spor',f:c=>P("M121 544 Q121 537 132 537 L144 537 Q153 539 153 550 L153 558 L121 558 Z",'#fff')+L("M126 546 L148 546",c,5)+L("M122 556 L152 556",shade(c,.75),3)},
  bot:{n:'Bot',f:c=>P("M124 472 L150 472 L150 557 L119 557 Q117 547 124 540 Z",c)+P("M122 466 L152 466 L152 482 L122 482 Z",shade(c,1.4))},
  sandalet:{n:'Sandalet',f:c=>P("M121 554 Q122 548 136 548 Q152 548 152 554 L152 559 L121 559 Z",shade(c,.75))+L("M126 548 L146 544 M128 544 L134 538",c,4)},
- kristal:{n:'Kristal Ayakkabı',price:35,f:()=>P("M121 548 Q124 538 140 540 Q152 542 152 551 Q150 557 140 557 L124 557 Z",'#d6f3ff')+P("M121 552 L120 566 L126 566 L127 556 Z",'#bfe9ff')+star(138,546,3.5,'#fff',false)+star(128,551,2.5,'#7ec8ff',false)},
+ kristal:{n:'Kristal Ayakkabı',price:180,f:()=>P("M121 548 Q124 538 140 540 Q152 542 152 551 Q150 557 140 557 L124 557 Z",'#d6f3ff')+P("M121 552 L120 566 L126 566 L127 556 Z",'#bfe9ff')+star(138,546,3.5,'#fff',false)+star(128,551,2.5,'#7ec8ff',false)},
  paten:{n:'Paten',lock:12,f:c=>P("M123 500 L150 500 L152 552 L121 552 Q118 540 123 532 Z",c)+P("M119 550 L154 550 L154 558 L119 558 Z",'#fff')+C(126,566,5.5,'#ffe066')+C(147,566,5.5,'#ffe066')+L("M126 512 L146 512 M126 524 L146 524",'#fff',2.5)}
 };
 const ACC={
@@ -512,10 +516,10 @@ const ACC={
  yildizgozluk:{n:'Yıldız Gözlük',f:()=>star(133,117,16,'#ffe066')+star(167,117,16,'#ffe066')+`<circle cx="133" cy="118" r="7" fill="#7ec8ff" opacity=".7"/><circle cx="167" cy="118" r="7" fill="#7ec8ff" opacity=".7"/>`+L("M146 114 Q150 110 154 114")},
  pelerin:{n:'Pelerin',back:()=>P("M114 178 Q150 166 186 178 L252 528 Q150 552 48 528 Z",'#c78bff')+[[110,300],[190,330],[100,450],[200,470],[150,500]].map(a=>star(a[0],a[1],8,'#ffe066')).join(''),
   f:()=>P("M124 178 Q150 190 176 178 L178 186 Q150 198 122 186 Z",'#a96cf5')+C(150,190,6,'#ffe066')},
- perikanat:{n:'Peri Kanatları',price:50,back:()=>`<g opacity=".92">`+E(96,226,42,64,'#e3d4ff','transform="rotate(-28 96 226)"')+E(204,226,42,64,'#e3d4ff','transform="rotate(28 204 226)"')
+ perikanat:{n:'Peri Kanatları',price:350,back:()=>`<g opacity=".92">`+E(96,226,42,64,'#e3d4ff','transform="rotate(-28 96 226)"')+E(204,226,42,64,'#e3d4ff','transform="rotate(28 204 226)"')
   +E(106,320,26,40,'#ffd6ea','transform="rotate(20 106 320)"')+E(194,320,26,40,'#ffd6ea','transform="rotate(-20 194 320)"')+`</g>`+star(84,206,6,'#fff',false)+star(216,206,6,'#fff',false)+star(102,326,4,'#fff',false)+star(198,326,4,'#fff',false),f:()=>''},
- kalpcanta:{n:'Kalp Çanta',price:25,f:()=>L("M184 336 Q196 310 208 336",OL,5)+L("M184 336 Q196 310 208 336",'#ffd23f',2.5)+heart(196,350,16,'#ff5fa2')+star(196,348,4,'#fff',false)},
- mikrofon:{n:'Mikrofon',price:30,f:()=>L("M104 330 L94 296",OL,10)+L("M104 330 L94 296",'#4a4a6a',6)+C(91,288,11,'#d9d9e6')+L("M84 284 L98 292 M86 292 L96 284",'#9a9ab0',2)+star(70,270,5,'#ffe066',false)+star(112,262,4,'#ffe066',false)},
+ kalpcanta:{n:'Kalp Çanta',price:120,f:()=>L("M184 336 Q196 310 208 336",OL,5)+L("M184 336 Q196 310 208 336",'#ffd23f',2.5)+heart(196,350,16,'#ff5fa2')+star(196,348,4,'#fff',false)},
+ mikrofon:{n:'Mikrofon',price:150,f:()=>L("M104 330 L94 296",OL,10)+L("M104 330 L94 296",'#4a4a6a',6)+C(91,288,11,'#d9d9e6')+L("M84 284 L98 292 M86 292 L96 284",'#9a9ab0',2)+star(70,270,5,'#ffe066',false)+star(112,262,4,'#ffe066',false)},
  asa:{n:'Sihirli Asa',lock:8,f:()=>L("M104 328 L76 268",OL,9)+L("M104 328 L76 268",'#c78bff',5)+star(74,262,16,'#ffe066')+star(52,244,5,'#fff')+star(96,240,4,'#fff')+star(60,286,4,'#fff')}
 };
 
@@ -545,15 +549,62 @@ function embOver(s){const e=s.emb||[];if(!e.length)return '';const c=s.embC||'#f
  return o}
 
 /* =====================  yüz  ===================== */
-function face(s){const m=s.mk,h0=hb(s.hair.c),bc=shade(h0==='#f6e7a8'||h0==='#e8c26a'||h0==='#ffe066'?'#c49a4a':h0,.85);let o='';
+/* =====================  yüz özellikleri  ===================== */
+const FACE={
+ shape:{oval:'Oval',yuvarlak:'Yuvarlak',kalp:'Kalp',uzun:'Uzun',kare:'Köşeli'},
+ eyes:{yuvarlak:'Yuvarlak',badem:'Badem',kocaman:'Kocaman',kedi:'Kedi Göz',uykulu:'Uykulu',gulen:'Gülen'},
+ brow:{ince:'İnce',kalin:'Kalın',kavisli:'Kavisli',duz:'Düz'},
+ nose:{kucuk:'Minik',nokta:'Nokta',kalkik:'Kalkık',sivri:'Sivri',genis:'Geniş'},
+ mouth:{gulumse:'Gülümseme',kocaman:'Kahkaha',kucuk:'Minik',dil:'Dil Çıkarma',sirit:'Sırıtma',opucuk:'Öpücük'},
+ extra:{cil:'Çiller',ben:'Ben',gamze:'Gamze',kirpik:'Uzun Kirpik',elf:'Peri Kulağı'}};
+const FDEF={shape:'oval',eyes:'yuvarlak',brow:'ince',nose:'kucuk',mouth:'gulumse',extra:[]};
+const fc=s=>Object.assign({},FDEF,s.face||{});
+function headSvg(s){const k=s.skin,f=fc(s),ex=f.extra||[];let ears='';
+ if(ex.includes('elf'))ears=P("M108 108 L88 92 L96 126 Z",k)+P("M192 108 L212 92 L204 126 Z",k);
+ else{const ew=f.shape==='yuvarlak'?100:f.shape==='uzun'?108:104;ears=C(ew,114,8,k)+C(300-ew,114,8,k)}
+ const hd={oval:E(150,108,46,50,k),yuvarlak:E(150,109,50,49,k),uzun:E(150,112,42,54,k),
+  kalp:P("M104 102 Q104 58 150 58 Q196 58 196 102 Q196 134 170 150 Q150 164 130 150 Q104 134 104 102 Z",k),
+  kare:P("M106 88 Q106 58 150 58 Q194 58 194 88 L194 124 Q194 158 150 160 Q106 158 106 124 Z",k)}[f.shape]||E(150,108,46,50,k);
+ return ears+hd}
+function eyeSvg(x,d,f,m){const t=f.eyes,lash=(f.extra||[]).includes('kirpik');let o='';
+ const iris=(r,cy=118)=>`<circle cx="${x}" cy="${cy}" r="${r}" fill="${m.eye}"/><circle cx="${x}" cy="${cy}" r="${r/2}" fill="#1d1020"/><circle cx="${x+r*.35}" cy="${cy-r*.55}" r="${r*.34}" fill="#fff"/>`;
+ switch(t){
+  case 'badem':case 'kedi':{const p=`M${x-12} 117 Q${x} 104 ${x+12} 117 Q${x} 128 ${x-12} 117Z`;o+=`<clipPath id="ec${t}${x}"><path d="${p}"/></clipPath><path d="${p}" fill="#fff"/><g clip-path="url(#ec${t}${x})">${iris(6.5,117)}</g><path d="${p}" fill="none" stroke="${OL}" stroke-width="2.6" stroke-linejoin="round"/>`;
+   if(t==='kedi')o+=L(`M${x+12*d} 116 L${x+19*d} 110`,OL,3.2);break}
+  case 'kocaman':o+=E(x,115,12,15,'#fff')+iris(9.5,117)+`<circle cx="${x-3}" cy="${121}" r="1.8" fill="#fff"/>`;break;
+  case 'uykulu':o+=E(x,117,10,10,'#fff')+iris(6.5,119)+P(`M${x-11} 117 Q${x} 104 ${x+11} 117 Z`,m.skin||'#f6c9a8')+L(`M${x-11} 117 Q${x} 112 ${x+11} 117`,OL,2.6);break;
+  case 'gulen':return L(`M${x-10} 119 Q${x} 108 ${x+10} 119`,OL,3.5)+L(`M${x+10*d} 117 l${4*d} -4`,OL,2.5)+(lash?L(`M${x+6*d} 112 l${3*d} -6`,OL,2.5):'');
+  default:o+=E(x,116,10,12,'#fff')+iris(7)}
+ o+=L(`M${x+9*d} 109 l${5*d} -4 M${x+5*d} 105.5 l${3*d} -5`,OL,2.5);
+ if(lash)o+=L(`M${x+11*d} 113 l${6*d} -3 M${x+1*d} 104 l${1*d} -6`,OL,2.5);
+ return o}
+function browSvg(x,f,bc){switch(f.brow){
+ case 'kalin':return L(`M${x-11} 98 Q${x} 91 ${x+11} 98`,bc,6);
+ case 'kavisli':return L(`M${x-11} 99 Q${x-2} 86 ${x+11} 96`,bc,3.5);
+ case 'duz':return L(`M${x-10} 96 L${x+10} 96`,bc,4);
+ default:return L(`M${x-10} 98 Q${x} 91 ${x+10} 98`,bc,3.5)}}
+function noseSvg(f,sk){const c=shade(sk,.7);switch(f.nose){
+ case 'nokta':return `<ellipse cx="150" cy="128" rx="3" ry="2.2" fill="${c}"/>`;
+ case 'kalkik':return L("M145 124 Q150 132 155 124",c,2.5)+`<circle cx="147.5" cy="127.5" r="1.3" fill="${c}"/><circle cx="152.5" cy="127.5" r="1.3" fill="${c}"/>`;
+ case 'sivri':return L("M150 112 L153 128 Q150 130 146 128",c,2.5);
+ case 'genis':return L("M143 125 Q146 130 150 129 Q154 130 157 125",c,2.5)+L("M146 122 L145 126 M154 122 L155 126",c,2);
+ default:return L("M148 127 Q150 130 152 127",c,2.5)}}
+function mouthSvg(f,m){const lip=m.lip!=='yok'?m.lip:null;switch(f.mouth){
+ case 'kocaman':return `<path d="M138 138 Q150 136 162 138 Q160 154 150 154 Q140 154 138 138 Z" fill="#7a1f3a" stroke="${lip||OL}" stroke-width="${lip?3.5:2.5}" stroke-linejoin="round"/><path d="M140 139 L160 139 L159 143 L141 143 Z" fill="#fff"/><path d="M143 151 Q150 146 157 151 Q150 155 143 151 Z" fill="#ff7a9c"/>`;
+ case 'kucuk':return `<ellipse cx="150" cy="142" rx="4.5" ry="4" fill="${lip||'#c2185b'}" stroke="${OL}" stroke-width="2"/>`;
+ case 'dil':return (lip?`<path d="M140 140 Q150 146 160 140" fill="none" stroke="${lip}" stroke-width="5" stroke-linecap="round"/>`:L("M140 140 Q150 147 160 140",OL,3))+`<path d="M146 143 Q146 152 150 152 Q154 152 154 143 Z" fill="#ff7a9c" stroke="${OL}" stroke-width="2"/>`;
+ case 'sirit':return lip?`<path d="M140 141 Q152 146 160 136" fill="none" stroke="${lip}" stroke-width="5" stroke-linecap="round"/>`:L("M140 141 Q152 146 160 136",OL,3);
+ case 'opucuk':return heart(150,142,5.5,lip||'#ff5fa2');
+ default:return lip?`<path d="M140 140 Q145 137 150 139 Q155 137 160 140 Q150 151 140 140 Z" fill="${lip}" stroke="${OL}" stroke-width="2" stroke-linejoin="round"/>`:L("M141 140 Q150 148 159 140",OL,3)}}
+function face(s){const m={...s.mk,skin:s.skin},f=fc(s),ex=f.extra||[],h0=hb(s.hair.c),bc=shade(h0==='#f6e7a8'||h0==='#e8c26a'||h0==='#ffe066'?'#c49a4a':h0,.85);let o='';
  if(m.shadow!=='yok')o+=`<ellipse cx="133" cy="108" rx="13" ry="8" fill="${m.shadow}" opacity=".75"/><ellipse cx="167" cy="108" rx="13" ry="8" fill="${m.shadow}" opacity=".75"/>`;
- for(const [x,d] of [[133,-1],[167,1]]){
-  o+=E(x,116,10,12,'#fff')+`<circle cx="${x}" cy="118" r="7" fill="${m.eye}"/><circle cx="${x}" cy="118" r="3.5" fill="#1d1020"/><circle cx="${x+2.5}" cy="114" r="2.4" fill="#fff"/>`;
-  o+=L(`M${x+9*d} 109 l${5*d} -4 M${x+5*d} 105.5 l${3*d} -5`,OL,2.5)+L(`M${x-10} 98 Q${x} 91 ${x+10} 98`,bc,3.5);
- }
- o+=L("M148 127 Q150 130 152 127",shade(s.skin,.7),2.5);
+ for(const [x,d] of [[133,-1],[167,1]])o+=eyeSvg(x,d,f,m)+browSvg(x,f,bc);
+ o+=noseSvg(f,s.skin);
  if(m.blush)o+=`<ellipse cx="119" cy="134" rx="10" ry="6" fill="#ff6fa5" opacity=".45"/><ellipse cx="181" cy="134" rx="10" ry="6" fill="#ff6fa5" opacity=".45"/>`;
- o+=m.lip!=='yok'?`<path d="M140 140 Q145 137 150 139 Q155 137 160 140 Q150 151 140 140 Z" fill="${m.lip}" stroke="${OL}" stroke-width="2" stroke-linejoin="round"/>`:L("M141 140 Q150 148 159 140",OL,3);
+ if(ex.includes('cil'))o+=[[116,128],[122,132],[118,136],[126,127],[178,128],[184,132],[182,136],[174,127]].map(a=>`<circle cx="${a[0]}" cy="${a[1]}" r="1.4" fill="${shade(s.skin,.6)}"/>`).join('');
+ if(ex.includes('ben'))o+=`<circle cx="170" cy="143" r="1.8" fill="#4a2c2a"/>`;
+ if(ex.includes('gamze'))o+=L("M134 140 q-2 3 0 5 M166 140 q2 3 0 5",shade(s.skin,.7),2);
+ o+=mouthSvg(f,m);
  if(m.sim)o+=star(116,124,4,'#fff',false)+star(186,126,5,'#fff',false)+star(178,140,3,'#ffe066',false)+star(122,142,3,'#ffe066',false);
  return o}
 
@@ -567,7 +618,7 @@ function doll(s){const k=s.skin,H=HAIR[s.hair.k],hc=hb(s.hair.c),hg=s.hair.c.sta
  if(s.dress!=='yok'){const d=DRESS[s.dress].f(s.col.dress);o+=pat(d.m,s,'dress');sl=pat(d.s,s,'dress')}
  else{o+=pat(BOTTOMS[s.bottom].f(s.col.bottom),s,'bottom');const t=TOPS[s.top].f(s.col.top);o+=pat(t.m,s,'top');sl=pat(t.s,s,'top')}
  o+=embOver(s);o+=P(ARML,k)+P(ARMR,k)+sl;
- o+=C(104,114,8,k)+C(196,114,8,k)+E(150,108,46,50,k)+face(s)+hf(H.front(hc));
+ o+=headSvg(s)+face(s)+hf(H.front(hc));
  for(const a of s.acc)if(ACC[a])o+=ACC[a].f();
  return o}
 
@@ -584,12 +635,12 @@ const PETS={
   +L("M-34 -44 L-50 -46 M-34 -41 L-50 -38 M-14 -44 L2 -46 M-14 -41 L2 -38",OL,1.8)+P("M-40 -32 Q-24 -24 -8 -32 L-8 -27 Q-24 -19 -40 -27Z",'#7ec8ff')}},
  tavsan:{n:'Tavşan',f:()=>E(-30,-86,8,22,'#fff')+E(-30,-86,3.5,14,'#ffb3d1',NS)+E(-12,-88,8,22,'#fff')+E(-12,-88,3.5,14,'#ffb3d1',NS)+C(34,-22,9,'#fff')+E(8,-24,28,22,'#fff')+C(-20,-50,21,'#fff')
   +`<circle cx="-28" cy="-53" r="3.5" fill="${OL}"/><circle cx="-12" cy="-53" r="3.5" fill="${OL}"/>`+heart(-20,-45,3.5,'#ff7aa8')+`<ellipse cx="-34" cy="-43" rx="5" ry="3" fill="#ff9ccf" opacity=".6"/><ellipse cx="-6" cy="-43" rx="5" ry="3" fill="#ff9ccf" opacity=".6"/>`},
- panda:{n:'Panda',price:40,f:()=>E(10,-24,32,22,'#fff')+E(-6,-6,9,7,'#2b2b2b')+E(26,-6,9,7,'#2b2b2b')+C(-40,-68,8,'#2b2b2b')+C(-8,-68,8,'#2b2b2b')+C(-24,-50,23,'#fff')
+ panda:{n:'Panda',price:250,f:()=>E(10,-24,32,22,'#fff')+E(-6,-6,9,7,'#2b2b2b')+E(26,-6,9,7,'#2b2b2b')+C(-40,-68,8,'#2b2b2b')+C(-8,-68,8,'#2b2b2b')+C(-24,-50,23,'#fff')
   +E(-32,-52,6,8,'#2b2b2b','transform="rotate(-20 -32 -52)"')+E(-16,-52,6,8,'#2b2b2b','transform="rotate(20 -16 -52)"')+`<circle cx="-32" cy="-52" r="2.5" fill="#fff"/><circle cx="-16" cy="-52" r="2.5" fill="#fff"/>`+E(-24,-42,4,3,'#2b2b2b')+E(22,-34,10,13,'#2b2b2b')},
- penguen:{n:'Penguen',price:40,f:()=>E(-26,-36,6,16,'#2b2b3b','transform="rotate(20 -26 -36)"')+E(26,-36,6,16,'#2b2b3b','transform="rotate(-20 26 -36)"')+E(0,-40,26,38,'#2b2b3b')+E(0,-34,17,28,'#fff')
+ penguen:{n:'Penguen',price:250,f:()=>E(-26,-36,6,16,'#2b2b3b','transform="rotate(20 -26 -36)"')+E(26,-36,6,16,'#2b2b3b','transform="rotate(-20 26 -36)"')+E(0,-40,26,38,'#2b2b3b')+E(0,-34,17,28,'#fff')
   +`<circle cx="-8" cy="-56" r="3.5" fill="${OL}"/><circle cx="8" cy="-56" r="3.5" fill="${OL}"/>`+P("M-6 -48 L6 -48 L0 -40 Z",'#ffa94d')+E(-12,-2,9,4,'#ffa94d')+E(12,-2,9,4,'#ffa94d')
   +`<ellipse cx="-14" cy="-46" rx="4" ry="2.5" fill="#ff9ccf" opacity=".7"/><ellipse cx="14" cy="-46" rx="4" ry="2.5" fill="#ff9ccf" opacity=".7"/>`+P("M-16 -76 Q0 -88 16 -76 L14 -70 Q0 -78 -14 -70 Z",'#ff5fa2')},
- ejder:{n:'Minik Ejderha',price:70,f:()=>{const g='#6fd69f',d='#3fae78';return P("M8 -46 Q30 -86 54 -70 Q40 -60 44 -46 Q30 -54 18 -40 Z",'#c9a0ff')+P("M30 -18 Q60 -14 62 -40 Q56 -30 44 -30 Z",g)+E(10,-26,30,22,g)+E(8,-22,18,14,'#fff3b0')
+ ejder:{n:'Minik Ejderha',price:400,f:()=>{const g='#6fd69f',d='#3fae78';return P("M8 -46 Q30 -86 54 -70 Q40 -60 44 -46 Q30 -54 18 -40 Z",'#c9a0ff')+P("M30 -18 Q60 -14 62 -40 Q56 -30 44 -30 Z",g)+E(10,-26,30,22,g)+E(8,-22,18,14,'#fff3b0')
   +[[2,-46],[16,-48],[30,-42]].map(a=>P(`M${a[0]-5} ${a[1]} L${a[0]} ${a[1]-10} L${a[0]+5} ${a[1]} Z`,d)).join('')+C(-22,-54,22,g)+P("M-34 -72 L-38 -88 L-26 -76 Z",'#ffe066')+P("M-14 -74 L-10 -90 L-4 -74 Z",'#ffe066')
   +`<circle cx="-30" cy="-56" r="4" fill="${OL}"/><circle cx="-14" cy="-56" r="4" fill="${OL}"/><circle cx="-29" cy="-57.5" r="1.5" fill="#fff"/><circle cx="-13" cy="-57.5" r="1.5" fill="#fff"/>`+L("M-30 -44 Q-22 -38 -14 -44",OL,2.5)
   +`<ellipse cx="-36" cy="-46" rx="4" ry="2.5" fill="#ff9ccf" opacity=".7"/><ellipse cx="-8" cy="-46" rx="4" ry="2.5" fill="#ff9ccf" opacity=".7"/>`+P("M-8 -8 L-8 2 L2 2 L2 -6Z",g)+P("M18 -8 L18 2 L28 2 L28 -6Z",g)}},
@@ -629,19 +680,19 @@ const BGS={
   +P("M50 420 L50 330 L64 330 L64 420Z",'#b07a4a')+C(57,300,40,'#4fbf6a')+C(30,322,24,'#4fbf6a')+C(84,320,26,'#4fbf6a')
   +P("M336 400 L336 310 L350 310 L350 400Z",'#b07a4a')+C(343,280,38,'#5ccf72')+C(372,300,22,'#5ccf72')
   +seeded(18,r=>{const x=(r()*400).toFixed(0),y=(500+r()*130).toFixed(0),c=rnd(['#ff5fa2','#ffe066','#c78bff','#fff']);return `<circle cx="${x}" cy="${y}" r="7" fill="${c}" stroke="${OL}" stroke-width="2"/><circle cx="${x}" cy="${y}" r="2.5" fill="#ffd23f"/>`})},
- okyanus:{n:'Okyanus',price:45,d:()=>`<defs><linearGradient id="go" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5fd0f0"/><stop offset="1" stop-color="#1a6fb0"/></linearGradient></defs><rect width="400" height="640" fill="url(#go)"/>`
+ okyanus:{n:'Okyanus',price:300,d:()=>`<defs><linearGradient id="go" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5fd0f0"/><stop offset="1" stop-color="#1a6fb0"/></linearGradient></defs><rect width="400" height="640" fill="url(#go)"/>`
   +`<polygon points="60,0 120,0 200,640 0,640" fill="#fff" opacity=".07"/><polygon points="250,0 300,0 400,640 230,640" fill="#fff" opacity=".07"/>`
   +seeded(22,r=>`<circle cx="${(r()*400).toFixed(0)}" cy="${(r()*520).toFixed(0)}" r="${(3+r()*7).toFixed(1)}" fill="none" stroke="#fff" stroke-width="2" opacity=".7"/>`)
   +fish(70,160,'#ffa94d')+fish(320,240,'#ff9ccf',1)+fish(90,380,'#ffe066',1)+fish(300,110,'#c78bff')
   +P("M-10 520 Q100 500 200 520 Q300 540 410 515 L410 650 L-10 650Z",'#f6dca0')+P("M40 520 Q30 470 46 430 Q52 470 50 520Z",'#4fbf6a')+P("M60 525 Q70 460 58 410 Q80 460 72 525Z",'#3fae5c')+P("M340 520 Q330 480 350 440 Q356 480 352 520Z",'#4fbf6a')
   +P("M300 530 Q296 500 306 490 Q300 470 316 466 Q330 470 322 490 Q336 500 328 530Z",'#ff7aa8')+star(250,575,14,'#ff8a5c')+`<ellipse cx="120" cy="590" rx="14" ry="9" fill="#ffc0de" stroke="${OL}" stroke-width="3"/>`},
- dondurma:{n:'Dondurmacı',price:35,d:()=>{let o=`<rect width="400" height="640" fill="#fff3f9"/>`;for(let x=0;x<400;x+=40)o+=`<rect x="${x}" width="20" height="640" fill="#ffe0ef"/>`;
+ dondurma:{n:'Dondurmacı',price:200,d:()=>{let o=`<rect width="400" height="640" fill="#fff3f9"/>`;for(let x=0;x<400;x+=40)o+=`<rect x="${x}" width="20" height="640" fill="#ffe0ef"/>`;
   for(let x=0;x<400;x+=50)o+=`<rect x="${x}" y="0" width="50" height="60" fill="${(x/50)%2?'#fff':'#ff7ab5'}"/>`+C(x+25,60,25,(x/50)%2?'#fff':'#ff7ab5');
   o+=`<rect x="20" y="230" width="360" height="12" rx="4" fill="#e7a46e" stroke="${OL}" stroke-width="3"/>`;
   [[60,'#ff9ccf'],[120,'#7be0b4'],[280,'#ffe066'],[340,'#c78bff']].forEach(([x,c])=>{o+=P(`M${x-14} 200 L${x} 230 L${x+14} 200 Z`,'#e8b07a')+C(x,192,15,c)+C(x,172,11,shade(c,1.2))+C(x,160,4,'#e8406a')});
   o+=`<rect x="150" y="110" width="100" height="80" rx="14" fill="#fff" stroke="${OL}" stroke-width="4"/><text x="200" y="166" font-size="44" text-anchor="middle">🍦</text>`;
   return o+`<rect y="500" width="400" height="140" fill="#ff9ccf"/>`+L("M0 500 L400 500",OL,4)+`<rect y="500" width="400" height="16" fill="#fff"/>`+seeded(10,r=>heart((r()*400).toFixed(0),(540+r()*90).toFixed(0),6,'#fff'))}},
- kar:{n:'Kar Diyarı',price:40,d:()=>`<rect width="400" height="640" fill="#cfeeff"/>`+seeded(50,r=>`<circle cx="${(r()*400).toFixed(0)}" cy="${(r()*600).toFixed(0)}" r="${(1.5+r()*3).toFixed(1)}" fill="#fff"/>`)
+ kar:{n:'Kar Diyarı',price:250,d:()=>`<rect width="400" height="640" fill="#cfeeff"/>`+seeded(50,r=>`<circle cx="${(r()*400).toFixed(0)}" cy="${(r()*600).toFixed(0)}" r="${(1.5+r()*3).toFixed(1)}" fill="#fff"/>`)
   +P("M-10 430 Q100 360 220 420 Q320 370 410 410 L410 650 L-10 650Z",'#fff')+P("M-10 500 Q200 460 410 500 L410 650 L-10 650Z",'#f2f9ff')+tree(60,420)+tree(352,404)+tree(110,450)
   +C(318,528,30,'#fff')+C(318,478,22,'#fff')+`<rect x="302" y="440" width="32" height="18" rx="3" fill="#3b3b58" stroke="${OL}" stroke-width="3"/><rect x="296" y="454" width="44" height="6" rx="3" fill="#3b3b58"/>`
   +`<circle cx="311" cy="474" r="3" fill="${OL}"/><circle cx="325" cy="474" r="3" fill="${OL}"/>`+P("M318 480 L336 485 L318 488 Z",'#ffa94d')+P("M300 496 Q318 506 336 496 L336 504 Q318 514 300 504 Z",'#e8406a')},
@@ -656,8 +707,8 @@ const BGS={
   +`<rect x="70" y="250" width="20" height="30" rx="10" fill="#7ec8ff" stroke="${OL}" stroke-width="3"/><rect x="310" y="250" width="20" height="30" rx="10" fill="#7ec8ff" stroke="${OL}" stroke-width="3"/><rect x="190" y="200" width="20" height="34" rx="10" fill="#7ec8ff" stroke="${OL}" stroke-width="3"/>`
   +heart(200,300,14,'#ff5fa2')+P("M-10 470 Q200 450 410 470 L410 650 L-10 650Z",'#8fdc7a')+seeded(14,r=>heart((r()*400).toFixed(0),(500+r()*130).toFixed(0),6,'#ff5fa2'))}
 };
-const PACKS={kalp:{n:'💞 Kalp Paketi',p:15,e:['💞','💝','💗','💓','❣️','💟','💘','🩷']},hayvan:{n:'🐾 Hayvan Paketi',p:20,e:['🐱','🐶','🐰','🐼','🦊','🐸','🐨','🐯']},
- yemek:{n:'🍕 Lezzet Paketi',p:20,e:['🍕','🍩','🍪','🧃','🍉','🥞','🍿','🧋']},uzay:{n:'🚀 Uzay Paketi',p:25,e:['🚀','🪐','👽','🌟','☄️','🛸','🌍','🌙']}};
+const PACKS={kalp:{n:'💞 Kalp Paketi',p:100,e:['💞','💝','💗','💓','❣️','💟','💘','🩷']},hayvan:{n:'🐾 Hayvan Paketi',p:120,e:['🐱','🐶','🐰','🐼','🦊','🐸','🐨','🐯']},
+ yemek:{n:'🍕 Lezzet Paketi',p:120,e:['🍕','🍩','🍪','🧃','🍉','🥞','🍿','🧋']},uzay:{n:'🚀 Uzay Paketi',p:150,e:['🚀','🪐','👽','🌟','☄️','🛸','🌍','🌙']}};
 const myStickers=()=>STICKERS.concat(...Object.entries(PACKS).filter(([k])=>(S.owned||[]).includes('pk:'+k)).map(([k,v])=>v.e));
 const STICKERS=['💖','⭐','🌸','🌈','🦋','✨','🎀','🍓','👑','🌙','🧁','🦄','🍭','💎','🌻','🐣','🍦','🎈'];
 
@@ -685,6 +736,7 @@ const TASKS=[
  {id:'m3_5',i:'💎',t:'Işıltı Patlat’ta 5. seviyeyi geç',ok:(s,e)=>e==='m3_5'||(s.m3max||1)>5},
  {id:'butik3',i:'🏬',t:'Butikte bir günü 3 yıldızla bitir',ok:(s,e)=>e==='butik3'},
  {id:'k3',i:'💇‍♀️',t:'Kuaförde 3 yıldız al',ok:(s,e)=>e==='k3'},
+ {id:'es3',i:'👩‍⚕️',t:'Klinikte 3 yıldız al',ok:(s,e)=>e==='es3'},
  {id:'kupa5',i:'🏆',t:'5 farklı temada 24+ puan al',ok:s=>Object.values(s.trophies||{}).filter(v=>v>=24).length>=5}
 ];
 const UNLOCKS=[[2,'🌈 Gökkuşağı Elbise'],[4,'🦄 Unicorn Dost'],[6,'🪐 Uzay'],[8,'🪄 Sihirli Asa'],[10,'🏰 Şato'],[12,'🛼 Paten'],[14,'🌈 Gökkuşağı Saç'],[16,'💎 Elmas Taç']];
@@ -692,12 +744,12 @@ const UNLOCKS=[[2,'🌈 Gökkuşağı Elbise'],[4,'🦄 Unicorn Dost'],[6,'🪐 
 /* =====================  durum  ===================== */
 const KEY='moda-dunyasi-v1';
 const DEF={name:'',skin:'#f6c9a8',hair:{k:'uzun',c:'#e8c26a'},dress:'prenses',top:'tisort',bottom:'etek',shoes:'babet',
- col:{dress:'#c78bff',top:'#7ec8ff',bottom:'#ff9ccf',shoes:'#ff5fa2',socks:'#ffffff'},socks:'yok',emb:[],embC:'#ffd23f',acc:['fiyonk'],mk:{lip:'yok',shadow:'yok',eye:'#5b3a29',blush:false,sim:false},
+ col:{dress:'#c78bff',top:'#7ec8ff',bottom:'#ff9ccf',shoes:'#ff5fa2',socks:'#ffffff'},socks:'yok',emb:[],embC:'#ffd23f',face:{shape:'oval',eyes:'yuvarlak',brow:'ince',nose:'kucuk',mouth:'gulumse',extra:[]},acc:['fiyonk'],mk:{lip:'yok',shadow:'yok',eye:'#5b3a29',blush:false,sim:false},
  pet:'yok',bg:'oda',stickers:[],done:[],pat:{dress:'duz',top:'duz',bottom:'duz'},
  trophies:{},quick:false,coins:0,earned:0,owned:[],rings:[null,null,null,null,null],brace:'#ff9ccf',nails:[null,null,null,null,null],cake:{base:'#ffd6a5',cream:'#ff9ccf',tops:[],lit:true,tiers:2,text:'',bites:[]}};
 let S;
 try{S=Object.assign(structuredClone(DEF),JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){S=structuredClone(DEF)}
-S.col=Object.assign({},DEF.col,S.col);if(!Array.isArray(S.emb))S.emb=[];
+S.col=Object.assign({},DEF.col,S.col);S.face=Object.assign({},DEF.face,S.face||{});if(!Array.isArray(S.face.extra))S.face.extra=[];if(!Array.isArray(S.emb))S.emb=[];
 S.cake=Object.assign({tiers:2,text:'',bites:[],tops:[],lit:true},S.cake);if(!Array.isArray(S.rings))S.rings=[null,null,null,null,null];
 let GAL=[];try{GAL=JSON.parse(localStorage.getItem(KEY+'-gal')||'[]')}catch(e){}
 if(Array.isArray(S['gal'])&&S['gal'].length&&!GAL.length)GAL=S['gal'];delete S['gal'];
@@ -741,7 +793,7 @@ const stkT=s=>`translate(${s.x} ${s.y}) rotate(${s.r})`;
 function renderStickers(){$('#stkLayer').innerHTML=S.stickers.map((s,i)=>`<g class="stk" data-i="${i}" transform="${stkT(s)}"><circle cy="4" r="${(s.s*.62).toFixed(1)}" fill="#7a2a55" opacity=".2"/><circle r="${(s.s*.62).toFixed(1)}" fill="#fff"/><text font-size="${s.s}" text-anchor="middle" dominant-baseline="central">${s.e}</text></g>`).join('')}
 
 /* =====================  panel  ===================== */
-const TABS=[['sac','💇‍♀️','Saç'],['elbise','👗','Elbise'],['ust','👚','Üst'],['alt','🩳','Alt'],['susle','🎀','Süsle'],['ayakkabi','👠','Ayakkabı'],['taki','👑','Takı'],['makyaj','💄','Makyaj'],
+const TABS=[['sac','💇‍♀️','Saç'],['elbise','👗','Elbise'],['ust','👚','Üst'],['alt','🩳','Alt'],['susle','🎀','Süsle'],['ayakkabi','👠','Ayakkabı'],['taki','👑','Takı'],['yuz','😊','Yüz'],['makyaj','💄','Makyaj'],
  ['ten','🎨','Ten'],['dost','🐶','Dost'],['yer','🏰','Yer'],['sticker','✨','Sticker'],['oyun','🎮','Oyunlar'],['magaza','🛍️','Mağaza'],['gorev','⭐','Görev']];
 let tab='elbise';
 $('#tabs').innerHTML=TABS.map((t,i)=>`<button class="tab" data-act="tab" data-v="${t[0]}" style="--r:${(i%3-1)*2}deg"><i>${t[1]}</i><span>${t[2]}</span></button>`).join('');
@@ -769,6 +821,8 @@ function renderPanel(){
   case 'susle':h=`<h3>🎀 Kıyafet Süsleri <small style="font-size:14px;opacity:.7">(istediğin kadar seç!)</small></h3>`+cards(EMB,'emb',S.emb,'',k=>mini('68 165 164 250',withS(c=>{c.emb=[k]})))
    +`<h3>🎨 Süs Rengi</h3>`+swatches(CLOTHC,'ec',S.embC);break;
   case 'taki':h=`<h3>👑 Takılar <small style="font-size:14px;opacity:.7">(istediğin kadar seç!)</small></h3>`+cards(ACC,'acc',S.acc,'',k=>mini(['canta','asa'].includes(k)?'40 200 200 180':k==='kolye'?'95 120 110 100':k==='sapka'?'60 5 180 160':k==='pelerin'?'20 150 260 400':k==='atki'?'95 150 110 110':k==='kep'?'75 15 160 150':'75 25 150 150',withS(c=>{c.acc=[k]})));break;
+  case 'yuz':h=FKEYS.map(([k,n,e])=>`<h3>${e} ${n}</h3><div class="grid">${Object.entries(FACE[k]).map(([v,nm],i)=>{const multi=k==='extra',sel=multi?S.face.extra.includes(v):S.face[k]===v;
+    const c=withS(x=>{x.acc=[];if(multi){if(!sel)x.face.extra=[...x.face.extra,v]}else x.face[k]=v});return `<button class="card ${sel?'sel':''}" style="${rot(i)}" data-act="face" data-v="${k}:${v}">${mini(k==='shape'||v==='elf'?'86 40 128 140':'98 82 104 76',c)}<span>${nm}</span></button>`}).join('')}</div>`).join('');break;
   case 'makyaj':h=`<h3>💋 Ruj</h3>`+swatches(LIPC,'lip',S.mk.lip)+`<h3>👁️ Far</h3>`+swatches(SHADC,'shadow',S.mk.shadow)+`<h3>🔵 Göz Rengi</h3>`+swatches(EYEC,'eye',S.mk.eye)
    +`<h3>✨ Ekstralar</h3><div class="toggles"><button class="tog ${S.mk.blush?'sel':''}" data-act="blush">😊 Allık</button><button class="tog ${S.mk.sim?'sel':''}" data-act="sim">✨ Simli Yanak</button></div>`;break;
   case 'ten':h=`<h3>🎨 Ten Rengi</h3>`+swatches(SKIN,'skin',S.skin);break;
@@ -782,7 +836,8 @@ function renderPanel(){
    <button class="gcard" style="--r:-1deg" data-act="game" data-v="pasta"><i>🎂</i><b>Pasta Atölyesi</b><span>Pastanı süsle, mumları üfle!</span></button>
    <button class="gcard" style="--r:1deg" data-act="game" data-v="m3"><i>💎</i><b>Işıltı Patlat</b><span>Eşyaları eşleştir, patlat! Seviye ${S.m3max||1}</span></button>
    <button class="gcard" style="--r:-1deg" data-act="game" data-v="butik"><i>🏬</i><b>Butiğim</b><span>Müşterileri giydir, satış yap! ${S.butikDay||1}. gün</span></button>
-   <button class="gcard" style="--r:1deg" data-act="game" data-v="kuafor"><i>💇‍♀️</i><b>Kuaför Salonu</b><span>Köpürt, durula, kurut, şekillendir!</span></button></div>`;
+   <button class="gcard" style="--r:1deg" data-act="game" data-v="kuafor"><i>💇‍♀️</i><b>Kuaför Salonu</b><span>Köpürt, durula, kurut, şekillendir!</span></button>
+   <button class="gcard" style="--r:-1deg" data-act="game" data-v="estetik"><i>👩‍⚕️</i><b>Güzellik Kliniği</b><span>Maske, salatalık ve sihirli yüz değişimi!</span></button></div>`;
    h=`<button class="gcard gift ${S.giftDay===today()?'used':''}" data-act="gift"><i>🎁</i><b>Günlük Hediye</b><span>${S.giftDay===today()?'Bugün aldın! Yarın yine gel ⏰':'Her gün bedava altın! Hemen aç!'}</span></button>`+h;break;
   case 'magaza':h=`<h3>🛍️ Mağaza</h3>`+shopPanel();break;
   case 'gorev':h=`<h3>⭐ Görevler (${stars()}/${TASKS.length})</h3>`+TASKS.map(t=>{const ok=S.done.includes(t.id);return `<div class="task ${ok?'ok':''}"><i>${t.i}</i>${t.t}<b>${ok?'⭐':'☆'}</b></div>`}).join('')
@@ -817,6 +872,7 @@ function act(a,v,btn){
   case 'top':S.top=v;S.dress='yok';break; case 'tc':S.col.top=v;S.dress='yok';break;
   case 'bottom':S.bottom=v;S.dress='yok';break; case 'bc':S.col.bottom=v;S.dress='yok';break;
   case 'shoes':S.shoes=v;break; case 'sc':S.col.shoes=v;if(S.shoes==='yok')S.shoes='babet';break;
+  case 'face':{const [k,x]=v.split(':');if(k==='extra')S.face.extra=S.face.extra.includes(x)?S.face.extra.filter(y=>y!==x):[...S.face.extra,x];else S.face[k]=x;break}
   case 'pat':{const [sl,k]=v.split(':');S.pat[sl]=k;if(sl==='dress'){if(S.dress==='yok')S.dress='prenses'}else S.dress='yok';break}
   case 'socks':S.socks=v;break; case 'skc':S.col.socks=v;if(S.socks==='yok')S.socks='kisa';break;
   case 'emb':S.emb=S.emb.includes(v)?S.emb.filter(x=>x!==v):[...S.emb,v];break; case 'ec':S.embC=v;if(!S.emb.length)S.emb=['kemer'];break;
@@ -1019,8 +1075,8 @@ async function runwayPhoto(){try{const sv=$('.runway svg');const cl=sv.cloneNode
 /* --- ortak: altın, dükkân, müşteri --- */
 const CUST=[['🐱','Pamuk'],['🐰','Zıpzıp'],['🐼','Bambu'],['🦊','Tilki Tina'],['🐻','Ponçik'],['🐸','Kurbi'],['🦄','Işıltı'],['🐧','Pıtır'],['🐨','Koko'],['🐹','Fındık']];
 const SHOP=[
- {id:'n-rain',g:'n',n:'🌈 Gökkuşağı Oje',p:25},{id:'n-dia',g:'n',n:'💎 Elmas Süs',p:15},{id:'n-uni',g:'n',n:'🦄 Unicorn Süs',p:20},{id:'n-crown',g:'n',n:'👑 Taçlı Yüzük',p:20},
- {id:'c-3kat',g:'c',n:'🎂 3. Kat',p:20},{id:'c-gold',g:'c',n:'✨ Altın Krema',p:25},{id:'c-uni',g:'c',n:'🦄 Unicorn Süsü',p:20},{id:'c-star',g:'c',n:'⭐ Yıldız Serpme',p:15}];
+ {id:'n-rain',g:'n',n:'🌈 Gökkuşağı Oje',p:150},{id:'n-dia',g:'n',n:'💎 Elmas Süs',p:100},{id:'n-uni',g:'n',n:'🦄 Unicorn Süs',p:120},{id:'n-crown',g:'n',n:'👑 Taçlı Yüzük',p:130},
+ {id:'c-3kat',g:'c',n:'🎂 3. Kat',p:150},{id:'c-gold',g:'c',n:'✨ Altın Krema',p:180},{id:'c-uni',g:'c',n:'🦄 Unicorn Süsü',p:120},{id:'c-star',g:'c',n:'⭐ Yıldız Serpme',p:100}];
 const own=id=>(S.owned||[]).includes(id);
 function updCoins(){const c=$('#gCoins');if(c)c.querySelector('span').textContent=S.coins||0;const t=$('#coinTxt');if(t)t.textContent=S.coins||0}
 function addCoins(n){S.coins=(S.coins||0)+n;S.earned=(S.earned||0)+n;save();updCoins();[1046,1318,1568].forEach((f,i)=>tone(f,.12,'square',.05,i*.07));checkTasks()}
@@ -1094,8 +1150,11 @@ function newNailOrder(){const N=()=>S.nails,cols=shuf(['#ff5fa2','#e8406a','#c78
   Math.random()<.5?{t:`Hepsi ${NPN[p]}`,ok:()=>N().every(n=>n&&n.p===p)}:{t:`${capF(FN[f2])} ${NPN[p]}`,ok:()=>N()[f2]&&N()[f2].p===p},
   Math.random()<.5?{t:`${d} süs → ${FN[f3]}`,ok:()=>N()[f3]&&N()[f3].d===d}:{t:`${k} tırnakta ${d} süs`,ok:()=>N().filter(n=>n&&n.d===d).length>=k},
   {t:`${RINGS[r].n} yüzük → ${FN[(f3+2)%5]}`,ok:()=>S.rings[(f3+2)%5]===r},
-  {t:`${capF(BRN[b])} bileklik`,ok:()=>S.brace===b}]);
- const tot=Math.min(6,3+Math.floor((S.served||0)/2));reqs.push(...pool.slice(0,Math.max(1,tot-2)));
+  {t:`${capF(BRN[b])} bileklik`,ok:()=>S.brace===b},
+  {t:`${rnd(['🌸','🦋'])} süs → ${FN[(f3+1)%5]}`,ok:function(){const e=this.t.slice(0,2);return N()[(f3+1)%5]&&N()[(f3+1)%5].d===e}},
+  {t:`${RINGS[r==='kalp'?'gumus':'kalp'].n} yüzük → ${FN[(f3+4)%5]}`,ok:()=>S.rings[(f3+4)%5]===(r==='kalp'?'gumus':'kalp')},
+  {t:`${capF(FN[(f2+2)%5])} ${NPN[p==='sim'?'puan':'sim']}`,ok:()=>N()[(f2+2)%5]&&N()[(f2+2)%5].p===(p==='sim'?'puan':'sim')}]);
+ const tot=Math.min(9,5+Math.floor((S.served||0)/2));reqs.push(...pool.slice(0,Math.max(1,tot-2)));
  reqs.push({t:'Kurutulmuş 💨',ok:()=>N().some(Boolean)&&N().every(n=>!n||n.dry)});
  nOrd={who:rnd(CUST),say:rnd(SAYS),reqs};S.nails=[null,null,null,null,null];S.rings=[null,null,null,null,null];save();renderNails();tone(660,.1);tone(880,.12,'sine',.12,.1);toast(`${nOrd.who[0]} ${nOrd.who[1]} geldi!`,1600)}
 function scoreOrder(o){const done=o.reqs.filter(r=>r.ok()).length,n=o.reqs.length,fr=done/n,st=fr>=.99?3:fr>=.7?2:fr>=.4?1:0;return {st,coin:[1,n,n*3,n*5][st],done,n}}
@@ -1150,7 +1209,7 @@ function newCakeOrder(){const C=()=>S.cake,cnt=e=>C().tops.filter(t=>t.e===e).le
  const pool=shuf([{t:`${capF(CKN[base])} kek`,ok:()=>C().base===base},{t:`${na} tane ${ta}`,ok:()=>cnt(ta)>=na},{t:`En az 2 ${tb}`,ok:()=>cnt(tb)>=2},
   {t:`Tam ${m} mum 🕯️`,ok:()=>cnt('mum')===m},{t:`"${txt}" yazsın`,ok:()=>(C().text||'').toLocaleLowerCase('tr').includes(txt.toLocaleLowerCase('tr'))},
   {t:'Şeker serpilmiş 🍬',ok:()=>cnt('serp')>0},{t:'Krema süslemeli 🍦',ok:()=>cnt('krema')>=8}]);
- const tot=Math.min(7,4+Math.floor((S.served||0)/2));reqs.push(...pool.slice(0,tot-3));reqs.push({t:'Isırılmamış 😄',ok:()=>C().bites.length===0});
+ const tot=Math.min(10,6+Math.floor((S.served||0)/2));reqs.push(...pool.slice(0,tot-3));reqs.push({t:'Isırılmamış 😄',ok:()=>C().bites.length===0});
  cOrd={who:rnd(CUST),say:rnd(SAYS),reqs};Object.assign(S.cake,{tops:[],bites:[],text:'',lit:true});save();renderCake();tone(660,.1);tone(880,.12,'sine',.12,.1);toast(`${cOrd.who[0]} ${cOrd.who[1]} geldi!`,1600)}
 function giveCake(){const r=scoreOrder(cOrd);S.served=(S.served||0)+1;
  react('#cStage',['😢','🙂','😊','😍'][r.st],`${STARS(r.st)}<br>${r.done}/${r.n} istek · +${r.coin} 💰`);if(r.st===3){SND.star();confetti(24)}else SND.pop();
@@ -1161,6 +1220,7 @@ const G={
  m3:{open(){$('#gCoins').style.display='';updCoins();m3Map()}},
  butik:{open(){$('#gCoins').style.display='';updCoins();btMenu()}},
  kuafor:{open(){$('#gCoins').style.display='';updCoins();kfMenu()}},
+ estetik:{open(){$('#gCoins').style.display='';updCoins();esMenu()}},
  tirnak:{open(){$('#gTitle').textContent='💅 Tırnak Salonu';$('#gCoins').style.display='';updCoins();
   gBody.innerHTML=`<div class="gwrap"><div class="gstage" id="nStage"><svg id="nSvg" viewBox="10 60 380 380" preserveAspectRatio="xMidYMid meet"></svg><div id="nOrder"></div></div><div class="content" id="nTools"></div></div>`;
   renderNails();$('#nSvg').addEventListener('click',e=>{const g=e.target.closest('[data-n],[data-f]');if(!g)return;const i=+(g.dataset.n!==undefined?g.dataset.n:g.dataset.f),n=S.nails[i];
@@ -1195,9 +1255,14 @@ function gameAct(a,v,btn){
   case 'btgo':btStart();SND.pop();return true;
   case 'btcat':bt.cat=v;SND.tap();btTools();return true;
   case 'btput':btPut(v);return true;
-  case 'btcol':{const k={dress:'dress',top:'top',bottom:'bottom',shoes:'shoes'}[bt.cat];if(!k)return true;bt.c.col[k]=v;if(k==='dress'&&bt.c.dress==='yok')bt.c.dress=freeKeys(DRESS)[0];
-   $('#btDoll').innerHTML=stk(doll(bt.c));SND.pop();btBubble();btTools();return true}
-  case 'btreset':{const c=bt.c;c.dress='yok';c.top='tisort';c.bottom='pantolon';c.shoes='spor';c.acc=[];c.col={...c.col,top:'#ffffff',bottom:'#7ec8ff',shoes:'#ffffff'};$('#btDoll').innerHTML=stk(doll(c));SND.pop();btBubble();btTools();return true}
+  case 'btcol':{const k={dress:'dress',top:'top',bottom:'bottom',shoes:'shoes',socks:'socks'}[bt.cat];if(!k)return true;bt.c.col[k]=v;if(k==='dress'&&bt.c.dress==='yok')bt.c.dress=freeKeys(DRESS)[0];
+   if(k==='socks'&&bt.c.socks==='yok')bt.c.socks='kisa';if((k==='top'||k==='bottom'))bt.c.dress='yok';btChanged();return true}
+  case 'btpat':{const [sl,k]=v.split(':');bt.c.pat[sl]=k;btChanged();return true}
+  case 'btembc':bt.c.embC=v;if(!bt.c.emb.length)bt.c.emb=['kemer'];btChanged();return true;
+  case 'btlip':bt.c.mk.lip=v;btChanged();return true;
+  case 'btsh':bt.c.mk.shadow=v;btChanged();return true;
+  case 'btmk':bt.c.mk[v]=!bt.c.mk[v];btChanged();return true;
+  case 'btreset':{const c=bt.c;c.dress='yok';c.top='tisort';c.bottom='pantolon';c.shoes='spor';c.acc=[];c.socks='yok';c.emb=[];c.pat={dress:'duz',top:'duz',bottom:'duz'};c.col={...c.col,top:'#ffffff',bottom:'#7ec8ff',shoes:'#ffffff'};btChanged();return true}
   case 'btsell':btSell();return true;
   case 'kfgo':kfStart();return true;
   case 'kfstep':kf.step=+v;SND.tap();kfPanel();return true;
@@ -1205,6 +1270,13 @@ function gameAct(a,v,btn){
   case 'kfcol':kf.c.hair.c=v;SND.pop();kfDraw();kfPanel();return true;
   case 'kfacc':{const c=kf.c;c.acc=c.acc.includes(v)?c.acc.filter(x=>x!==v):[...c.acc,v];SND.pop();kfDraw();kfPanel();return true}
   case 'kfdone':kfDone();return true;
+  case 'kflip':kf.c.mk.lip=v;SND.pop();kfDraw();kfPanel();return true;
+  case 'kfsh':kf.c.mk.shadow=v;SND.pop();kfDraw();kfPanel();return true;
+  case 'kfmk':kf.c.mk[v]=!kf.c.mk[v];SND.pop();kfDraw();kfPanel();return true;
+  case 'esgo':esStart();return true;
+  case 'estab':es.tab=v;SND.tap();esPanel();return true;
+  case 'esface':{const [k,x]=v.split(':');esFace(k,x);return true}
+  case 'esdone':esDone();return true;
   case 'gclose':closeGame();showBar();SND.tap();return true;
   case 'dnew':SND.tap();themeCard();return true;
   case 'dpick':SND.tap();themeCard(THEMES.find(t=>t.id===v));return true;
@@ -1231,7 +1303,7 @@ function gameAct(a,v,btn){
   case 'ncust':newNailOrder();return true;
   case 'ngive':giveNails();return true;
   case 'nbye':nOrd=null;SND.tap();renderNails();return true;
-  case 'ctier':{const n=+v;if(n===3&&!own('c-3kat')){SND.no();toast('🔒 3. kat dükkânda: 💰20',2000);return true}S.cake.tiers=n;S.cake.tops=S.cake.tops.filter(t=>inCake(t.x,t.y));S.cake.bites=[];SND.pop();save();renderCake();return true}
+  case 'ctier':{const n=+v;if(n===3&&!own('c-3kat')){SND.no();toast('🔒 3. kat mağazada: 💰150',2000);return true}S.cake.tiers=n;S.cake.tops=S.cake.tops.filter(t=>inCake(t.x,t.y));S.cake.bites=[];SND.pop();save();renderCake();return true}
   case 'cbase':S.cake.base=v;SND.pop();save();renderCake();return true;
   case 'ccream':S.cake.cream=v;SND.pop();save();renderCake();return true;
   case 'ctool':ctool=v;SND.tap();$('#cTools').innerHTML=cakeTools();return true;
@@ -1379,7 +1451,8 @@ const BSAY=['Merhabaa! 👋','Selam! Bana yardım eder misin?','Çok önemli bir
 const BWHY=['Partiye gidiyorum 🎉','Okulda gösteri var 🎭','Doğum günüme gidiyorum 🎂','Tatile çıkıyorum ✈️','Fotoğraf çekimim var 📸','Düğüne davetliyim 💐','Arkadaşlarla buluşacağım 🥤'];
 const randDoll=()=>({skin:rnd(SKIN),hair:{k:rnd(['uzun','atkuyrugu','topuz','kivircik','kisa','orgu','dalgali','ikitopuz','yanorgu']),c:rnd(HAIRC.slice(0,10))},dress:'yok',top:'tisort',bottom:'pantolon',shoes:'spor',
  col:{dress:'#ffffff',top:'#ffffff',bottom:'#7ec8ff',shoes:'#ffffff',socks:'#ffffff'},acc:[],mk:{lip:Math.random()<.4?rnd(LIPC.slice(1)):'yok',shadow:'yok',eye:rnd(EYEC),blush:Math.random()<.6,sim:false},
- pat:{dress:'duz',top:'duz',bottom:'duz'},socks:'yok',emb:[],embC:'#ffd23f',stickers:[]});
+ pat:{dress:'duz',top:'duz',bottom:'duz'},socks:'yok',emb:[],embC:'#ffd23f',stickers:[],
+ face:{shape:rnd(Object.keys(FACE.shape)),eyes:rnd(Object.keys(FACE.eyes)),brow:rnd(Object.keys(FACE.brow)),nose:rnd(Object.keys(FACE.nose)),mouth:rnd(['gulumse','gulumse','kocaman','kucuk','sirit']),extra:Object.keys(FACE.extra).filter(()=>Math.random()<.15)}});
 const freeKeys=o=>Object.keys(o).filter(k=>k!=='yok'&&!o[k].lock&&!o[k].price);
 let bt=null;
 function btDecor(d){let o='';
@@ -1400,34 +1473,52 @@ function btMenu(){$('#gTitle').textContent='👗 Butiğim';const d=S.butikDay||1
  gBody.innerHTML=`<div class="box" style="margin:auto"><div class="themebig">🏬</div><h2>${esc(S.name||'İnci')}'nin Butiği</h2><p>Müşteriler gelecek ve ne istediklerini söyleyecek. Onları giydir, satışı yap, altın kazan! 💰</p>
   <p>📅 <b>${d}. Gün</b> · Bugün 5 müşteri gelecek</p><p style="font-size:15px;opacity:.75">Günler geçtikçe butiğin süsleniyor: avize, çiçekler, ışıklar... ✨</p><button class="big" data-act="btgo">🔑 Butiği Aç!</button></div>`}
 function btReq(d){const reqs=[],dl=freeKeys(DRESS),tl=freeKeys(TOPS),bl=freeKeys(BOTTOMS),sl=freeKeys(SHOES),al=freeKeys(ACC).filter(a=>a!=='pelerin'),cols=Object.keys(CLN);
- const n=Math.min(5,1+d+(Math.random()<.5?1:0));
- if(Math.random()<.6){const k=rnd(dl);reqs.push({t:`${DRESS[k].n} elbise`,ok:s=>s.dress===k});const c=rnd(cols);if(n>=2)reqs.push({t:`Elbise ${CLN[c]}`,ok:s=>s.dress!=='yok'&&s.col.dress===c})}
- else{const a=rnd(tl),b=rnd(bl);reqs.push({t:`${TOPS[a].n}`,ok:s=>s.dress==='yok'&&s.top===a},{t:`${BOTTOMS[b].n}`,ok:s=>s.dress==='yok'&&s.bottom===b});
-  if(n>=3){const c=rnd(cols);reqs.push({t:`Üst ${CLN[c]}`,ok:s=>s.dress==='yok'&&s.col.top===c})}}
- const extra=shuf([()=>{const k=rnd(sl);return {t:`${SHOES[k].n} ayakkabı`,ok:s=>s.shoes===k}},()=>{const k=rnd(al);return {t:ACC[k].n,ok:s=>s.acc.includes(k)}},
-  ()=>{const k=rnd(al);return {t:ACC[k].n,ok:s=>s.acc.includes(k)}},()=>{const c=rnd(cols);return {t:`Ayakkabı ${CLN[c]}`,ok:s=>s.shoes!=='yok'&&s.col.shoes===c}}]);
- while(reqs.length<n&&extra.length)reqs.push(extra.pop()());
+ const n=Math.min(9,4+d),isD=Math.random()<.55;let slot;
+ if(isD){const k=rnd(dl),c=rnd(cols);slot='dress';reqs.push({t:`${DRESS[k].n} elbise`,ok:s=>s.dress===k},{t:`Elbise ${CLN[c]}`,ok:s=>s.dress!=='yok'&&s.col.dress===c})}
+ else{const a=rnd(tl),b=rnd(bl),c=rnd(cols);slot='top';reqs.push({t:TOPS[a].n,ok:s=>s.dress==='yok'&&s.top===a},{t:BOTTOMS[b].n,ok:s=>s.dress==='yok'&&s.bottom===b},{t:`Üst ${CLN[c]}`,ok:s=>s.dress==='yok'&&s.col.top===c})}
+ const [a1,a2]=shuf(al),p=rnd(Object.keys(PATN)),sh=rnd(sl),shc=rnd(cols),so=rnd(Object.keys(SOCKS).filter(x=>x!=='yok')),em=rnd(Object.keys(EMBN)),lp=rnd(Object.keys(LIPN)),sd=rnd(Object.keys(SHN));
+ const pool=shuf([{t:`${PATN[p]} ${slot==='dress'?'elbise':'üst'}`,ok:s=>s.pat[slot]===p},{t:`${SHOES[sh].n} ayakkabı`,ok:s=>s.shoes===sh},{t:`Ayakkabı ${CLN[shc]}`,ok:s=>s.shoes!=='yok'&&s.col.shoes===shc},
+  {t:`${SOCKS[so].n} çorap`,ok:s=>s.socks===so},{t:ACC[a1].n,ok:s=>s.acc.includes(a1)},{t:ACC[a2].n,ok:s=>s.acc.includes(a2)},{t:EMBN[em],ok:s=>s.emb.includes(em)},
+  {t:`${capF(LIPN[lp])} ruj`,ok:s=>s.mk.lip===lp},{t:`${capF(SHN[sd])} far`,ok:s=>s.mk.shadow===sd},{t:'Simli yanak ✨',ok:s=>s.mk.sim}]);
+ for(const r of pool){if(reqs.length>=n)break;reqs.push(r)}
  return reqs}
 function btNext(){if(bt.i>=5){btDayEnd();return}bt.i++;bt.c=randDoll();bt.reqs=btReq(S.butikDay||1);bt.pat=5;bt.why=rnd(BWHY);bt.say=rnd(BSAY);bt.served=false;
  bt.reqs.forEach(r=>{const f=r.ok;r.ok=()=>f(bt.c)});
- $('#btDoll').innerHTML=stk(doll(bt.c));const w=$('#btWalk');w.classList.remove('btin','btout');void w.getBoundingClientRect();w.classList.add('btin');
+ btRender();const w=$('#btWalk');w.classList.remove('btin','btout');void w.getBoundingClientRect();w.classList.add('btin');
  $('#btCount').textContent=`👤 ${bt.i}/5`;tone(1320,.1,'triangle',.1);tone(1760,.15,'triangle',.08,.1);btBubble();btTools()}
 function btBubble(){const b=$('#btBub');if(!b)return;b.innerHTML=`<b>${bt.say}</b> ${bt.why}. Şunları istiyorum:<div class="reqs">${bt.reqs.map(r=>{const k=r.ok();return `<span class="${k?'ok':''}">${k?'✅':'⬜'} ${r.t}</span>`}).join('')}</div>
  <div class="pat">${'❤️'.repeat(bt.pat)}${'🤍'.repeat(5-bt.pat)}</div>`}
-const BTC=[['dress','👗','Elbise'],['top','👚','Üst'],['bottom','👖','Alt'],['shoes','👠','Ayakkabı'],['acc','👑','Takı']];
-function btThumb(cat,k){const base=randDoll();base.skin='#f6c9a8';base.hair={k:'kisa',c:'#7a4a2a'};base.mk.lip='yok';base.col={...base.col,dress:'#ff9ccf',top:'#7ec8ff',bottom:'#c78bff',shoes:'#ff5fa2'};
+const LIPN={'#e8406a':'kırmızı','#ff7aa8':'pembe','#c2185b':'koyu pembe','#ff8a5c':'mercan','#9b4dca':'mor'};
+const SHN={'#c78bff':'mor','#7ec8ff':'mavi','#ff9ccf':'pembe','#7be0b4':'yeşil','#ffd23f':'sarı'};
+const PATN={kalp:'Kalpli',yildiz:'Yıldızlı',cicek:'Çiçekli',puan:'Puantiyeli',cizgi:'Çizgili',ekose:'Ekose'};
+const EMBN={dantel:'Dantelli',payet:'Payetli',kemer:'Kemerli',fiyonk:'Bel fiyonklu',kurdele:'Kurdeleli',rozet:'Rozetli',cep:'Cepli'};
+const BTC=[['dress','👗','Elbise'],['top','👚','Üst'],['bottom','👖','Alt'],['pat','🌸','Desen'],['shoes','👠','Ayakkabı'],['socks','🧦','Çorap'],['acc','👑','Takı'],['emb','🎀','Süs'],['mk','💄','Makyaj']];
+function btThumb(cat,k){const base=randDoll();base.face={...FDEF,extra:[]};base.skin='#f6c9a8';base.hair={k:'kisa',c:'#7a4a2a'};base.mk.lip='yok';base.mk.blush=false;base.col={...base.col,dress:'#ff9ccf',top:'#7ec8ff',bottom:'#c78bff',shoes:'#ff5fa2',socks:'#ff9ccf'};
  if(cat==='dress'){base.dress=k;return mini('40 160 220 410',base)}if(cat==='top'){base.top=k;return mini('80 160 140 180',base)}if(cat==='bottom'){base.bottom=k;base.top='crop';return mini('68 270 164 280',base)}
- if(cat==='shoes'){base.shoes=k;base.bottom='sort';return mini('104 452 94 120',base)}base.acc=[k];return mini(accVB(k),base)}
-const btCache={};
-function btTools(){const cat=bt.cat,obj={dress:DRESS,top:TOPS,bottom:BOTTOMS,shoes:SHOES,acc:ACC}[cat],keys=freeKeys(obj).filter(k=>!(cat==='acc'&&k==='pelerin'));
- const cur=k=>cat==='dress'?bt.c.dress===k:cat==='top'?bt.c.dress==='yok'&&bt.c.top===k:cat==='bottom'?bt.c.dress==='yok'&&bt.c.bottom===k:cat==='shoes'?bt.c.shoes===k:bt.c.acc.includes(k);
- const colKey={dress:'dress',top:'top',bottom:'bottom',shoes:'shoes'}[cat];
- $('#btTools').innerHTML=`<div class="toggles btcats">${BTC.map(([k,e,n])=>`<button class="tog ${cat===k?'sel':''}" data-act="btcat" data-v="${k}">${e} ${n}</button>`).join('')}</div>
-  <div class="grid" style="margin-top:12px">${keys.map((k,i)=>`<button class="card ${cur(k)?'sel':''}" style="${rot(i)}" data-act="btput" data-v="${k}">${btCache[cat+k]||(btCache[cat+k]=btThumb(cat,k))}<span>${obj[k].n}</span></button>`).join('')}</div>
-  ${colKey?`<h3>🎨 Renk</h3>`+swatches(Object.keys(CLN),'btcol',bt.c.col[colKey]):''}
+ if(cat==='shoes'){base.shoes=k;base.bottom='sort';return mini('104 452 94 120',base)}if(cat==='socks'){base.socks=k;base.shoes='babet';base.bottom='sort';return mini('104 400 94 172',base)}
+ if(cat==='emb'){base.dress='yazlik';base.emb=[k];base.embC='#ff5fa2';return mini('68 165 164 250',base)}base.acc=[k];return mini(accVB(k),base)}
+const cDefs=(c,pre)=>`<defs>${['dress','top','bottom'].filter(sl=>c.pat[sl]!=='duz').map(sl=>patDef(pre+'-'+sl,c.pat[sl],c.col[sl])).join('')}</defs>`;
+function btRender(){bt.c._pid='cp';$('#btDoll').innerHTML=cDefs(bt.c,'cp')+stk(doll(bt.c))}
+function btTools(){const cat=bt.cat,c=bt.c;let body='';
+ const grid=(obj,keys,cur,act)=>`<div class="grid" style="margin-top:12px">${keys.map((k,i)=>`<button class="card ${cur(k)?'sel':''}" style="${rot(i)}" data-act="${act}" data-v="${k}">${btCache[cat+k]||(btCache[cat+k]=btThumb(cat,k))}<span>${obj[k].n}</span></button>`).join('')}</div>`;
+ const patSw=sl=>`<div class="sws">`+Object.entries(PATS).map(([k,n])=>`<button class="sw pat ${c.pat[sl]===k?'sel':''}" data-act="btpat" data-v="${sl}:${k}" aria-label="${n}"><svg viewBox="0 0 48 48">${k==='duz'?'':`<defs>${patDef('bp-'+sl+'-'+k,k,c.col[sl])}</defs>`}<circle cx="24" cy="24" r="24" fill="${k==='duz'?c.col[sl]:`url(#bp-${sl}-${k})`}"/></svg></button>`).join('')+'</div>';
+ switch(cat){
+  case 'dress':body=grid(DRESS,freeKeys(DRESS),k=>c.dress===k,'btput')+`<h3>🎨 Renk</h3>`+swatches(Object.keys(CLN),'btcol',c.col.dress);break;
+  case 'top':body=grid(TOPS,freeKeys(TOPS),k=>c.dress==='yok'&&c.top===k,'btput')+`<h3>🎨 Renk</h3>`+swatches(Object.keys(CLN),'btcol',c.col.top);break;
+  case 'bottom':body=grid(BOTTOMS,freeKeys(BOTTOMS),k=>c.dress==='yok'&&c.bottom===k,'btput')+`<h3>🎨 Renk</h3>`+swatches(Object.keys(CLN),'btcol',c.col.bottom);break;
+  case 'pat':body=c.dress!=='yok'?`<h3>🌸 Elbise Deseni</h3>`+patSw('dress'):`<h3>🌸 Üst Deseni</h3>`+patSw('top')+`<h3>🌸 Alt Deseni</h3>`+patSw('bottom');break;
+  case 'shoes':body=grid(SHOES,freeKeys(SHOES),k=>c.shoes===k,'btput')+`<h3>🎨 Renk</h3>`+swatches(Object.keys(CLN),'btcol',c.col.shoes);break;
+  case 'socks':body=grid(SOCKS,Object.keys(SOCKS).filter(k=>k!=='yok'),k=>c.socks===k,'btput')+`<h3>🎨 Renk</h3>`+swatches(Object.keys(CLN),'btcol',c.col.socks);break;
+  case 'acc':body=grid(ACC,freeKeys(ACC).filter(k=>k!=='pelerin'),k=>c.acc.includes(k),'btput');break;
+  case 'emb':body=grid(EMB,Object.keys(EMB),k=>c.emb.includes(k),'btput')+`<h3>🎨 Süs Rengi</h3>`+swatches(Object.keys(CLN),'btembc',c.embC);break;
+  case 'mk':body=`<h3>💋 Ruj</h3>`+swatches(LIPC,'btlip',c.mk.lip)+`<h3>👁️ Far</h3>`+swatches(SHADC,'btsh',c.mk.shadow)+`<div class="toggles" style="margin-top:14px"><button class="tog ${c.mk.blush?'sel':''}" data-act="btmk" data-v="blush">😊 Allık</button><button class="tog ${c.mk.sim?'sel':''}" data-act="btmk" data-v="sim">✨ Simli Yanak</button></div>`;break}
+ $('#btTools').innerHTML=`<div class="btcats">${BTC.map(([k,e,n])=>`<button class="tog ${cat===k?'sel':''}" data-act="btcat" data-v="${k}"><i>${e}</i>${n}</button>`).join('')}</div>${body}
   <div class="row" style="position:sticky;bottom:-30px;background:#fff;padding:8px 0 16px"><button class="big alt" data-act="btreset">🔄 Çıkar</button><button class="big" data-act="btsell">💳 Satış Yap!</button></div>`}
-function btPut(k){const c=bt.c;switch(bt.cat){case 'dress':c.dress=k;break;case 'top':c.dress='yok';c.top=k;break;case 'bottom':c.dress='yok';c.bottom=k;break;case 'shoes':c.shoes=k;break;case 'acc':c.acc=c.acc.includes(k)?c.acc.filter(x=>x!==k):[...c.acc,k]}
- $('#btDoll').innerHTML=stk(doll(c));const d=$('#btDoll');d.classList.remove('bounce');void d.getBoundingClientRect();d.classList.add('bounce');SND.pop();btBubble();btTools()}
+function btPut(k){const c=bt.c;switch(bt.cat){case 'dress':c.dress=k;break;case 'top':c.dress='yok';c.top=k;break;case 'bottom':c.dress='yok';c.bottom=k;break;case 'shoes':c.shoes=k;break;case 'socks':c.socks=c.socks===k?'yok':k;break;
+ case 'acc':c.acc=c.acc.includes(k)?c.acc.filter(x=>x!==k):[...c.acc,k];break;case 'emb':c.emb=c.emb.includes(k)?c.emb.filter(x=>x!==k):[...c.emb,k];break}
+ btChanged()}
+function btChanged(){btRender();const d=$('#btDoll');d.classList.remove('bounce');void d.getBoundingClientRect();d.classList.add('bounce');SND.pop();btBubble();btTools()}
+const btCache={};
 function btSell(){if(bt.served)return;bt.served=true;const done=bt.reqs.filter(r=>r.ok()).length,n=bt.reqs.length,st=done===n?3:done/n>=.6?2:done>0?1:0;
  const pay=Math.round(n*4*(done/n))+(st===3?bt.pat:0);bt.earn+=pay;bt.stars.push(st);addCoins(pay);S.butikSales=(S.butikSales||0)+1;save();
  const e=['😢','🙂','😊','😍'][st];$('#btBub').innerHTML=`<div style="text-align:center;font-size:20px"><div style="font-size:60px">${e}</div>${['Hiç istediğim gibi değil... 😢','Fena değil, teşekkürler!','Çok güzel olmuş! 😊','BAYILDIM! Tam istediğim gibi! 😍'][st]}<br><b>${STARS(st)} · +${pay} 💰</b>${st===3&&bt.pat?`<br><small>Bahşiş: +${bt.pat} 💰</small>`:''}</div>`;
@@ -1442,10 +1533,10 @@ addEventListener('resize',()=>setTimeout(btFit,100));
 function btStart(){$('#gTitle').textContent='👗 Butiğim';bt={i:0,cat:'dress',earn:0,stars:[]};
  gBody.innerHTML=`<div class="gwrap"><div class="gstage" id="btStage"><svg id="btSvg" viewBox="0 0 600 640" preserveAspectRatio="xMidYMid meet">${btScene()}<g transform="translate(172 128) scale(.85)"><g id="btWalk"><g id="btDoll"></g></g></g></svg>
   <div class="btbub" id="btBub"></div><div class="btcount" id="btCount"></div></div><div class="content" id="btTools"></div></div>`;
- btFit();btNext();bt.tm=setInterval(()=>{if(!$('#btStage')){clearInterval(bt.tm);return}if(bt.served)return;bt.pat--;if(bt.pat<=0){bt.pat=0;tone(300,.3,'sawtooth',.06);btSell();return}btBubble();tone(500,.06,'sine',.05)},14000)}
+ btFit();btNext();bt.tm=setInterval(()=>{if(!$('#btStage')){clearInterval(bt.tm);return}if(bt.served)return;bt.pat--;if(bt.pat<=0){bt.pat=0;tone(300,.3,'sawtooth',.06);btSell();return}btBubble();tone(500,.06,'sine',.05)},22000)}
 /* =====================  💇‍♀️ KUAFÖR SALONU  ===================== */
 let kf=null;
-const KSTEPS=[['sampuan','🧴','Şampuan'],['dus','🚿','Durula'],['fon','💨','Kurut'],['model','✂️','Model'],['boya','🎨','Boya'],['sus','🎀','Süsle']];
+const KSTEPS=[['sampuan','🧴','Şampuan'],['dus','🚿','Durula'],['fon','💨','Kurut'],['model','✂️','Model'],['boya','🎨','Boya'],['sus','🎀','Süsle'],['makyaj','💄','Makyaj']];
 const KACC=['fiyonk','tac','tokalar','cicektaci','kedikulak','bere','kupe','sapka'];
 function kfMenu(){$('#gTitle').textContent='💇‍♀️ Kuaför Salonu';
  gBody.innerHTML=`<div class="box" style="margin:auto"><div class="themebig">💇‍♀️</div><h2>Kuaför Salonu</h2><p>Müşterinin saçı darmadağın! 🌪️</p>
@@ -1456,7 +1547,10 @@ function kfStart(){$('#gTitle').textContent='💇‍♀️ Kuaför Salonu';const
  const cn=x=>({'#3b2416':'koyu kahve','#c47a3a':'bakır','#e8c26a':'sarı','#d9534f':'kızıl','#ff8fc8':'pembe','#9b7bff':'mor','#4fc3f7':'mavi','g:pembe':'pembe-mor','g:okyanus':'okyanus'}[x]);
  kf={c,step:0,foam:[],dirt:[],wet:0,foamMax:0,progress:0,cool:0,
   reqs:[{t:'Yıkanmış 🧴',ok:()=>kf.step>=2},{t:'Kurutulmuş 💨',ok:()=>kf.step>=3},{t:`${HAIR[st].n} saç`,ok:()=>c.hair.k===st},{t:`${capF(cn(col))} renk`,ok:()=>c.hair.c===col},{t:ACC[a1].n,ok:()=>c.acc.includes(a1)}]};
- if(two)kf.reqs.push({t:ACC[a2].n,ok:()=>c.acc.includes(a2)});
+ kf.reqs.push({t:ACC[a2].n,ok:()=>c.acc.includes(a2)});
+ const lp=rnd(Object.keys(LIPN)),sd=rnd(Object.keys(SHN)),a3=rnd(KACC.filter(x=>x!==a1&&x!==a2));
+ kf.reqs.push({t:`${capF(LIPN[lp])} ruj`,ok:()=>c.mk.lip===lp});if(two)kf.reqs.push({t:`${capF(SHN[sd])} far`,ok:()=>c.mk.shadow===sd},{t:Math.random()<.5?'Simli yanak ✨':'Allık 😊',ok:function(){return this.t.includes('Simli')?c.mk.sim:c.mk.blush}});
+ if((S.kfDone||0)>=4)kf.reqs.push({t:ACC[a3].n,ok:()=>c.acc.includes(a3)});c.mk={...c.mk,lip:'yok',shadow:'yok',blush:false,sim:false};
  for(let i=0;i<9;i++)kf.dirt.push({x:105+Math.random()*90,y:55+Math.random()*90,r:5+Math.random()*5});
  gBody.innerHTML=`<div class="gwrap"><div class="gstage" id="kfStage"><svg id="kfSvg" viewBox="40 10 220 230" preserveAspectRatio="xMidYMid meet"></svg><div class="kftool" id="kfTool"></div><div class="btbub kfbub" id="kfBub"></div></div><div class="content" id="kfTools"></div></div>`;
  kfDraw();kfPanel();const sv=$('#kfSvg');let drag=false;
@@ -1472,11 +1566,12 @@ function kfDraw(){const c=kf.c;let o=kfBg()+stk(doll(c));
  $('#kfSvg').innerHTML=o;kfBubble()}
 function kfBubble(){const b=$('#kfBub');if(b)b.innerHTML=`<div class="reqs">${kf.reqs.map(r=>{const k=r.ok();return `<span class="${k?'ok':''}">${k?'✅':'⬜'} ${r.t}</span>`}).join('')}</div>`}
 function kfPanel(){const s=kf.step,cur=KSTEPS[Math.min(s,5)];$('#kfTool').textContent=s<=2?cur[1]:'';
- let h=`<div class="ksteps">${KSTEPS.map(([k,e,n],i)=>`<button class="kst ${i===s?'on':''} ${i<s||(i>2&&s>2)?'ok':''}" ${s>2&&i>2?`data-act="kfstep" data-v="${i}"`:''}><i>${e}</i><span>${n}</span></button>`).join('')}</div>`;
+ let h=`<div class="ksteps k7">${KSTEPS.map(([k,e,n],i)=>`<button class="kst ${i===s?'on':''} ${i<s||(i>2&&s>2)?'ok':''}" ${s>2&&i>2?`data-act="kfstep" data-v="${i}"`:''}><i>${e}</i><span>${n}</span></button>`).join('')}</div>`;
  if(s<=2)h+=`<div class="hint" style="font-size:18px;margin-top:14px">${['🧴 Parmağını saçın üstünde gezdir, köpürt!','🚿 Köpükleri durulamak için saçı ov!','💨 Fönü saçta gezdir, kurusun!'][s]}</div><div class="kprog"><i style="width:${Math.round(kf.progress*100)}%"></i></div>`;
  if(s===3)h+=`<h3>✂️ Saç Modeli</h3>`+`<div class="grid">${freeKeys(HAIR).map((k,i)=>`<button class="card ${kf.c.hair.k===k?'sel':''}" style="${rot(i)}" data-act="kfhair" data-v="${k}">${mini('60 12 180 250',{...kf.c,hair:{k,c:kf.c.hair.c},acc:[]})}<span>${HAIR[k].n}</span></button>`).join('')}</div>`;
  if(s===4)h+=`<h3>🎨 Saç Rengi</h3>`+swatches(HAIRC.filter(c=>!swLock('hc',c)),'kfcol',kf.c.hair.c);
  if(s===5)h+=`<h3>🎀 Saç Süsleri</h3><div class="grid">${KACC.map((k,i)=>`<button class="card ${kf.c.acc.includes(k)?'sel':''}" style="${rot(i)}" data-act="kfacc" data-v="${k}">${mini(accVB(k),{...kf.c,acc:[k]})}<span>${ACC[k].n}</span></button>`).join('')}</div>`;
+ if(s===6)h+=`<h3>💋 Ruj</h3>`+swatches(LIPC,'kflip',kf.c.mk.lip)+`<h3>👁️ Far</h3>`+swatches(SHADC,'kfsh',kf.c.mk.shadow)+`<div class="toggles" style="margin-top:14px"><button class="tog ${kf.c.mk.blush?'sel':''}" data-act="kfmk" data-v="blush">😊 Allık</button><button class="tog ${kf.c.mk.sim?'sel':''}" data-act="kfmk" data-v="sim">✨ Simli Yanak</button></div>`;
  if(s>2)h+=`<button class="big" data-act="kfdone">✨ Aynaya Bak & Bitir!</button>`;
  $('#kfTools').innerHTML=h}
 function kfRub(e){if(kf.step>2)return;const sv=$('#kfSvg'),p=gPt(sv,e);if(p.x<90||p.x>212||p.y<30||p.y>175)return;const now=performance.now();
@@ -1490,6 +1585,57 @@ function kfNext(){kf.step++;kf.progress=0;SND.star();toast(['','✨ Tertemiz! Ş
 function kfDone(){const done=kf.reqs.filter(r=>r.ok()).length,n=kf.reqs.length,st=done===n?3:done/n>=.6?2:1,coin=n*3+(st===3?6:0);S.kfDone=(S.kfDone||0)+1;save();
  const stg=$('#kfStage');stg.insertAdjacentHTML('beforeend','<div class="mirrorfx"></div>');[784,988,1175,1568].forEach((f,i)=>tone(f,.2,'triangle',.1,i*.1));
  setTimeout(()=>{gameResult(['','🙂','😊','😍'][st],STARS(st),`${done}/${n} istek tamam! ${st===3?'Müşteri bayıldı! 💖':'Müşteri teşekkür etti!'}`,coin,'kfgo','✂️ Sonraki Müşteri');if(st===3)checkTasks('k3')},900)}
+/* =====================  ✨ ESTETİK & GÜZELLİK KLİNİĞİ  ===================== */
+let es=null;
+const ESTEPS=[['maske','🧴','Maske'],['salatalik','🥒','Salatalık'],['temizle','💦','Temizle'],['sihir','✨','Sihirli Değişim']];
+const FKEYS=[['shape','Yüz Şekli','🙂'],['eyes','Göz','👁️'],['brow','Kaş','〰️'],['nose','Burun','👃'],['mouth','Ağız','👄'],['extra','Ekstra','✨']];
+const FSUF={shape:'yüz',eyes:'göz',brow:'kaş',nose:'burun',mouth:'ağız'};
+function esMenu(){$('#gTitle').textContent='✨ Güzellik Kliniği';
+ gBody.innerHTML=`<div class="box" style="margin:auto"><div class="themebig">👩‍⚕️</div><h2>Dr. ${esc(S.name||'İnci')}'nin Kliniği</h2><p>Müşteriler yepyeni bir görünüm istiyor! 💫</p>
+  <p>🧴 Maske sür → 🥒 salatalıkla dinlendir → 💦 temizle → ✨ sihirli değneğinle yüzünü istediği gibi değiştir!</p><button class="big" data-act="esgo">👩‍⚕️ Müşteri Gelsin!</button></div>`}
+function esStart(){$('#gTitle').textContent='✨ Güzellik Kliniği';const c=randDoll();c.top='tisort';c.col.top='#ffffff';c.acc=[];c.hair.k=rnd(['topuz','atkuyrugu','ikitopuz','kisa']);
+ const f=c.face,keys=shuf(['shape','eyes','brow','nose','mouth']),n=Math.min(5,3+Math.floor((S.esDone||0)/2)),want={};
+ keys.slice(0,n).forEach(k=>{const opts=Object.keys(FACE[k]).filter(v=>v!==f[k]);want[k]=rnd(opts)});
+ const wx=rnd(Object.keys(FACE.extra).filter(x=>!f.extra.includes(x)));
+ es={c,step:0,mask:[],cuc:[],rest:0,progress:0,cool:0,tab:'shape',
+  reqs:[{t:'Maske yapıldı 🧴',ok:()=>es.step>=2},{t:'Cilt tertemiz 💦',ok:()=>es.step>=3},...Object.entries(want).map(([k,v])=>({t:`${FACE[k][v]} ${FSUF[k]}`,ok:()=>es.c.face[k]===v})),{t:FACE.extra[wx],ok:()=>es.c.face.extra.includes(wx)}]};
+ gBody.innerHTML=`<div class="gwrap"><div class="gstage" id="esStage"><svg id="esSvg" viewBox="70 40 160 160" preserveAspectRatio="xMidYMid meet"></svg><div class="kftool" id="esTool"></div><div class="btbub kfbub" id="esBub"></div></div><div class="content" id="esTools"></div></div>`;
+ esDraw();esPanel();const sv=$('#esSvg');let drag=false;
+ sv.addEventListener('pointerdown',e=>{drag=true;sv.setPointerCapture(e.pointerId);esRub(e,true)});
+ sv.addEventListener('pointermove',e=>{const t=$('#esTool'),r=$('#esStage').getBoundingClientRect();t.style.transform=`translate(${e.clientX-r.left-30}px,${e.clientY-r.top-30}px)`;if(drag)esRub(e)});
+ const up=()=>{drag=false};sv.addEventListener('pointerup',up);sv.addEventListener('pointercancel',up);tone(1320,.1,'triangle',.1)}
+function esDraw(){let o=`<rect x="0" y="0" width="300" height="300" fill="#eaf6ff"/>`+Array.from({length:10},(_,i)=>`<rect x="${i*30}" y="0" width="15" height="300" fill="#dff0ff"/>`).join('')
+ +`<circle cx="150" cy="120" r="96" fill="#fff" opacity=".6"/>`+stk(doll(es.c));
+ o+=es.mask.map(m=>`<circle cx="${m.x.toFixed(1)}" cy="${m.y.toFixed(1)}" r="${m.r.toFixed(1)}" fill="#a8e6a1" opacity=".92"/>`).join('');
+ o+=es.cuc.map(x=>`<g>${C(x,116,13,'#7bcf6a')}<circle cx="${x}" cy="116" r="10" fill="#d8f5c8"/>${[0,1,2,3,4,5].map(i=>`<circle cx="${(x+5*Math.cos(i*1.05)).toFixed(1)}" cy="${(116+5*Math.sin(i*1.05)).toFixed(1)}" r="1.1" fill="#9bd38a"/>`).join('')}</g>`).join('');
+ if(es.rest>0)o+=`<text x="190" y="80" font-size="18">💤</text>`;
+ $('#esSvg').innerHTML=o;const b=$('#esBub');if(b)b.innerHTML=`<div class="reqs">${es.reqs.map(r=>{const k=r.ok();return `<span class="${k?'ok':''}">${k?'✅':'⬜'} ${r.t}</span>`}).join('')}</div>`}
+function esPanel(){const s=es.step;$('#esTool').textContent=s===0?'🧴':s===2?'🧽':s===3?'🪄':'';
+ let h=`<div class="ksteps" style="grid-template-columns:repeat(4,1fr)">${ESTEPS.map(([k,e,n],i)=>`<div class="kst ${i===s?'on':''} ${i<s?'ok':''}"><i>${e}</i><span>${n}</span></div>`).join('')}</div>`;
+ if(s===0)h+=`<div class="hint" style="font-size:18px;margin-top:14px">🧴 Parmağınla yüze maske sür!</div><div class="kprog"><i style="width:${Math.round(es.progress*100)}%"></i></div>`;
+ if(s===1)h+=`<div class="hint" style="font-size:18px;margin-top:14px">${es.rest>0?`😌 Müşteri dinleniyor... <b>${es.rest}</b>`:'🥒 İki gözüne de salatalık koy! (gözlere dokun)'}</div>`;
+ if(s===2)h+=`<div class="hint" style="font-size:18px;margin-top:14px">💦 Maskeyi silmek için yüzü ov!</div><div class="kprog"><i style="width:${Math.round(es.progress*100)}%"></i></div>`;
+ if(s===3){const k=es.tab,multi=k==='extra',cur=es.c.face;
+  h+=`<div class="toggles" style="margin-top:12px">${FKEYS.map(([kk,n,e])=>`<button class="tog ${k===kk?'sel':''}" style="min-width:0;flex:1;padding:8px 6px;font-size:14px;text-align:center" data-act="estab" data-v="${kk}">${e}<br>${n}</button>`).join('')}</div>
+  <div class="grid" style="margin-top:12px">${Object.entries(FACE[k]).map(([v,n],i)=>{const sel=multi?cur.extra.includes(v):cur[k]===v;const prev={...es.c,face:{...cur,extra:[...cur.extra]}};if(multi){if(!sel)prev.face.extra.push(v)}else prev.face[k]=v;
+   return `<button class="card ${sel?'sel':''}" style="${rot(i)}" data-act="esface" data-v="${k}:${v}">${mini(k==='shape'||v==='elf'?'86 40 128 140':'98 82 104 76',prev)}<span>${n}</span></button>`}).join('')}</div>
+  <button class="big" data-act="esdone">🪞 Aynaya Bak & Bitir!</button>`}
+ $('#esTools').innerHTML=h}
+function esRub(e,down){const p=gPt($('#esSvg'),e),s=es.step;
+ if(s===1){if(!down||es.rest>0)return;const x=p.x<150?133:167;if(Math.abs(p.y-116)>18||es.cuc.includes(x))return;es.cuc.push(x);SND.pop();esDraw();
+  if(es.cuc.length===2){es.rest=3;esPanel();const t=setInterval(()=>{if(!es||!$('#esSvg')){clearInterval(t);return}es.rest--;tone(500,.05,'sine',.05);if(es.rest<=0){clearInterval(t);es.cuc=[];es.step=2;es.progress=0;SND.star();toast('😌 Dinlendi! Şimdi maskeyi temizle 💦',1800)}esDraw();esPanel()},1000)}return}
+ if(p.x<104||p.x>196||p.y<64||p.y>160)return;const now=performance.now();
+ if(s===0){if(now-es.cool<30)return;es.cool=now;es.mask.push({x:p.x+(Math.random()*10-5),y:p.y+(Math.random()*10-5),r:7+Math.random()*6});tone(400+Math.random()*200,.03,'sine',.035);
+  es.progress=Math.min(1,es.mask.length/38);if(es.progress>=1){es.step=1;es.progress=0;SND.star();toast('🧴 Maske tamam! Şimdi salatalık 🥒',1800);esPanel()}}
+ else if(s===2){const before=es.mask.length;es.mask=es.mask.filter(m=>Math.hypot(m.x-p.x,m.y-p.y)>15);if(es.mask.length<before)tone(900+Math.random()*300,.03,'triangle',.04);
+  es.progress=1-es.mask.length/38;if(es.mask.length<3){es.mask=[];es.step=3;es.progress=0;SND.star();toast('✨ Pırıl pırıl! Şimdi sihirli değişim 🪄',1800);esPanel()}}
+ esDraw();const pr=$('#esTools .kprog i');if(pr)pr.style.width=Math.round(es.progress*100)+'%'}
+function esFace(k,v){const f=es.c.face;if(k==='extra')f.extra=f.extra.includes(v)?f.extra.filter(x=>x!==v):[...f.extra,v];else f[k]=v;
+ const st=$('#esStage');st.insertAdjacentHTML('beforeend','<div class="magicfx">✨</div>');setTimeout(()=>{const m=st.querySelector('.magicfx');if(m)m.remove()},700);
+ [1320,1568,1976].forEach((x,i)=>tone(x,.08,'sine',.08,i*.05));esDraw();esPanel()}
+function esDone(){const done=es.reqs.filter(r=>r.ok()).length,n=es.reqs.length,st=done===n?3:done/n>=.6?2:1,coin=n*5+(st===3?10:0);S.esDone=(S.esDone||0)+1;save();
+ $('#esStage').insertAdjacentHTML('beforeend','<div class="mirrorfx"></div>');[784,988,1175,1568].forEach((f,i)=>tone(f,.2,'triangle',.1,i*.1));
+ setTimeout(()=>{gameResult(['','🙂','😊','😍'][st],STARS(st),`${done}/${n} istek tamam! ${st===3?'Müşteri yeni haline bayıldı! 💖':'Müşteri teşekkür etti!'}`,coin,'esgo','👩‍⚕️ Sonraki Müşteri');if(st===3)checkTasks('es3')},900)}
 /* =====================  başlangıç  ===================== */
 function openStart(){$('#nameIn').value=S.name||'';$('#mStart').classList.add('show')}
 $('#startBtn').onclick=()=>{S.name=($('#nameIn').value.trim()||'Işıltı').slice(0,14);save();$('#mStart').classList.remove('show');$('#nameIn').blur();renderStage(true);SND.star();confetti(24)};
