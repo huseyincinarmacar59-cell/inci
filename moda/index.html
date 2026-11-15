@@ -248,6 +248,8 @@ button.chip{cursor:pointer}
 .magicfx{position:absolute;inset:0;display:grid;place-items:center;font-size:140px;pointer-events:none;z-index:4;animation:magic .7s ease forwards}
 @keyframes magic{0%{opacity:0;transform:scale(.3) rotate(-30deg)}40%{opacity:1;transform:scale(1.2) rotate(10deg)}100%{opacity:0;transform:scale(1.6) rotate(30deg)}}
 .ksteps.k7{grid-template-columns:repeat(7,1fr)}
+.cfgin{font:inherit;font-size:17px;font-weight:800;padding:10px 12px;border-radius:14px;border:0;background:var(--soft);box-shadow:0 0 0 3px #ffd3e8 inset;color:var(--ink);-webkit-user-select:text;user-select:text;width:110px}
+.cfgprices{display:grid;gap:8px;max-height:40vh;overflow:auto;padding:4px}.cfgprices label{display:flex;align-items:center;justify-content:space-between;gap:10px;font-weight:800;background:var(--soft);border-radius:16px;padding:6px 8px 6px 14px}
 .admgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}.admgrid .tog{min-width:0;font-size:16px;padding:12px}
 .themebig{font-size:84px;line-height:1;margin:6px 0}
 #flash{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:60}
@@ -326,14 +328,16 @@ button.chip{cursor:pointer}
 
 <div class="modal" id="mBuy"><div class="box"><div id="buyPrev" class="buyprev"></div><h2 id="buyName"></h2><p id="buyPrice"></p>
  <div class="row"><button class="big alt" data-close>Kapat</button><button class="big" id="buyOk">Satın Al 💰</button></div></div></div>
-<div class="modal" id="mAdmin"><div class="box"><h2>🛠️ Yönetici Modu</h2><p id="admInfo"></p>
+<div class="modal" id="mAdmin"><div class="box"><h2 id="admTitle">🛠️ Yönetici Modu</h2><p id="admInfo"></p>
  <div class="admgrid">
-  <button class="tog" data-act="adm" data-v="c1k">💰 +1.000 altın</button><button class="tog" data-act="adm" data-v="c10k">💰 +10.000 altın</button>
-  <button class="tog" data-act="adm" data-v="shop">🛍️ Mağazadaki her şeyi aç</button><button class="tog" data-act="adm" data-v="tasks">⭐ Tüm görevleri tamamla</button>
-  <button class="tog" data-act="adm" data-v="m3">💎 Tüm seviyeleri aç</button><button class="tog" data-act="adm" data-v="butik">🏬 Butiği tam süsle</button>
-  <button class="tog" data-act="adm" data-v="gift">🎁 Günlük hediyeyi yenile</button><button class="tog" data-act="adm" data-v="hard">🔥 Müşterileri zorlaştır</button>
-  <button class="tog" data-act="adm" data-v="exit">🚪 Yönetici modundan çık</button><button class="tog" data-act="adm" data-v="reset" style="color:#e8406a">🧹 Her şeyi sıfırla</button>
+  <button class="tog" data-act="adm" data-v="c1k">💰 +1.000 altın</button><button class="tog ao" data-act="adm" data-v="c10k">💰 +10.000 altın</button>
+  <button class="tog ao" data-act="adm" data-v="shop">🛍️ Mağazadaki her şeyi aç</button><button class="tog ao" data-act="adm" data-v="tasks">⭐ Tüm görevleri tamamla</button>
+  <button class="tog ao" data-act="adm" data-v="m3">💎 Tüm seviyeleri aç</button><button class="tog ao" data-act="adm" data-v="butik">🏬 Butiği tam süsle</button>
+  <button class="tog" data-act="adm" data-v="gift">🎁 Günlük hediyeyi yenile</button><button class="tog ao" data-act="adm" data-v="hard">🔥 Müşterileri zorlaştır</button>
+  <button class="tog ao" data-act="adm" data-v="easy">🌱 Müşterileri kolaylaştır</button><button class="tog" data-act="adm" data-v="cfg" style="background:#fff8d6">⚙️ Oyun Ayarları</button>
+  <button class="tog" data-act="adm" data-v="exit">🚪 Moddan çık</button><button class="tog ao" data-act="adm" data-v="reset" style="color:#e8406a">🧹 Her şeyi sıfırla</button>
  </div><button class="big" data-close>Kapat</button></div></div>
+<div class="modal" id="mCfg"><div class="box" style="text-align:left;width:min(620px,94vw)"><h2 style="text-align:center">⚙️ Oyun Ayarları</h2><div id="cfgBody"></div><button class="big" data-close>Kapat</button></div></div>
 <div class="modal" id="mGal"><div class="box">
  <h2>Galerim 🖼️</h2>
  <div id="galList" class="gal"></div>
@@ -1089,7 +1093,7 @@ const SHOP=[
  {id:'c-3kat',g:'c',n:'🎂 3. Kat',p:150},{id:'c-gold',g:'c',n:'✨ Altın Krema',p:180},{id:'c-uni',g:'c',n:'🦄 Unicorn Süsü',p:120},{id:'c-star',g:'c',n:'⭐ Yıldız Serpme',p:100}];
 const own=id=>(S.owned||[]).includes(id);
 function updCoins(){const c=$('#gCoins');if(c)c.querySelector('span').textContent=S.coins||0;const t=$('#coinTxt');if(t)t.textContent=S.coins||0}
-function addCoins(n){S.coins=(S.coins||0)+n;S.earned=(S.earned||0)+n;save();updCoins();[1046,1318,1568].forEach((f,i)=>tone(f,.12,'square',.05,i*.07));checkTasks()}
+function addCoins(n,raw){if(!raw)n=Math.round(n*((S.cfg&&S.cfg.mult)||1));S.coins=(S.coins||0)+n;S.earned=(S.earned||0)+n;save();updCoins();[1046,1318,1568].forEach((f,i)=>tone(f,.12,'square',.05,i*.07));checkTasks()}
 function shopHtml(g){const it=SHOP.filter(x=>x.g===g);return `<h3>🛍️ Dükkân <small style="font-size:14px;opacity:.7">(müşterilerden altın kazan!)</small></h3><div class="toggles">`+
  it.map(x=>own(x.id)?`<div class="tog sel" style="text-align:center">${x.n} ✅</div>`:`<button class="tog" data-act="buy" data-v="${x.id}">${x.n}<br><b>💰 ${x.p}</b></button>`).join('')+'</div>'}
 function react(sel,emo,txt){const st=$(sel);if(!st)return;const d=document.createElement('div');d.className='react';d.innerHTML=`<div>${emo}</div><b>${txt}</b>`;st.appendChild(d);setTimeout(()=>d.remove(),2200)}
@@ -1256,6 +1260,7 @@ function gameAct(a,v,btn){
  switch(a){
   case 'game':openGame(v);return true;
   case 'adm':admin(v);return true;
+  case 'cfgset':case 'cfgcoins':case 'cfgsave':case 'cfgdef':cfgAct(a,v);return true;
   case 'gift':openGift();return true;
   case 'pack':{const pk=PACKS[v];if(!pk||(S.owned||[]).includes('pk:'+v))return true;if((S.coins||0)<pk.p){SND.no();toast(`💰 ${pk.p} altın lazım! Mini oyun oyna 🎮`,2200);return true}
    S.coins-=pk.p;S.owned=[...(S.owned||[]),'pk:'+v];save();updCoins();SND.star();confetti(20);toast(`${pk.n} senin oldu! Sticker sekmesine bak ✨`,2400);renderPanel();checkTasks();return true}
@@ -1493,7 +1498,7 @@ function btReq(d){const reqs=[],dl=freeKeys(DRESS),tl=freeKeys(TOPS),bl=freeKeys
   {t:`${capF(LIPN[lp])} ruj`,ok:s=>s.mk.lip===lp},{t:`${capF(SHN[sd])} far`,ok:s=>s.mk.shadow===sd},{t:'Simli yanak ✨',ok:s=>s.mk.sim}]);
  for(const r of pool){if(reqs.length>=n)break;reqs.push(r)}
  return reqs}
-function btNext(){if(bt.i>=5){btDayEnd();return}bt.i++;bt.c=randDoll();bt.reqs=btReq(S.butikDay||1);bt.pat=5;bt.why=rnd(BWHY);bt.say=rnd(BSAY);bt.served=false;
+function btNext(){if(bt.i>=5){btDayEnd();return}bt.i++;bt.c=randDoll();bt.reqs=btReq(S.butikDay||1);bt.pat=5;bt.tick=0;bt.why=rnd(BWHY);bt.say=rnd(BSAY);bt.served=false;
  bt.reqs.forEach(r=>{const f=r.ok;r.ok=()=>f(bt.c)});
  btRender();const w=$('#btWalk');w.classList.remove('btin','btout');void w.getBoundingClientRect();w.classList.add('btin');
  $('#btCount').textContent=`👤 ${bt.i}/5`;tone(1320,.1,'triangle',.1);tone(1760,.15,'triangle',.08,.1);btBubble();btTools()}
@@ -1544,7 +1549,7 @@ addEventListener('resize',()=>setTimeout(btFit,100));
 function btStart(){$('#gTitle').textContent='👗 Butiğim';bt={i:0,cat:'dress',earn:0,stars:[]};
  gBody.innerHTML=`<div class="gwrap"><div class="gstage" id="btStage"><svg id="btSvg" viewBox="0 0 600 640" preserveAspectRatio="xMidYMid meet">${btScene()}<g transform="translate(172 128) scale(.85)"><g id="btWalk"><g id="btDoll"></g></g></g></svg>
   <div class="btbub" id="btBub"></div><div class="btcount" id="btCount"></div></div><div class="content" id="btTools"></div></div>`;
- btFit();btNext();bt.tm=setInterval(()=>{if(!$('#btStage')){clearInterval(bt.tm);return}if(bt.served)return;bt.pat--;if(bt.pat<=0){bt.pat=0;tone(300,.3,'sawtooth',.06);btSell();return}btBubble();tone(500,.06,'sine',.05)},22000)}
+ btFit();btNext();bt.tm=setInterval(()=>{if(!$('#btStage')){clearInterval(bt.tm);return}if(bt.served||!S.cfg.pat)return;if((bt.tick=(bt.tick||0)+1)<S.cfg.pat)return;bt.tick=0;bt.pat--;if(bt.pat<=0){bt.pat=0;tone(300,.3,'sawtooth',.06);btSell();return}btBubble();tone(500,.06,'sine',.05)},1000)}
 /* =====================  💇‍♀️ KUAFÖR SALONU  ===================== */
 let kf=null;
 const KSTEPS=[['sampuan','🧴','Şampuan'],['dus','🚿','Durula'],['fon','💨','Kurut'],['model','✂️','Model'],['boya','🎨','Boya'],['sus','🎀','Süsle'],['makyaj','💄','Makyaj']];
@@ -1587,9 +1592,9 @@ function kfPanel(){const s=kf.step,cur=KSTEPS[Math.min(s,5)];$('#kfTool').textCo
  $('#kfTools').innerHTML=h}
 function kfRub(e){if(kf.step>2)return;const sv=$('#kfSvg'),p=gPt(sv,e);if(p.x<90||p.x>212||p.y<30||p.y>175)return;const now=performance.now();
  if(kf.step===0){if(now-kf.cool<35)return;kf.cool=now;kf.foam.push({x:p.x+(Math.random()*16-8),y:p.y+(Math.random()*16-8),r:5+Math.random()*7});kf.dirt=kf.dirt.filter(d=>Math.hypot(d.x-p.x,d.y-p.y)>14);
-  tone(700+Math.random()*500,.03,'sine',.04);kf.progress=Math.min(1,kf.foam.length/45);if(kf.foam.length>70)kf.foam.shift();if(kf.progress>=1&&!kf.dirt.length)kfNext();else if(kf.progress>=1&&kf.dirt.length<3){kf.dirt=[];kfNext()}}
+  tone(700+Math.random()*500,.03,'sine',.04);kf.progress=Math.min(1,kf.foam.length/Math.round(45/S.cfg.rub));if(kf.foam.length>70)kf.foam.shift();if(kf.progress>=1&&!kf.dirt.length)kfNext();else if(kf.progress>=1&&kf.dirt.length<3){kf.dirt=[];kfNext()}}
  else if(kf.step===1){if(!kf.foamMax)kf.foamMax=kf.foam.length;kf.foam=kf.foam.filter(f=>Math.hypot(f.x-p.x,f.y-p.y)>18);kf.wet=1;kfDrop(e);tone(300+Math.random()*200,.03,'triangle',.03);kf.progress=1-kf.foam.length/kf.foamMax;if(kf.foam.length<3){kf.foam=[];kfNext()}}
- else if(kf.step===2){kf.wet=Math.max(0,kf.wet-.012);if(Math.random()<.4)tone(150+Math.random()*80,.05,'sawtooth',.02);kf.progress=1-kf.wet;if(kf.wet<=0.02){kf.wet=0;kfNext()}}
+ else if(kf.step===2){kf.wet=Math.max(0,kf.wet-.012*S.cfg.rub);if(Math.random()<.4)tone(150+Math.random()*80,.05,'sawtooth',.02);kf.progress=1-kf.wet;if(kf.wet<=0.02){kf.wet=0;kfNext()}}
  kfDraw();const pr=$('.kprog i');if(pr)pr.style.width=Math.round(kf.progress*100)+'%'}
 function kfDrop(e){const st=$('#kfStage'),r=st.getBoundingClientRect();for(let i=0;i<2;i++){const d=document.createElement('i');d.className='drip';d.style.left=(e.clientX-r.left+(Math.random()*30-15))+'px';d.style.top=(e.clientY-r.top)+'px';st.appendChild(d);setTimeout(()=>d.remove(),600)}}
 function kfNext(){kf.step++;kf.progress=0;SND.star();toast(['','✨ Tertemiz! Şimdi durula 🚿','💧 Durulandı! Şimdi kurut 💨','🌟 Kupkuru! Şimdi saçı şekillendir ✂️'][kf.step]||'',1800);kfDraw();kfPanel()}
@@ -1637,9 +1642,9 @@ function esRub(e,down){const p=gPt($('#esSvg'),e),s=es.step;
   if(es.cuc.length===2){es.rest=3;esPanel();const t=setInterval(()=>{if(!es||!$('#esSvg')){clearInterval(t);return}es.rest--;tone(500,.05,'sine',.05);if(es.rest<=0){clearInterval(t);es.cuc=[];es.step=2;es.progress=0;SND.star();toast('😌 Dinlendi! Şimdi maskeyi temizle 💦',1800)}esDraw();esPanel()},1000)}return}
  if(p.x<104||p.x>196||p.y<64||p.y>160)return;const now=performance.now();
  if(s===0){if(now-es.cool<30)return;es.cool=now;es.mask.push({x:p.x+(Math.random()*10-5),y:p.y+(Math.random()*10-5),r:7+Math.random()*6});tone(400+Math.random()*200,.03,'sine',.035);
-  es.progress=Math.min(1,es.mask.length/38);if(es.progress>=1){es.step=1;es.progress=0;SND.star();toast('🧴 Maske tamam! Şimdi salatalık 🥒',1800);esPanel()}}
+  es.progress=Math.min(1,es.mask.length/Math.round(38/S.cfg.rub));if(es.progress>=1){es.step=1;es.progress=0;SND.star();toast('🧴 Maske tamam! Şimdi salatalık 🥒',1800);esPanel()}}
  else if(s===2){const before=es.mask.length;es.mask=es.mask.filter(m=>Math.hypot(m.x-p.x,m.y-p.y)>15);if(es.mask.length<before)tone(900+Math.random()*300,.03,'triangle',.04);
-  es.progress=1-es.mask.length/38;if(es.mask.length<3){es.mask=[];es.step=3;es.progress=0;SND.star();toast('✨ Pırıl pırıl! Şimdi sihirli değişim 🪄',1800);esPanel()}}
+  es.progress=1-es.mask.length/Math.max(1,Math.round(38/S.cfg.rub));if(es.mask.length<3){es.mask=[];es.step=3;es.progress=0;SND.star();toast('✨ Pırıl pırıl! Şimdi sihirli değişim 🪄',1800);esPanel()}}
  esDraw();const pr=$('#esTools .kprog i');if(pr)pr.style.width=Math.round(es.progress*100)+'%'}
 function esFace(k,v){const f=es.c.face;if(k==='extra')f.extra=f.extra.includes(v)?f.extra.filter(x=>x!==v):[...f.extra,v];else f[k]=v;
  const st=$('#esStage');st.insertAdjacentHTML('beforeend','<div class="magicfx">✨</div>');setTimeout(()=>{const m=st.querySelector('.magicfx');if(m)m.remove()},700);
@@ -1649,26 +1654,49 @@ function esDone(){const done=es.reqs.filter(r=>r.ok()).length,n=es.reqs.length,s
  setTimeout(()=>{gameResult(['','🙂','😊','😍'][st],STARS(st),`${done}/${n} istek tamam! ${st===3?'Müşteri yeni haline bayıldı! 💖':'Müşteri teşekkür etti!'}`,coin,'esgo','👩‍⚕️ Sonraki Müşteri');if(st===3)checkTasks('es3')},900)}
 /* =====================  başlangıç  ===================== */
 function openStart(){$('#nameIn').value=S.name||'';$('#mStart').classList.add('show')}
-const ADMH='b1102bfaec97ffda2655208fce47947a2adacfb267613767239447734be9d87c';
+const ADMH='b1102bfaec97ffda2655208fce47947a2adacfb267613767239447734be9d87c',YANH='ebf348e22cc45de0aa5e0a7ccb318074e9e08a5c9beaf28b8a60e1a88455f816';
 async function sha(t){try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){return ''}}
 let admArm=0;
-function admInfo(){$('#admInfo').innerHTML=`💰 ${S.coins||0} altın · ⭐ ${stars()}/${TASKS.length} görev · 🛍️ ${(S.owned||[]).length} eşya`;$('#btnAdm').style.display=S.admin?'':'none'}
+function cfgItems(){const out=[];for(const [cat,ob] of Object.entries(LOOK))for(const [k,it] of Object.entries(ob))if(it.basePrice)out.push({id:'p:'+it.pid,n:it.n,base:it.basePrice,cur:it.price,e:{dress:'👗',shoes:'👠',acc:'👑',hair:'💇‍♀️',pet:'🐾',bg:'🏞️'}[cat]||'✨'});
+ Object.entries(PACKS).forEach(([k,v])=>out.push({id:'pk:'+k,n:v.n,base:v.basePrice,cur:v.p,e:''}));SHOP.forEach(x=>out.push({id:x.id,n:x.n,base:x.basePrice,cur:x.p,e:''}));return out}
+function applyCfg(){S.cfg=Object.assign({mult:1,pat:22,rub:1,prices:{}},S.cfg||{});const P=S.cfg.prices;
+ for(const ob of Object.values(LOOK))for(const it of Object.values(ob))if(it.price||it.basePrice){if(it.basePrice===undefined)it.basePrice=it.price;it.price=P['p:'+it.pid]??it.basePrice}
+ for(const [k,v] of Object.entries(PACKS)){if(v.basePrice===undefined)v.basePrice=v.p;v.p=P['pk:'+k]??v.basePrice}
+ for(const x of SHOP){if(x.basePrice===undefined)x.basePrice=x.p;x.p=P[x.id]??x.basePrice}}
+function openCfg(){const adm=S.role==='admin',c=S.cfg;const opt=(key,vals,lbl)=>`<div class="toggles" style="margin-bottom:6px">${vals.map((v,i)=>`<button class="tog ${c[key]===v?'sel':''}" style="min-width:0;flex:1;padding:10px 4px;text-align:center" data-act="cfgset" data-v="${key}:${v}">${lbl[i]}</button>`).join('')}</div>`;
+ $('#cfgBody').innerHTML=(adm?`<h3>💰 Altın Miktarı</h3><div class="row"><input id="cfgCoins" type="number" inputmode="numeric" value="${S.coins||0}" class="cfgin" style="flex:1"><button class="tog" style="flex:none;min-width:0" data-act="cfgcoins">Ayarla</button></div>`:'')
+  +`<h3>✖️ Kazanılan Altın Çarpanı</h3>`+opt('mult',[1,2,3,5,10],['x1','x2','x3','x5','x10'])
+  +(adm?`<h3>⏳ Butik Müşteri Sabrı</h3>`+opt('pat',[10,22,40,0],['Az','Normal','Çok','Sınırsız'])+`<h3>🧴 Köpürtme ve Maske Hızı</h3>`+opt('rub',[1,2,4],['Normal','Hızlı','Süper Hızlı']):'')
+  +`<h3>🏷️ Fiyatlar</h3><div class="cfgprices">${cfgItems().map(it=>`<label><span>${it.e} ${it.n}</span><input class="cfgin" type="number" inputmode="numeric" min="0" data-pid="${it.id}" value="${it.cur}"></label>`).join('')}</div>
+  <div class="row"><button class="big alt" data-act="cfgdef">↩️ Varsayılan Fiyatlar</button><button class="big" data-act="cfgsave">💾 Fiyatları Kaydet</button></div>`;
+ $('#mCfg').classList.add('show')}
+function cfgAct(a,v){const c=S.cfg;switch(a){
+ case 'cfgset':{const [k,x]=v.split(':');c[k]=+x;break}
+ case 'cfgcoins':{const n=Math.max(0,Math.min(9999999,parseInt($('#cfgCoins').value)||0));S.coins=n;toast(`💰 Altın ${n} yapıldı`,1500);break}
+ case 'cfgsave':document.querySelectorAll('#cfgBody [data-pid]').forEach(i=>{const n=Math.max(0,parseInt(i.value)||0);c.prices[i.dataset.pid]=n});toast('💾 Fiyatlar kaydedildi!',1500);break;
+ case 'cfgdef':c.prices={};toast('↩️ Fiyatlar varsayılana döndü',1500);break}
+ applyCfg();save();updCoins();renderPanel();admInfo();openCfg();SND.pop()}
+function admInfo(){if(S.admin&&!S.role)S.role='admin';const r=S.role;$('#admInfo').innerHTML=`💰 ${S.coins||0} altın · ⭐ ${stars()}/${TASKS.length} görev · 🛍️ ${(S.owned||[]).length} eşya · ✖️ ${S.cfg.mult} altın çarpanı`;
+ $('#btnAdm').style.display=r?'':'none';$('#btnAdm').textContent=r==='yanci'?'🤝':'🛠️';$('#admTitle').textContent=r==='yanci'?'🤝 Yancı Modu':'🛠️ Yönetici Modu';
+ document.querySelectorAll('#mAdmin .ao').forEach(b=>b.style.display=r==='admin'?'':'none')}
 function openAdmin(){admInfo();$('#mAdmin').classList.add('show');SND.star()}
 function admin(v){switch(v){
  case 'open':openAdmin();return;
- case 'c1k':addCoins(1000);break; case 'c10k':addCoins(10000);break;
+ case 'c1k':addCoins(1000,true);break; case 'c10k':addCoins(10000,true);break;
+ case 'cfg':openCfg();return;
+ case 'easy':S.served=0;S.kfDone=0;S.esDone=0;toast('🌱 Müşteriler kolaylaştı!',1600);break;
  case 'shop':{const o=new Set(S.owned||[]);for(const ob of Object.values(LOOK))for(const it of Object.values(ob))if(it.price)o.add('p:'+it.pid);Object.keys(PACKS).forEach(k=>o.add('pk:'+k));SHOP.forEach(x=>o.add(x.id));S.owned=[...o];toast('🛍️ Her şey açıldı!',1800);break}
  case 'tasks':S.done=TASKS.map(t=>t.id);toast('⭐ Tüm görevler tamam, kilitler açıldı!',1800);break;
  case 'm3':S.m3max=Math.max(S.m3max||1,40);toast('💎 40 seviye açıldı!',1600);break;
  case 'butik':S.butikDay=Math.max(S.butikDay||1,6);toast('🏬 Butik tam süslendi!',1600);break;
  case 'gift':S.giftDay=null;toast('🎁 Günlük hediye yenilendi!',1600);break;
  case 'hard':S.served=Math.max(S.served||0,10);S.kfDone=Math.max(S.kfDone||0,6);S.esDone=Math.max(S.esDone||0,6);toast('🔥 Müşteriler artık en zor seviyede!',1800);break;
- case 'exit':S.admin=false;save();$('#mAdmin').classList.remove('show');admInfo();toast('🚪 Yönetici modundan çıkıldı',1600);return;
+ case 'exit':S.admin=false;S.role=null;save();$('#mAdmin').classList.remove('show');admInfo();toast('🚪 Moddan çıkıldı',1600);return;
  case 'reset':if(Date.now()-admArm>3000){admArm=Date.now();SND.no();toast('⚠️ Emin misin? Silmek için 3 saniye içinde tekrar bas',2800);return}
   try{localStorage.removeItem(KEY);localStorage.removeItem(KEY+'-gal')}catch(e){}location.replace(location.pathname+'?r='+Date.now());return}
  SND.pop();confetti(14);save();renderStage();renderPanel();updCoins();admInfo()}
 $('#mAdmin').querySelector('[data-close]').addEventListener('click',()=>{if(!S.name)setTimeout(openStart,200)});
-$('#startBtn').onclick=async()=>{const raw=$('#nameIn').value.trim();if(raw&&await sha(raw)===ADMH){S.admin=true;save();$('#mStart').classList.remove('show');$('#nameIn').blur();openAdmin();return}
+$('#startBtn').onclick=async()=>{const raw=$('#nameIn').value.trim(),h=raw?await sha(raw):'';if(h===ADMH||h===YANH){S.role=h===ADMH?'admin':'yanci';S.admin=S.role==='admin';save();$('#mStart').classList.remove('show');$('#nameIn').blur();openAdmin();return}
  S.name=(raw||'Işıltı').slice(0,14);save();$('#mStart').classList.remove('show');$('#nameIn').blur();renderStage(true);SND.star();confetti(24)};
 $('#nameIn').addEventListener('keydown',e=>{if(e.key==='Enter')$('#startBtn').click()});
 $('#nameChip').onclick=openStart;
@@ -1684,12 +1712,11 @@ function doFit(){const r=$('#stageWrap').getBoundingClientRect();const wh=Math.r
  const k=Math.max(1,h/640)*1.002;$('#bgWrap').querySelectorAll('use').forEach(u=>u.style.display=w>401?'':'none');$('#bgWrap').setAttribute('transform',`translate(200 320) scale(${k.toFixed(4)}) translate(-200 -320)`)}
 addEventListener('resize',fit);addEventListener('orientationchange',()=>{lastWH='';setTimeout(fit,350);setTimeout(fit,800)});
 if(window.ResizeObserver)new ResizeObserver(fit).observe($('#stageWrap'));
-const APPV='202611151107'
-/* yeni sürüm kontrolü: önbellekte eski sürüm kaldıysa kendini yeniler */
+const APPV='202611151116'/* yeni sürüm kontrolü: önbellekte eski sürüm kaldıysa kendini yeniler */
 async function checkUpdate(){try{const r=await fetch(location.pathname+'?t='+Date.now(),{cache:'no-store'});const t=await r.text();const m=t.match(/const APPV='(\d+)'/);
  if(m&&m[1]!==APPV){saveNow();toast('✨ Yeni sürüm geldi! Yükleniyor...',2000);setTimeout(()=>location.replace(location.pathname+'?v='+m[1]),1200)}}catch(e){}}
 setTimeout(checkUpdate,1500);document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate()});
-renderStage();renderPanel();doFit();admInfo();
+applyCfg();renderStage();renderPanel();doFit();admInfo();
 if(!S.name)openStart();
 </script>
 </body>
